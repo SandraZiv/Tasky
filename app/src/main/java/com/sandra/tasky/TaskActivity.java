@@ -243,10 +243,15 @@ public class TaskActivity extends AppCompatActivity {
                 setupForOnBackPressed();
                 break;
             case R.id.task_save:
+                if(title.getText().toString().trim().isEmpty()){
+                    Toast.makeText(TaskActivity.this, "Title can't be empty", Toast.LENGTH_SHORT).show();
+                    setupForOnBackPressed();
+                    break;
+                }
                 onBackPressed();
                 break;
             case R.id.task_confirm:
-                if(title.getText().toString().isEmpty()){
+                if(title.getText().toString().trim().isEmpty()){
                     Toast.makeText(TaskActivity.this, "Enter title to save task", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -266,7 +271,7 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void saveTask() {
-        if (!title.getText().toString().isEmpty()) {
+        if (!title.getText().toString().trim().isEmpty()) {
             //set title
             task.setTitle(title.getText().toString().trim());
             //set completed
