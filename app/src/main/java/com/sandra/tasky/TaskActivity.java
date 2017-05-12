@@ -27,6 +27,7 @@ import java.util.Date;
 
 public class TaskActivity extends AppCompatActivity {
 
+    public static final String IS_TASK_NEW = "isTaskNew";
     SimpleTask task;
 
     TaskDatabase database;
@@ -52,8 +53,11 @@ public class TaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null){
+            isTaskNew = savedInstanceState.getBoolean(IS_TASK_NEW);
             task = (SimpleTask) savedInstanceState.get(SimpleTask.TASK_BUNDLE_KEY);
+        }
+
         else if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(SimpleTask.TASK_BUNDLE_KEY)) {
             isTaskNew = false;
             task = (SimpleTask) getIntent().getExtras().getSerializable(SimpleTask.TASK_BUNDLE_KEY);
@@ -88,7 +92,7 @@ public class TaskActivity extends AppCompatActivity {
         imageCancelTime = (ImageButton) findViewById(R.id.img_btn_clear_time);
 
         calendar = Calendar.getInstance();
-        if(!isTaskNew && task.getDueDate()!=null)
+        if((!isTaskNew || savedInstanceState!=null) && task.getDueDate()!=null)
             calendar = task.getDueDate();
 
         //date section
@@ -206,9 +210,27 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        new OpenDBAsyncTask().execute("Open");
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        task.setTitle(title.getText().toString().trim());
+        task.setCompleted(completed.isChecked());
+        task.setNote(note.getText().toString().trim());
+        if(twDate.getText().toString().equals(getString(R.string.select_date))){
+            task.setDueDate(null);
+            task.setTimePresent(false);
+        }
+        else{
+            task.setDueDate(calendar);
+            task.setTimePresent(!twTime.getText().toString().equals(getString(R.string.select_time)));
+        }
         outState.putSerializable(SimpleTask.TASK_BUNDLE_KEY, task);
+        outState.putBoolean(IS_TASK_NEW, isTaskNew);
     }
 
     @Override

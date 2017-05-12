@@ -32,6 +32,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         new OpenDBAsyncTask().execute("Open");
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new OpenDBAsyncTask().execute("Open");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -93,8 +98,10 @@ public class HomeScreenActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE)
-            if (resultCode == RESULT_OK)
-                updateListView();
+            if (resultCode == RESULT_OK){
+                new OpenDBAsyncTask().execute("Reopen");
+            }
+
     }
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, String> {
