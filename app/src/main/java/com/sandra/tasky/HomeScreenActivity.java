@@ -1,5 +1,7 @@
 package com.sandra.tasky;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +38,12 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         new OpenDBAsyncTask().execute("Open");
+    }
+
+    @Override
+    protected void onDestroy() {
+        updateTaskWidget();
+        super.onDestroy();
     }
 
     @Override
@@ -93,6 +101,15 @@ public class HomeScreenActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.all_data) + " (" + list.size() + ")");
         }
+
+        updateTaskWidget();
+
+    }
+
+    private void updateTaskWidget() {
+        AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(
+                AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), TaskWidget.class))
+                , R.id.widget_list);
     }
 
     @Override
