@@ -4,10 +4,16 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -53,7 +59,7 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         row.setTextViewText(R.id.tw__widget_title, list.get(position).getTitle());
         row.setTextViewText(R.id.tw_widget_status, "Status: " + (list.get(position).isCompleted() ? "Done" : "To do"));
         if(list.get(position).getDueDate()!=null)
-            row.setTextViewText(R.id.tw_widget_due_date, "Due date: " + list.get(position).parseDate());
+            row.setTextViewText(R.id.tw_widget_due_date, getDateText(list.get(position)));
         else
             row.setTextViewText(R.id.tw_widget_due_date, "No due date");
 //
@@ -65,6 +71,30 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
         row.setOnClickFillInIntent(R.id.tw_title, intent);
         return row;
+    }
+
+    @NonNull
+    private String getDateText(SimpleTask task) {
+        String date;
+        Calendar currentDate = Calendar.getInstance();
+        //adjust date and time
+        currentDate.set(currentDate.get(Calendar.YEAR),
+                currentDate.get(Calendar.MONTH),
+                currentDate.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        Calendar dataDate = task.getDueDate();
+        dataDate.set(dataDate.get(Calendar.YEAR),
+                dataDate.get(Calendar.MONTH),
+                dataDate.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        long diff = TimeUnit.DAYS.convert(dataDate.getTimeInMillis(), TimeUnit.MILLISECONDS)
+                - TimeUnit.DAYS.convert( currentDate.getTimeInMillis(), TimeUnit.MILLISECONDS);
+        if(diff == 0) date = "today";
+        else if(diff == 1) date = "tomorrow";
+        else if(diff < 0) date = "expired";
+        else if(diff <= 10) date = "in " + diff + " days";
+        else date = task.parseDate();
+        return "Due date: " + date;
     }
 
     @Override
