@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class TaskDatabase {
@@ -100,6 +101,35 @@ public class TaskDatabase {
             } while (cursor.moveToNext());
         }
 
+        return list;
+    }
+
+    public List<SimpleTask> getActiveTasks(){
+        List<SimpleTask> list = new LinkedList<>();
+
+        String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE + " order by " + DATE_COLUMN;
+        Cursor cursor = dbReadable.rawQuery(sqlQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String title = cursor.getString(1);
+                boolean completed = (cursor.getInt(2) == TRUE);
+                String note = cursor.getString(3);
+                Calendar cal = Calendar.getInstance();
+                if (cursor.getString(4) != null){
+                    cal.setTime(getDateFromString(cursor.getString(4)));
+                    if(TimeUnit.DAYS.convert(cal.getTimeInMillis(), TimeUnit.MILLISECONDS)
+                            - TimeUnit.DAYS.convert(Calendar.getInstance().getTimeInMillis(), TimeUnit.MILLISECONDS) < 0)
+                        continue;
+                }
+                else
+                    cal = null;
+                boolean timePresent = (cursor.getInt(5) == TRUE);
+                list.add(new SimpleTask(id, title, note, cal, completed, timePresent));
+
+            } while (cursor.moveToNext());
+        }
         return list;
     }
 

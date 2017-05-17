@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +26,7 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         this.appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
         db = new TaskDatabase(context);
-        this.list = db.getAllData();
+        this.list = db.getActiveTasks();
     }
 
     @Override
@@ -39,7 +36,7 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        list = db.getAllData();
+        list = db.getActiveTasks();
     }
 
     @Override
@@ -62,7 +59,6 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setTextViewText(R.id.tw_widget_due_date, getDateText(list.get(position)));
         else
             row.setTextViewText(R.id.tw_widget_due_date, "No due date");
-//
         Intent intent = new Intent();
         Bundle extras = new Bundle();
 
