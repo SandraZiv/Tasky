@@ -21,9 +21,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 public class TaskActivity extends AppCompatActivity {
 
@@ -32,7 +31,7 @@ public class TaskActivity extends AppCompatActivity {
 
     TaskDatabase database;
 
-    Calendar calendar;
+    DateTime dateTime;
 
     EditText title;
     CheckBox completed;
@@ -53,12 +52,10 @@ public class TaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             isTaskNew = savedInstanceState.getBoolean(IS_TASK_NEW);
             task = (SimpleTask) savedInstanceState.get(SimpleTask.TASK_BUNDLE_KEY);
-        }
-
-        else if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(SimpleTask.TASK_BUNDLE_KEY)) {
+        } else if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(SimpleTask.TASK_BUNDLE_KEY)) {
             isTaskNew = false;
             task = (SimpleTask) getIntent().getExtras().getSerializable(SimpleTask.TASK_BUNDLE_KEY);
         } else
@@ -91,9 +88,15 @@ public class TaskActivity extends AppCompatActivity {
         twTime = (TextView) findViewById(R.id.task_tw_time);
         imageCancelTime = (ImageButton) findViewById(R.id.img_btn_clear_time);
 
-        calendar = Calendar.getInstance();
-        if((!isTaskNew || savedInstanceState!=null) && task.getDueDate()!=null)
-            calendar = task.getDueDate();
+        dateTime = new DateTime();
+        if ((!isTaskNew || savedInstanceState != null) && task.getDueDate() != null){
+            dateTime = task.getDueDate();
+            if(!task.isTimePresent()){
+                dateTime = dateTime.withHourOfDay(new DateTime().getHourOfDay())
+                        .withMinuteOfHour(new DateTime().getMinuteOfHour());
+            }
+        }
+
 
         //date section
         //text view date
@@ -106,17 +109,19 @@ public class TaskActivity extends AppCompatActivity {
         twDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
+                final int day = dateTime.getDayOfMonth();
+                int month = dateTime.getMonthOfYear() - 1;
+                int year = dateTime.getYear();
 
                 final String previousSelected = twDate.getText().toString();
 
                 final DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        calendar.set(year, month, dayOfMonth, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-                        twDate.setText(DateFormat.getDateInstance(DateFormat.FULL).format(new Date(calendar.getTimeInMillis())));
+                        month = month + 1; //beacuse in joda it starts from 1
+                        dateTime = dateTime.withYear(year).withMonthOfYear(month).withDayOfMonth(dayOfMonth).
+                                withHourOfDay(new DateTime().getHourOfDay()).withMinuteOfHour(new DateTime().getMinuteOfHour());
+                        twDate.setText(DateTimeFormat.mediumDate().print(dateTime));
                         isDateChanged = true;
                         isTimeEditable = true;
                         imageCancelTime.setEnabled(true);
@@ -154,7 +159,7 @@ public class TaskActivity extends AppCompatActivity {
                 imageCancelTime.setEnabled(false);
                 twTime.setTextColor(Color.GRAY);
                 isDateChanged = true;
-                calendar = Calendar.getInstance();
+                dateTime = new DateTime();
             }
         });
 
@@ -167,18 +172,18 @@ public class TaskActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!isTimeEditable)
                     return;
-                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                final int min = calendar.get(Calendar.MINUTE);
+
+                final int hour, min;
+                hour = dateTime.getHourOfDay();
+                min = dateTime.getMinuteOfHour();
 
                 final String previousTime = twTime.getText().toString();
 
                 TimePickerDialog.OnTimeSetListener timeListener = new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        calendar.set(calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH), hourOfDay, minute);
-                        twTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(calendar.getTimeInMillis())));
+                        dateTime = dateTime.withHourOfDay(hourOfDay).withMinuteOfHour(minute).withSecondOfMinute(0);
+                        twTime.setText(DateTimeFormat.shortTime().print(dateTime));
                         isDateChanged = true;
                     }
                 };
@@ -221,12 +226,11 @@ public class TaskActivity extends AppCompatActivity {
         task.setTitle(title.getText().toString().trim());
         task.setCompleted(completed.isChecked());
         task.setNote(note.getText().toString().trim());
-        if(twDate.getText().toString().equals(getString(R.string.select_date))){
+        if (twDate.getText().toString().equals(getString(R.string.select_date))) {
             task.setDueDate(null);
             task.setTimePresent(false);
-        }
-        else{
-            task.setDueDate(calendar);
+        } else {
+            task.setDueDate(dateTime);
             task.setTimePresent(!twTime.getText().toString().equals(getString(R.string.select_time)));
         }
         outState.putSerializable(SimpleTask.TASK_BUNDLE_KEY, task);
@@ -245,7 +249,7 @@ public class TaskActivity extends AppCompatActivity {
         //open menu for edit task
         if (!isTaskNew)
             menuInflater.inflate(R.menu.task_edit_menu, menu);
-        //open menu for new task
+            //open menu for new task
         else
             menuInflater.inflate(R.menu.task_new_menu, menu);
         return true;
@@ -265,7 +269,7 @@ public class TaskActivity extends AppCompatActivity {
                 setupForOnBackPressed();
                 break;
             case R.id.task_save:
-                if(title.getText().toString().trim().isEmpty()){
+                if (title.getText().toString().trim().isEmpty()) {
                     Toast.makeText(TaskActivity.this, "Title can't be empty", Toast.LENGTH_SHORT).show();
                     setupForOnBackPressed();
                     break;
@@ -273,7 +277,7 @@ public class TaskActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.task_confirm:
-                if(title.getText().toString().trim().isEmpty()){
+                if (title.getText().toString().trim().isEmpty()) {
                     Toast.makeText(TaskActivity.this, "Enter title to save task", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -304,14 +308,12 @@ public class TaskActivity extends AppCompatActivity {
                 //set date
                 if (!twDate.getText().equals(getString(R.string.select_date))) {
                     if (twTime.getText().toString().equals(getString(R.string.select_time))) {
-                        calendar.set(calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH), 0, 0);
+                        dateTime = dateTime.withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(0); //so it is the latest
                         task.setTimePresent(false);
                     } else
                         task.setTimePresent(true);
 
-                    task.setDueDate(calendar);
+                    task.setDueDate(dateTime);
                 } else
                     task.setDueDate(null);
             }
@@ -326,7 +328,7 @@ public class TaskActivity extends AppCompatActivity {
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, String> {
 
         @Override
-        protected String doInBackground(String ... params) {
+        protected String doInBackground(String... params) {
             database = new TaskDatabase(TaskActivity.this);
             return null;
         }

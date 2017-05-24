@@ -1,16 +1,16 @@
 package com.sandra.tasky;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 
 public class SimpleTask implements Serializable {
     private int id;
     private String title;
     private String note;
-    private Calendar dueDate;
+    private DateTime dueDate;
     private boolean completed;
     private boolean timePresent;
 
@@ -26,7 +26,7 @@ public class SimpleTask implements Serializable {
         this.timePresent = false;
     }
 
-    public SimpleTask(int id, String title, String note, Calendar dueDate, boolean completed, boolean timePresent) {
+    public SimpleTask(int id, String title, String note, DateTime dueDate, boolean completed, boolean timePresent) {
         this.id = id;
         this.title = title;
         this.note = note;
@@ -59,11 +59,11 @@ public class SimpleTask implements Serializable {
         this.note = note;
     }
 
-    public Calendar getDueDate() {
+    public DateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Calendar dueDate) {
+    public void setDueDate(DateTime dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -88,11 +88,11 @@ public class SimpleTask implements Serializable {
     }
 
     public String parseDate() {
-        return DateFormat.getDateInstance(DateFormat.FULL).format(new Date(dueDate.getTimeInMillis()));
+        return DateTimeFormat.fullDate().print(dueDate);
     }
 
     public String parseTime() {
-        return DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(dueDate.getTimeInMillis()));
+        return DateTimeFormat.shortTime().print(dueDate);
     }
 
     @Override

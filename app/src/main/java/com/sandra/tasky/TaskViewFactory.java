@@ -4,13 +4,13 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -69,22 +69,10 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         return row;
     }
 
-    @NonNull
     private String getDateText(SimpleTask task) {
         String date;
-        Calendar currentDate = Calendar.getInstance();
-        //adjust date and time
-        currentDate.set(currentDate.get(Calendar.YEAR),
-                currentDate.get(Calendar.MONTH),
-                currentDate.get(Calendar.DAY_OF_MONTH),
-                0, 0, 0);
-        Calendar dataDate = task.getDueDate();
-        dataDate.set(dataDate.get(Calendar.YEAR),
-                dataDate.get(Calendar.MONTH),
-                dataDate.get(Calendar.DAY_OF_MONTH),
-                0, 0, 0);
-        long diff = TimeUnit.DAYS.convert(dataDate.getTimeInMillis(), TimeUnit.MILLISECONDS)
-                - TimeUnit.DAYS.convert( currentDate.getTimeInMillis(), TimeUnit.MILLISECONDS);
+        DateTime dataDate = task.getDueDate();
+        long diff = Days.daysBetween(new DateTime(), dataDate).getDays();
         if(diff == 0) date = "today";
         else if(diff == 1) date = "tomorrow";
         else if(diff < 0) date = "expired";

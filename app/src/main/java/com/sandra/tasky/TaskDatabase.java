@@ -7,14 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.joda.time.DateTime;
+import org.joda.time.Hours;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 public class TaskDatabase {
@@ -59,7 +59,7 @@ public class TaskDatabase {
         newValues.put(COMPLETED_COLUMN, (task.isCompleted() ? TRUE : FALSE));
         newValues.put(NOTE_COLUMN, task.getNote());
         newValues.put(DATE_COLUMN,
-                (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getTimeInMillis()).toString());
+                (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         newValues.put(TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
 
         dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE, null, newValues);
@@ -72,7 +72,7 @@ public class TaskDatabase {
         updateValues.put(COMPLETED_COLUMN, (task.isCompleted() ? TRUE : FALSE));
         updateValues.put(NOTE_COLUMN, task.getNote());
         updateValues.put(DATE_COLUMN,
-                (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getTimeInMillis()).toString());
+                (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         updateValues.put(TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
 
         return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE, updateValues, KEY_ID + " = " + task.getId(), null);
@@ -90,13 +90,13 @@ public class TaskDatabase {
                 String title = cursor.getString(1);
                 boolean completed = (cursor.getInt(2) == TRUE);
                 String note = cursor.getString(3);
-                Calendar cal = Calendar.getInstance();
+                DateTime date = new DateTime();
                 if (cursor.getString(4) != null)
-                    cal.setTime(getDateFromString(cursor.getString(4)));
+                    date = getDateFromString(cursor.getString(4));
                 else
-                    cal = null;
+                    date = null;
                 boolean timePresent = (cursor.getInt(5) == TRUE);
-                list.add(new SimpleTask(id, title, note, cal, completed, timePresent));
+                list.add(new SimpleTask(id, title, note, date, completed, timePresent));
 
             } while (cursor.moveToNext());
         }
@@ -116,17 +116,16 @@ public class TaskDatabase {
                 String title = cursor.getString(1);
                 boolean completed = (cursor.getInt(2) == TRUE);
                 String note = cursor.getString(3);
-                Calendar cal = Calendar.getInstance();
+                DateTime date;
                 if (cursor.getString(4) != null){
-                    cal.setTime(getDateFromString(cursor.getString(4)));
-                    if(TimeUnit.DAYS.convert(cal.getTimeInMillis(), TimeUnit.MILLISECONDS)
-                            - TimeUnit.DAYS.convert(Calendar.getInstance().getTimeInMillis(), TimeUnit.MILLISECONDS) < 0)
+                    date = getDateFromString(cursor.getString(4));
+                    if(Hours.hoursBetween(date, new DateTime()).getHours()>0)
                         continue;
                 }
                 else
-                    cal = null;
+                    date = null;
                 boolean timePresent = (cursor.getInt(5) == TRUE);
-                list.add(new SimpleTask(id, title, note, cal, completed, timePresent));
+                list.add(new SimpleTask(id, title, note, date, completed, timePresent));
 
             } while (cursor.moveToNext());
         }
@@ -143,15 +142,18 @@ public class TaskDatabase {
     }
 
 
-    private java.util.Date getDateFromString(String tmpDate) {
+    private DateTime getDateFromString(String tmpDate) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date date = null;
+//        DateTime date = null;
         try {
             date = dateFormat.parse(tmpDate);
-        } catch (ParseException e) {
+//            DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+//            date = dateTimeFormatter.parseDateTime(tmpDate);
+        } catch (Exception e) {
             Log.e("date", "Parsing datetime failed", e);
         }
-        return date;
+        return new DateTime(date);
     }
 
     public class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
