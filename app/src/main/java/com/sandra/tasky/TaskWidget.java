@@ -26,8 +26,9 @@ public class TaskWidget extends AppWidgetProvider {
 
             widget.setRemoteAdapter(R.id.widget_list, svcIntent);
 
+            //open activity from widget
             Intent clickIntent = new Intent(context, TaskActivity.class);
-            PendingIntent clickPI = PendingIntent.getActivity(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent clickPI = PendingIntent.getActivity(context, 0, clickIntent, 0);
             widget.setPendingIntentTemplate(R.id.widget_list, clickPI);
 
             appWidgetManager.updateAppWidget(appWidgetId, widget);

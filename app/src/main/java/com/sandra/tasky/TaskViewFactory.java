@@ -3,12 +3,12 @@ package com.sandra.tasky;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Hours;
 
 import java.util.List;
 
@@ -55,28 +55,40 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         row = new RemoteViews(context.getPackageName(), R.layout.widget_list_layout);
         row.setTextViewText(R.id.tw__widget_title, list.get(position).getTitle());
         row.setTextViewText(R.id.tw_widget_status, "Status: " + (list.get(position).isCompleted() ? "Done" : "To do"));
-        if(list.get(position).getDueDate()!=null)
+        if (list.get(position).getDueDate() != null)
             row.setTextViewText(R.id.tw_widget_due_date, getDateText(list.get(position)));
         else
             row.setTextViewText(R.id.tw_widget_due_date, "No due date");
-        Intent intent = new Intent();
-        Bundle extras = new Bundle();
 
-        extras.putSerializable(TaskWidget.KEY_TASK_WIDGET, list.get(position));
-        intent.putExtras(extras);
+        //open task detail in TaskActivity
+        Intent fillIntent = new Intent();
+        fillIntent.putExtra(SimpleTask.TASK_BUNDLE_KEY, list.get(position));
+        row.setOnClickFillInIntent(R.id.tw__widget_title, fillIntent);
+        row.setOnClickFillInIntent(R.id.tw_widget_status, fillIntent);
+        row.setOnClickFillInIntent(R.id.tw_widget_due_date, fillIntent);
 
-        row.setOnClickFillInIntent(R.id.tw_title, intent);
         return row;
     }
 
     private String getDateText(SimpleTask task) {
         String date;
         DateTime dataDate = task.getDueDate();
-        long diff = Days.daysBetween(new DateTime(), dataDate).getDays();
-        if(diff == 0) date = "today";
-        else if(diff == 1) date = "tomorrow";
-        else if(diff < 0) date = "expired";
-        else if(diff <= 10) date = "in " + diff + " days";
+        dataDate = dataDate.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+        DateTime currentDate = new DateTime();
+        currentDate = currentDate.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+
+        long diffDays = Days.daysBetween(currentDate, dataDate).getDays();
+        if (diffDays == 0) {
+            if (!task.isTimePresent())
+                date = "today";
+            else if (Hours.hoursBetween(new DateTime(), task.getDueDate()).getHours() >= 0)
+                date = "today at " + task.parseTime();
+            else
+                date = "expired";
+        }
+        else if (diffDays == 1)
+            date = "tomorrow" + (task.isTimePresent() ? " at " + task.parseTime() : "");
+        else if (diffDays <= 10) date = "in " + diffDays + " days";
         else date = task.parseDate();
         return "Due date: " + date;
     }

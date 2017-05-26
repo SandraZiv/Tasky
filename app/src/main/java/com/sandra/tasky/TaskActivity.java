@@ -2,6 +2,8 @@ package com.sandra.tasky;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -291,6 +293,11 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void setupForOnBackPressed() {
+        //update widget (important for opening activity from widget)
+        AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(
+                AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), TaskWidget.class))
+                , R.id.widget_list);
+
         Intent returnIntent = new Intent();
         setResult(RESULT_OK, returnIntent);
         TaskActivity.super.onBackPressed();
@@ -308,7 +315,7 @@ public class TaskActivity extends AppCompatActivity {
                 //set date
                 if (!twDate.getText().equals(getString(R.string.select_date))) {
                     if (twTime.getText().toString().equals(getString(R.string.select_time))) {
-                        dateTime = dateTime.withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(0); //so it is the latest
+                        dateTime = dateTime.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
                         task.setTimePresent(false);
                     } else
                         task.setTimePresent(true);

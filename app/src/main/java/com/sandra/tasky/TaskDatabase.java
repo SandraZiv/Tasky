@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import org.joda.time.DateTime;
-import org.joda.time.Hours;
+import org.joda.time.Days;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -119,7 +119,8 @@ public class TaskDatabase {
                 DateTime date;
                 if (cursor.getString(4) != null){
                     date = getDateFromString(cursor.getString(4));
-                    if(Hours.hoursBetween(date, new DateTime()).getHours()>0)
+//                    if(Hours.hoursBetween(date, new DateTime()).getHours()>0)
+                    if(Days.daysBetween(date, new DateTime()).getDays()>0)
                         continue;
                 }
                 else
