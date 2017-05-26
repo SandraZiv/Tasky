@@ -4,14 +4,14 @@
 
     <item
         android:id="@+id/task_cancel"
-        android:title="Cancel"
+        android:title="@string/cancel"
         android:icon="@drawable/ic_task__cancel"
         app:showAsAction="always">
     </item>
 
     <item
         android:id="@+id/task_confirm"
-        android:title="Save"
+        android:title="@string/save"
         android:icon="@drawable/ic_task_confirmed"
         app:showAsAction="always">
     </item>

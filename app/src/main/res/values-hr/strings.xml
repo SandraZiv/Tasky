@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tasky</string>
+    <string name="all_data">Sve</string>
+    <string name="at">u</string>
+    <string name="cancel">Odustani</string>
+    <string name="completed">Dovršeno</string>
+    <string name="create_task">Novi</string>
+    <string name="data_synced">Podaci ažurirani</string>
+    <string name="days">dana</string>
+    <string name="db__open_fail">Greška pri spajanju na bazu</string>
+    <string name="done">Obavljeno</string>
+    <string name="due_date">Rok</string>
+    <string name="edit_task">Uredi</string>
+    <string name="empty_title">Naslov ne smije biti prazan</string>
+    <string name="empty_title_confirmed">Unesite naslov da biste spremili zadatak</string>
+    <string name="error">Greška</string>
+    <string name="expired">Istekao</string>
+    <string name="in">za</string>
+    <string name="no_due_date">Nema roka</string>
+    <string name="note">Bilješka</string>
+    <string name="select_date">Odaberite datum</string>
+    <string name="select_time">Odaberite vrijeme</string>
+    <string name="set">Postavi</string>
+    <string name="status">Status:</string>
+    <string name="title">Naslov</string>
+    <string name="to_do">Nije obavljeno</string>
+    <string name="today">danas</string>
+    <string name="tommorow">sutra</string>
+    <string name="delete">Izbriši</string>
+    <string name="delete_all">Izbriši sve</string>
+    <string name="new_task">Novi zadatak</string>
+    <string name="save">Pohrani</string>
+    <string name="sync">Sinkroniziraj</string>
+</resources>

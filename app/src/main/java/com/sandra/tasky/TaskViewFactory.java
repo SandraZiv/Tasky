@@ -54,11 +54,13 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews row;
         row = new RemoteViews(context.getPackageName(), R.layout.widget_list_layout);
         row.setTextViewText(R.id.tw__widget_title, list.get(position).getTitle());
-        row.setTextViewText(R.id.tw_widget_status, "Status: " + (list.get(position).isCompleted() ? "Done" : "To do"));
+        row.setTextViewText(R.id.tw_widget_status,
+                context.getString(R.string.status)  + " "
+                        + (list.get(position).isCompleted() ? context.getString(R.string.done) : context.getString(R.string.to_do)));
         if (list.get(position).getDueDate() != null)
             row.setTextViewText(R.id.tw_widget_due_date, getDateText(list.get(position)));
         else
-            row.setTextViewText(R.id.tw_widget_due_date, "No due date");
+            row.setTextViewText(R.id.tw_widget_due_date, context.getString(R.string.no_due_date));
 
         //open task detail in TaskActivity
         Intent fillIntent = new Intent();
@@ -80,17 +82,16 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         long diffDays = Days.daysBetween(currentDate, dataDate).getDays();
         if (diffDays == 0) {
             if (!task.isTimePresent())
-                date = "today";
+                date = context.getString(R.string.today);
             else if (Hours.hoursBetween(new DateTime(), task.getDueDate()).getHours() >= 0)
-                date = "today at " + task.parseTime();
+                date = context.getString(R.string.today) + " " + context.getString(R.string.at) + " " + task.parseTime();
             else
-                date = "expired";
-        }
-        else if (diffDays == 1)
-            date = "tomorrow" + (task.isTimePresent() ? " at " + task.parseTime() : "");
-        else if (diffDays <= 10) date = "in " + diffDays + " days";
+                date = context.getString(R.string.expired);
+        } else if (diffDays == 1)
+            date = context.getString(R.string.tommorow) + (task.isTimePresent() ? " " + context.getString(R.string.at) + " " + task.parseTime() : "");
+        else if (diffDays <= 10) date = context.getString(R.string.in) + " " + diffDays + " " + context.getString(R.string.days);
         else date = task.parseDate();
-        return "Due date: " + date;
+        return context.getString(R.string.due_date) + ": " + date;
     }
 
     @Override

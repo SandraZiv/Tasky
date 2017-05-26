@@ -68,9 +68,9 @@ public class TaskActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_task_home);
         if (!isTaskNew)
-            actionBar.setTitle("Edit task");
+            actionBar.setTitle(R.string.edit_task);
         else
-            actionBar.setTitle("Create task");
+            actionBar.setTitle(R.string.create_task);
 
         //open db
         new OpenDBAsyncTask().execute("open");
@@ -272,7 +272,7 @@ public class TaskActivity extends AppCompatActivity {
                 break;
             case R.id.task_save:
                 if (title.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(TaskActivity.this, "Title can't be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TaskActivity.this, R.string.empty_title, Toast.LENGTH_SHORT).show();
                     setupForOnBackPressed();
                     break;
                 }
@@ -280,7 +280,7 @@ public class TaskActivity extends AppCompatActivity {
                 break;
             case R.id.task_confirm:
                 if (title.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(TaskActivity.this, "Enter title to save task", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TaskActivity.this, R.string.empty_title_confirmed, Toast.LENGTH_SHORT).show();
                     break;
                 }
                 onBackPressed();
@@ -319,7 +319,6 @@ public class TaskActivity extends AppCompatActivity {
                         task.setTimePresent(false);
                     } else
                         task.setTimePresent(true);
-
                     task.setDueDate(dateTime);
                 } else
                     task.setDueDate(null);
