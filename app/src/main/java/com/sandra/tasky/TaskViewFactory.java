@@ -65,9 +65,10 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         //open task detail in TaskActivity
         Intent fillIntent = new Intent();
         fillIntent.putExtra(SimpleTask.TASK_BUNDLE_KEY, list.get(position));
-        row.setOnClickFillInIntent(R.id.tw__widget_title, fillIntent);
-        row.setOnClickFillInIntent(R.id.tw_widget_status, fillIntent);
-        row.setOnClickFillInIntent(R.id.tw_widget_due_date, fillIntent);
+        row.setOnClickFillInIntent(R.id.widget_layout_parent, fillIntent);
+//        row.setOnClickFillInIntent(R.id.tw__widget_title, fillIntent);
+//        row.setOnClickFillInIntent(R.id.tw_widget_status, fillIntent);
+//        row.setOnClickFillInIntent(R.id.tw_widget_due_date, fillIntent);
 
         return row;
     }
