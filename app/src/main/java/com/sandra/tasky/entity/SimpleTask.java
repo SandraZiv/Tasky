@@ -1,5 +1,7 @@
 package com.sandra.tasky.entity;
 
+import com.sandra.tasky.TaskyConstants;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -13,26 +15,26 @@ public class SimpleTask implements Serializable {
     private DateTime dueDate;
     private boolean completed;
     private boolean timePresent;
-
-    public static int EMPTY_ID = -1;
-    public static String TASK_BUNDLE_KEY = "task";
+    private boolean showInWidget;
 
     public SimpleTask() {
-        this.id = EMPTY_ID = -1;
+        this.id = TaskyConstants.EMPTY_ID;
         this.title = "";
         this.note = "";
         this.dueDate = null;
         this.completed = false;
         this.timePresent = false;
+        this.showInWidget = true;
     }
 
-    public SimpleTask(int id, String title, String note, DateTime dueDate, boolean completed, boolean timePresent) {
+    public SimpleTask(int id, String title, String note, DateTime dueDate, boolean completed, boolean timePresent, boolean showInWidget) {
         this.id = id;
         this.title = title;
         this.note = note;
         this.dueDate = dueDate;
         this.completed = completed;
         this.timePresent = timePresent;
+        this.showInWidget = showInWidget;
     }
 
     public int getId() {
@@ -93,6 +95,14 @@ public class SimpleTask implements Serializable {
 
     public String parseTime() {
         return DateTimeFormat.shortTime().print(dueDate);
+    }
+
+    public boolean isShowInWidget() {
+        return showInWidget;
+    }
+
+    public void setShowInWidget(boolean showInWidget) {
+        this.showInWidget = showInWidget;
     }
 
     @Override

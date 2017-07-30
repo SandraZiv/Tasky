@@ -16,6 +16,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.adapter.HomeListAdapter;
 import com.sandra.tasky.R;
 import com.sandra.tasky.entity.SimpleTask;
@@ -104,7 +105,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent openTaskIntent = new Intent(HomeScreenActivity.this, TaskActivity.class);
-                openTaskIntent.putExtra(SimpleTask.TASK_BUNDLE_KEY, list.get(position));
+                openTaskIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, list.get(position));
                 startActivityForResult(openTaskIntent, REQUEST_CODE);
             }
         });

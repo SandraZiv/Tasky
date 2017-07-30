@@ -30,6 +30,7 @@ public class TaskDatabase {
     private static final String NOTE_COLUMN = "TASK_NOTE_COLUMN";
     private static final String DATE_COLUMN = "TASK_DATE_COLUMN";
     private static final String TIME_PRESENT_COLUMN = "TASK_TIME_PRESENT_COLUMN";
+    private static final String SHOW_IN_WIDGET_COLUMN = "SHOW_IN_WIDGET_COLUMN";
 
     //creating index
     private static final String KEY_ID = "ID";
@@ -59,6 +60,7 @@ public class TaskDatabase {
         newValues.put(DATE_COLUMN,
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         newValues.put(TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
+        newValues.put(SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget()? TRUE : FALSE));
 
         dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE, null, newValues);
     }
@@ -72,6 +74,7 @@ public class TaskDatabase {
         updateValues.put(DATE_COLUMN,
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         updateValues.put(TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
+        updateValues.put(SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget()? TRUE : FALSE));
 
         return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE, updateValues, KEY_ID + " = " + task.getId(), null);
     }
@@ -94,7 +97,8 @@ public class TaskDatabase {
                 else
                     date = null;
                 boolean timePresent = (cursor.getInt(5) == TRUE);
-                list.add(new SimpleTask(id, title, note, date, completed, timePresent));
+                boolean showInWidget = (cursor.getInt(6) == TRUE);
+                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget));
 
             } while (cursor.moveToNext());
         }
@@ -112,6 +116,7 @@ public class TaskDatabase {
             where += "date(" + DATE_COLUMN + ")" + " between date('now') and date('now', '" + timeSpan + "')";
         }
         where += (showCompleted ? "" : " and " + COMPLETED_COLUMN + " = " + FALSE);
+        where += " and " + SHOW_IN_WIDGET_COLUMN + "=" + TRUE;
 
         String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE + where + " order by " + DATE_COLUMN;
         Cursor cursor = dbReadable.rawQuery(sqlQuery, null);
@@ -128,7 +133,8 @@ public class TaskDatabase {
                 } else
                     date = null;
                 boolean timePresent = (cursor.getInt(5) == TRUE);
-                list.add(new SimpleTask(id, title, note, date, completed, timePresent));
+                boolean showInWidget = (cursor.getInt(6) == TRUE);
+                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget));
 
             } while (cursor.moveToNext());
         }
@@ -163,15 +169,17 @@ public class TaskDatabase {
 
         static final String DATABASE_NAME = "task_database.db";
         static final String DATABASE_TABLE = "taskTable";
-        static final int DATABASE_VERSION = 4;
+        static final int DATABASE_VERSION = 7;
 
         static final String CREATE_TABLE = "create table " + DATABASE_TABLE + " ( "
                 + KEY_ID + " integer primary key autoincrement,"
                 + TITLE_COLUMN + " text not null,"
-                + COMPLETED_COLUMN + " smallint check (" + COMPLETED_COLUMN + " in (0,1) ),"
+                + COMPLETED_COLUMN + " smallint check (" + COMPLETED_COLUMN + " in (0,1)),"
                 + NOTE_COLUMN + " text,"
                 + DATE_COLUMN + " timestamp,"
-                + TIME_PRESENT_COLUMN + " smallint check (" + TIME_PRESENT_COLUMN + " in (0,1) )" + ");";
+                + TIME_PRESENT_COLUMN + " smallint check (" + TIME_PRESENT_COLUMN + " in (0,1)),"
+                + SHOW_IN_WIDGET_COLUMN + " smallint default " + TRUE
+                + ");";
 
         public static TaskDatabaseOpenHelper getInstance(Context context) {
             if (taskDatabaseOpenHelper == null) {
@@ -194,8 +202,12 @@ public class TaskDatabase {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("drop table " + DATABASE_TABLE);
+            db.execSQL("alter table " + DATABASE_TABLE + " rename to old");
             db.execSQL(CREATE_TABLE);
+            String columns = KEY_ID + "," + TITLE_COLUMN + "," + COMPLETED_COLUMN + "," + NOTE_COLUMN + "," + DATE_COLUMN + "," + TIME_PRESENT_COLUMN;
+            db.execSQL("insert into " + DATABASE_TABLE + "(" + columns + ")"
+                    + " select " + columns + " from old");
+            db.execSQL("drop table old");
         }
     }
 

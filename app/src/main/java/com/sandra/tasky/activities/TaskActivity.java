@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,8 +25,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.sandra.tasky.R;
-import com.sandra.tasky.entity.SimpleTask;
+import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.db.TaskDatabase;
+import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.widget.TaskWidget;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -52,6 +54,8 @@ public class TaskActivity extends AppCompatActivity {
     ImageButton imageCancelTime;
     TextView twTime;
 
+    CheckBox showInWidget;
+
     boolean isTaskNew = true;
     boolean isTimeEditable = false;
     boolean isDateChanged = false;
@@ -64,10 +68,10 @@ public class TaskActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             isTaskNew = savedInstanceState.getBoolean(IS_TASK_NEW);
-            task = (SimpleTask) savedInstanceState.get(SimpleTask.TASK_BUNDLE_KEY);
-        } else if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(SimpleTask.TASK_BUNDLE_KEY)) {
+            task = (SimpleTask) savedInstanceState.get(TaskyConstants.TASK_BUNDLE_KEY);
+        } else if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(TaskyConstants.TASK_BUNDLE_KEY)) {
             isTaskNew = false;
-            task = (SimpleTask) getIntent().getExtras().getSerializable(SimpleTask.TASK_BUNDLE_KEY);
+            task = (SimpleTask) getIntent().getExtras().getSerializable(TaskyConstants.TASK_BUNDLE_KEY);
         } else
             task = new SimpleTask();
 
@@ -106,7 +110,6 @@ public class TaskActivity extends AppCompatActivity {
                         .withMinuteOfHour(new DateTime().getMinuteOfHour());
             }
         }
-
 
         //date section
         //text view date
@@ -220,8 +223,6 @@ public class TaskActivity extends AppCompatActivity {
                 isDateChanged = true;
             }
         });
-
-
     }
 
     @Override
@@ -243,7 +244,7 @@ public class TaskActivity extends AppCompatActivity {
             task.setDueDate(dateTime);
             task.setTimePresent(!twTime.getText().toString().equals(getString(R.string.select_time)));
         }
-        outState.putSerializable(SimpleTask.TASK_BUNDLE_KEY, task);
+        outState.putSerializable(TaskyConstants.TASK_BUNDLE_KEY, task);
         outState.putBoolean(IS_TASK_NEW, isTaskNew);
     }
 
@@ -293,6 +294,9 @@ public class TaskActivity extends AppCompatActivity {
                 }
                 onBackPressed();
                 break;
+            case R.id.task_show:
+                showInWidgetAlert();
+                break;
             default:
                 Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
                 setupForOnBackPressed();
@@ -337,6 +341,32 @@ public class TaskActivity extends AppCompatActivity {
             else
                 database.updateData(task);
         }
+    }
+
+    private void showInWidgetAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
+        builder.setTitle(R.string.show_task);
+
+        View checkBoxView = View.inflate(TaskActivity.this, R.layout.show_in_widget_layout, null);
+        showInWidget = (CheckBox)checkBoxView.findViewById(R.id.alert_checkbox);
+        showInWidget.setChecked(task.isShowInWidget());
+        builder.setView(checkBoxView);
+
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                task.setShowInWidget(showInWidget.isChecked());
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, String> {

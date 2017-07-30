@@ -32,4 +32,22 @@
     <string name="new_task">Novi zadatak</string>
     <string name="save">Pohrani</string>
     <string name="sync">Sinkroniziraj</string>
+    <string name="show_task">Prikaži zadatak</string>
+    <string name="show_task_in_widget">Prikaži zadatak u widgetu</string>
+    <string name="show_in_widget">Prikaz zadatka</string>
+    <string name="settings">Postavke</string>
+    <string name="select_time_span">Odaberite vremenski raspon</string>
+    <string name="show_completed">Prikaz obavljenih</string>
+    <string name="show_completed_long">Prikaži obavljeni zadatak u widgetu</string>
+    <string name="show_when">Odaberite kada želite prikazati zadatak</string>
+    <string name="show_when_long">Vremenski raspon određuje se u odnosu na današnji datum</string>
+
+    <string-array name="time_span_entries">
+        <item>1 tjedan</item>
+        <item>1 mjesec</item>
+        <item>3 mjeseca</item>
+        <item>1 godina</item>
+        <item>Neograničeno</item>
+    </string-array>
+
 </resources>

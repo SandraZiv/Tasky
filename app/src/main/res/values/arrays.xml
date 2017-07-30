@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="time_span_entries">
-        <item>1 week</item>
-        <item>1 month</item>
-        <item>3 months</item>
-        <item>1 year</item>
-        <item>No limit</item>
-    </string-array>
-
     <string-array name="time_span_values">
         <item>7 days</item>
         <item>1 months</item>

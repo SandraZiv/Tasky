@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="Widget">
+        android:title="@string/widget">
         <SwitchPreference
             android:key="pref_show_completed"
-            android:title="Show completed"
-            android:summary="Show completed tasks in widget"
+            android:title="@string/show_completed"
+            android:summary="@string/show_completed_long"
             android:defaultValue="true"/>
         <ListPreference
             android:key="pref_time_span"
-            android:title="Select when to show task"
-            android:summary="Time span is relative regarding today"
-            android:dialogTitle="Select time span"
+            android:title="@string/show_when"
+            android:summary="@string/show_when_long"
+            android:dialogTitle="@string/select_time_span"
             android:entries="@array/time_span_entries"
             android:entryValues="@array/time_span_values"
             android:defaultValue="-1"/>
