@@ -1,4 +1,4 @@
-package com.sandra.tasky;
+package com.sandra.tasky.widget;
 
 import android.content.Intent;
 import android.widget.RemoteViewsService;

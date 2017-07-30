@@ -1,4 +1,4 @@
-package com.sandra.tasky;
+package com.sandra.tasky.entity;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;

@@ -9,16 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomeScreenActivity">
+        <activity android:name=".activities.HomeScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TaskActivity" />
+        <activity android:name=".activities.TaskActivity" />
 
-        <receiver android:name=".TaskWidget">
+        <receiver android:name=".widget.TaskWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -28,9 +28,11 @@
                 android:resource="@xml/task_widget_info" />
         </receiver>
 
-        <service android:name=".TaskWidgetService"
+        <service android:name=".widget.TaskWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS">
         </service>
+
+        <activity android:name=".activities.SettingsActivity"/>
 
     </application>
 

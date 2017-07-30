@@ -1,4 +1,4 @@
-package com.sandra.tasky;
+package com.sandra.tasky.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,8 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.entity.SimpleTask;
+
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -32,20 +34,16 @@ public class TaskDatabase {
     //creating index
     private static final String KEY_ID = "ID";
 
-    private TaskDatabaseOpenHelper taskDatabaseOpenHelper;
+    private static TaskDatabaseOpenHelper taskDatabaseOpenHelper = null;
 
     private SQLiteDatabase dbWritable;
     private SQLiteDatabase dbReadable;
 
     public TaskDatabase(Context context) {
-        this.taskDatabaseOpenHelper = new TaskDatabaseOpenHelper(context,
-                TaskDatabaseOpenHelper.DATABASE_NAME,
-                null,
-                TaskDatabaseOpenHelper.DATABASE_VERSION);
+        this.taskDatabaseOpenHelper = TaskDatabaseOpenHelper.getInstance(context);
 
         dbWritable = taskDatabaseOpenHelper.getWritableDatabase();
         dbReadable = taskDatabaseOpenHelper.getReadableDatabase();
-
     }
 
     public void closeDatabase() {
@@ -104,10 +102,18 @@ public class TaskDatabase {
         return list;
     }
 
-    public List<SimpleTask> getActiveTasks(){
+    //used only in widget
+    public List<SimpleTask> getActiveTasks(boolean showCompleted, String timeSpan) {
         List<SimpleTask> list = new LinkedList<>();
+        String where = " where ";
+        if (timeSpan.equals(TaskyConstants.PREFS_TIME_SPAN_DEFAULT)) {
+            where += "date(" + DATE_COLUMN + ")" + " >= date('now')";
+        } else {
+            where += "date(" + DATE_COLUMN + ")" + " between date('now') and date('now', '" + timeSpan + "')";
+        }
+        where += (showCompleted ? "" : " and " + COMPLETED_COLUMN + " = " + FALSE);
 
-        String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE + " order by " + DATE_COLUMN;
+        String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE + where + " order by " + DATE_COLUMN;
         Cursor cursor = dbReadable.rawQuery(sqlQuery, null);
 
         if (cursor.moveToFirst()) {
@@ -117,13 +123,9 @@ public class TaskDatabase {
                 boolean completed = (cursor.getInt(2) == TRUE);
                 String note = cursor.getString(3);
                 DateTime date;
-                if (cursor.getString(4) != null){
+                if (cursor.getString(4) != null) {
                     date = getDateFromString(cursor.getString(4));
-//                    if(Hours.hoursBetween(date, new DateTime()).getHours()>0)
-                    if(Days.daysBetween(date, new DateTime()).getDays()>0)
-                        continue;
-                }
-                else
+                } else
                     date = null;
                 boolean timePresent = (cursor.getInt(5) == TRUE);
                 list.add(new SimpleTask(id, title, note, date, completed, timePresent));
@@ -157,7 +159,7 @@ public class TaskDatabase {
         return new DateTime(date);
     }
 
-    public class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
+    public static class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
         static final String DATABASE_NAME = "task_database.db";
         static final String DATABASE_TABLE = "taskTable";
@@ -170,6 +172,16 @@ public class TaskDatabase {
                 + NOTE_COLUMN + " text,"
                 + DATE_COLUMN + " timestamp,"
                 + TIME_PRESENT_COLUMN + " smallint check (" + TIME_PRESENT_COLUMN + " in (0,1) )" + ");";
+
+        public static TaskDatabaseOpenHelper getInstance(Context context) {
+            if (taskDatabaseOpenHelper == null) {
+                taskDatabaseOpenHelper = new TaskDatabaseOpenHelper(context,
+                        TaskDatabaseOpenHelper.DATABASE_NAME,
+                        null,
+                        TaskDatabaseOpenHelper.DATABASE_VERSION);
+            }
+            return taskDatabaseOpenHelper;
+        }
 
         public TaskDatabaseOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);

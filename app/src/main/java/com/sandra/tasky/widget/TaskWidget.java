@@ -1,4 +1,4 @@
-package com.sandra.tasky;
+package com.sandra.tasky.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
+
+import com.sandra.tasky.R;
+import com.sandra.tasky.activities.TaskActivity;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 

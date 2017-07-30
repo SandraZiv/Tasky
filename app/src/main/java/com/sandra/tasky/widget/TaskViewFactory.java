@@ -1,10 +1,17 @@
-package com.sandra.tasky;
+package com.sandra.tasky.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.sandra.tasky.R;
+import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.db.TaskDatabase;
+import com.sandra.tasky.entity.SimpleTask;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -25,8 +32,10 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         this.context = applicationContext;
         this.appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         db = new TaskDatabase(context);
-        this.list = db.getActiveTasks();
+        this.list = db.getActiveTasks(preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
+                preferences.getString(TaskyConstants.PREFS_TIME_SPAN, TaskyConstants.PREFS_TIME_SPAN_DEFAULT));
     }
 
     @Override
@@ -36,7 +45,9 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        list = db.getActiveTasks();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        list = db.getActiveTasks(preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
+                preferences.getString(TaskyConstants.PREFS_TIME_SPAN, TaskyConstants.PREFS_TIME_SPAN_DEFAULT));
     }
 
     @Override
@@ -55,7 +66,7 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         row = new RemoteViews(context.getPackageName(), R.layout.widget_list_layout);
         row.setTextViewText(R.id.tw__widget_title, list.get(position).getTitle());
         row.setTextViewText(R.id.tw_widget_status,
-                context.getString(R.string.status)  + " "
+                context.getString(R.string.status) + " "
                         + (list.get(position).isCompleted() ? context.getString(R.string.done) : context.getString(R.string.to_do)));
         if (list.get(position).getDueDate() != null)
             row.setTextViewText(R.id.tw_widget_due_date, getDateText(list.get(position)));
@@ -90,7 +101,8 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
                 date = context.getString(R.string.expired);
         } else if (diffDays == 1)
             date = context.getString(R.string.tommorow) + (task.isTimePresent() ? " " + context.getString(R.string.at) + " " + task.parseTime() : "");
-        else if (diffDays <= 10) date = context.getString(R.string.in) + " " + diffDays + " " + context.getString(R.string.days);
+        else if (diffDays <= 10)
+            date = context.getString(R.string.in) + " " + diffDays + " " + context.getString(R.string.days);
         else date = task.parseDate();
         return context.getString(R.string.due_date) + ": " + date;
     }

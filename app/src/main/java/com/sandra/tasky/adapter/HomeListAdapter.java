@@ -1,13 +1,16 @@
-package com.sandra.tasky;
+package com.sandra.tasky.adapter;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import com.sandra.tasky.R;
+import com.sandra.tasky.db.TaskDatabase;
+import com.sandra.tasky.entity.SimpleTask;
 
 import java.util.List;
 

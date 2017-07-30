@@ -1,4 +1,4 @@
-package com.sandra.tasky;
+package com.sandra.tasky.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -22,6 +22,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.sandra.tasky.R;
+import com.sandra.tasky.entity.SimpleTask;
+import com.sandra.tasky.db.TaskDatabase;
+import com.sandra.tasky.widget.TaskWidget;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 

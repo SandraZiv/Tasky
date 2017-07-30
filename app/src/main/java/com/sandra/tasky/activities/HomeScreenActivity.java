@@ -1,4 +1,4 @@
-package com.sandra.tasky;
+package com.sandra.tasky.activities;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -15,6 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.sandra.tasky.adapter.HomeListAdapter;
+import com.sandra.tasky.R;
+import com.sandra.tasky.entity.SimpleTask;
+import com.sandra.tasky.db.TaskDatabase;
+import com.sandra.tasky.widget.TaskWidget;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -68,6 +74,9 @@ public class HomeScreenActivity extends AppCompatActivity {
             case R.id.home_menu_btn_delete_all:
                 database.deleteAllData();
                 updateListView();
+                break;
+            case R.id.home_menu_settings:
+                startActivity(new Intent(HomeScreenActivity.this, SettingsActivity.class));
                 break;
             default:
                 Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
