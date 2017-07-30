@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -53,6 +55,7 @@ public class TaskActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
+        JodaTimeAndroid.init(this);
 
         if (savedInstanceState != null) {
             isTaskNew = savedInstanceState.getBoolean(IS_TASK_NEW);

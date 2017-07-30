@@ -16,6 +16,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import java.util.List;
 
 public class HomeScreenActivity extends AppCompatActivity {
@@ -29,6 +31,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        JodaTimeAndroid.init(this);
 
         //open db
         new OpenDBAsyncTask().execute("Open");
@@ -115,7 +118,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE)
-            if (resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 new OpenDBAsyncTask().execute("Reopen");
             }
 
@@ -123,7 +126,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, String> {
         @Override
-        protected String doInBackground(String ... params) {
+        protected String doInBackground(String... params) {
             database = new TaskDatabase(HomeScreenActivity.this);
             return null;
         }

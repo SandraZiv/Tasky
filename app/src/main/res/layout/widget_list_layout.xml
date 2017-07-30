@@ -19,16 +19,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
-        android:textSize="12sp"
-        android:text="Status" />
+        android:text="Status"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/tw_widget_due_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:textSize="12sp"
-        android:text="Date" />
+        android:text="Date"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp" />
 
 
 </LinearLayout>
