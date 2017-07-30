@@ -42,6 +42,7 @@
     <string name="show_when_long">Time span is relative regarding current date</string>
     <string name="select_time_span">Select time span</string>
     <string name="widget" translatable="false">Widget</string>
+    <string name="no_tasks_yet">No tasks yet!</string>
 
     <string-array name="time_span_entries">
         <item>1 week</item>

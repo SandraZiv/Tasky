@@ -101,6 +101,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         ListAdapter homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
         ListView listView = (ListView) findViewById(R.id.home_list);
         listView.setAdapter(homeListAdapter);
+        listView.setEmptyView(findViewById(R.id.home_empty_view));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

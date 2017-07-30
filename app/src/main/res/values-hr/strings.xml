@@ -49,5 +49,6 @@
         <item>1 godina</item>
         <item>Neograničeno</item>
     </string-array>
+    <string name="no_tasks_yet">Nema zadataka</string>
 
 </resources>
