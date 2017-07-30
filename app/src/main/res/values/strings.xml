@@ -44,6 +44,14 @@
     <string name="widget" translatable="false">Widget</string>
     <string name="no_tasks_yet">No tasks yet!</string>
 
+    <string-array name="time_span_values">
+        <item>7 days</item>
+        <item>1 months</item>
+        <item>3 months</item>
+        <item>1 years</item>
+        <item>-1</item>
+    </string-array>
+
     <string-array name="time_span_entries">
         <item>1 week</item>
         <item>1 month</item>
