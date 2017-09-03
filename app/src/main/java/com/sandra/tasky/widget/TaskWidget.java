@@ -29,8 +29,12 @@ public class TaskWidget extends AppWidgetProvider {
             svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
             RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.task_widget);
-
             widget.setRemoteAdapter(R.id.widget_list, svcIntent);
+
+            //open activity for creating new task from widget
+            Intent newTaskIntent = new Intent(context, TaskActivity.class);
+            PendingIntent newTaskPI = PendingIntent.getActivity(context, 0, newTaskIntent, 0);
+            widget.setOnClickPendingIntent(R.id.widget_btn_add_task, newTaskPI);
 
             //open activity from widget
             Intent clickIntent = new Intent(context, TaskActivity.class);
