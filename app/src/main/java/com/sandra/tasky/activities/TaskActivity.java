@@ -75,7 +75,7 @@ public class TaskActivity extends AppCompatActivity {
         } else
             task = new SimpleTask();
 
-        //implementation for back button
+        //implementation for back button_close
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_task_home);
@@ -88,13 +88,19 @@ public class TaskActivity extends AppCompatActivity {
         new OpenDBAsyncTask().execute("open");
 
         title = (EditText) findViewById(R.id.et_title);
-        if (!isTaskNew) title.setText(task.getTitle());
+        if (!isTaskNew) {
+            title.setText(task.getTitle());
+            title.setSelection(task.getTitle().length());
+        }
 
         completed = (CheckBox) findViewById(R.id.cb_task);
         completed.setChecked(task.isCompleted());
 
         note = (EditText) findViewById(R.id.et_note);
-        if (!isTaskNew) note.setText(task.getNote());
+        if (!isTaskNew) {
+            note.setText(task.getNote());
+            note.setSelection(task.getNote().length());
+        }
 
         twDate = (TextView) findViewById(R.id.task_tw_date);
         imageCancelDate = (ImageButton) findViewById(R.id.img_btn_clear_date);
@@ -162,7 +168,7 @@ public class TaskActivity extends AppCompatActivity {
             }
         });
 
-        //cancel button
+        //cancel button_close
         imageCancelDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,7 +221,7 @@ public class TaskActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-        //cancel button
+        //cancel button_close
         imageCancelTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
