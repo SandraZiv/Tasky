@@ -107,18 +107,27 @@ public class TaskDatabase {
     }
 
     //used only in widget
-    public List<SimpleTask> getActiveTasks(boolean showCompleted, String timeSpan) {
+    public List<SimpleTask> getTasksInWidget(boolean showCompleted, boolean showExpired, String timeSpan) {
         List<SimpleTask> list = new LinkedList<>();
-        String where = " where ";
+        String where = " where (" + DATE_COLUMN + " is null or ";
         if (timeSpan.equals(TaskyConstants.PREFS_TIME_SPAN_DEFAULT)) {
-            where += "date(" + DATE_COLUMN + ")" + " >= date('now')";
+            if (showExpired) {
+                where += DATE_COLUMN + " is not null)";
+            } else {
+                where += "date(" + DATE_COLUMN + ")" + " >= date('now'))";
+            }
         } else {
-            where += "date(" + DATE_COLUMN + ")" + " between date('now') and date('now', '" + timeSpan + "')";
+            if (showExpired) {
+                where += "date(" + DATE_COLUMN + ")" + " <= date('now', '" + timeSpan + "'))";
+            } else {
+                where += "date(" + DATE_COLUMN + ")" + " between date('now') and date('now', '" + timeSpan + "'))";
+            }
         }
         where += (showCompleted ? "" : " and " + COMPLETED_COLUMN + " = " + FALSE);
         where += " and " + SHOW_IN_WIDGET_COLUMN + "=" + TRUE;
 
         String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE + where + " order by " + DATE_COLUMN;
+        Log.d("sq", sqlQuery);
         Cursor cursor = dbReadable.rawQuery(sqlQuery, null);
 
         if (cursor.moveToFirst()) {

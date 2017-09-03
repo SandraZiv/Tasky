@@ -34,7 +34,8 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         db = new TaskDatabase(context);
-        this.list = db.getActiveTasks(preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
+        this.list = db.getTasksInWidget(preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
+                preferences.getBoolean(TaskyConstants.PREFS_SHOW_EXPIRED, false),
                 preferences.getString(TaskyConstants.PREFS_TIME_SPAN, TaskyConstants.PREFS_TIME_SPAN_DEFAULT));
     }
 
@@ -46,7 +47,8 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        list = db.getActiveTasks(preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
+        list = db.getTasksInWidget(preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
+                preferences.getBoolean(TaskyConstants.PREFS_SHOW_EXPIRED, false),
                 preferences.getString(TaskyConstants.PREFS_TIME_SPAN, TaskyConstants.PREFS_TIME_SPAN_DEFAULT));
     }
 
@@ -99,11 +101,15 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
                 date = context.getString(R.string.today) + " " + context.getString(R.string.at) + " " + task.parseTime();
             else
                 date = context.getString(R.string.expired);
-        } else if (diffDays == 1)
+        } else if (diffDays < 0) {
+            date = context.getString(R.string.expired);
+        } else if (diffDays == 1) {
             date = context.getString(R.string.tommorow) + (task.isTimePresent() ? " " + context.getString(R.string.at) + " " + task.parseTime() : "");
-        else if (diffDays <= 10)
+        } else if (diffDays <= 10) {
             date = context.getString(R.string.in) + " " + diffDays + " " + context.getString(R.string.days);
-        else date = task.parseDate();
+        } else {
+            date = task.parseDate();
+        }
         return context.getString(R.string.due_date) + ": " + date;
     }
 

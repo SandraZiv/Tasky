@@ -7,6 +7,11 @@
             android:title="@string/show_completed"
             android:summary="@string/show_completed_long"
             android:defaultValue="true"/>
+        <SwitchPreference
+            android:key="pref_show_expired"
+            android:title="@string/show_expired"
+            android:summary="@string/show_expired_summary"
+            android:defaultValue="false"/>
         <ListPreference
             android:key="pref_time_span"
             android:title="@string/show_when"

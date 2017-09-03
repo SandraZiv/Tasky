@@ -58,5 +58,7 @@
         <item>Neograničeno</item>
     </string-array>
     <string name="no_tasks_yet">Nema zadataka</string>
+    <string name="show_expired">Prikaz isteklih</string>
+    <string name="show_expired_summary">Prikaži istekle zadatke u widgetu</string>
 
 </resources>

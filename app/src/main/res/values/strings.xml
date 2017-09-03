@@ -43,6 +43,8 @@
     <string name="select_time_span">Select time span</string>
     <string name="widget" translatable="false">Widget</string>
     <string name="no_tasks_yet">No tasks yet!</string>
+    <string name="show_expired">Show expired</string>
+    <string name="show_expired_summary">Show expired tasks in widget</string>
 
     <string-array name="time_span_values">
         <item>7 days</item>
