@@ -9,8 +9,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,8 +53,6 @@ public class TaskActivity extends AppCompatActivity {
 
     ImageButton imageCancelTime;
     TextView twTime;
-
-    CheckBox showInWidget;
 
     boolean isTaskNew = true;
     boolean isTimeEditable = false;
@@ -109,9 +107,9 @@ public class TaskActivity extends AppCompatActivity {
         imageCancelTime = (ImageButton) findViewById(R.id.img_btn_clear_time);
 
         dateTime = new DateTime();
-        if ((!isTaskNew || savedInstanceState != null) && task.getDueDate() != null){
+        if ((!isTaskNew || savedInstanceState != null) && task.getDueDate() != null) {
             dateTime = task.getDueDate();
-            if(!task.isTimePresent()){
+            if (!task.isTimePresent()) {
                 dateTime = dateTime.withHourOfDay(new DateTime().getHourOfDay())
                         .withMinuteOfHour(new DateTime().getMinuteOfHour());
             }
@@ -263,12 +261,35 @@ public class TaskActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        //open menu for edit task
-        if (!isTaskNew)
+        if (!isTaskNew) {
+            //open menu for edit task
             menuInflater.inflate(R.menu.task_edit_menu, menu);
+        } else {
             //open menu for new task
-        else
             menuInflater.inflate(R.menu.task_new_menu, menu);
+        }
+        //set initial value
+        menu.findItem(R.id.task_show).setChecked(task.isShowInWidget());
+        //prevent menu from closing
+        menu.findItem(R.id.task_show).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                item.setActionView(new View(getApplicationContext()));
+                MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        return false;
+                    }
+                });
+                return false;
+            }
+        });
         return true;
     }
 
@@ -301,7 +322,8 @@ public class TaskActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.task_show:
-                showInWidgetAlert();
+                item.setChecked(!item.isChecked());
+                task.setShowInWidget(item.isChecked());
                 break;
             default:
                 Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
@@ -347,32 +369,6 @@ public class TaskActivity extends AppCompatActivity {
             else
                 database.updateData(task);
         }
-    }
-
-    private void showInWidgetAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
-        builder.setTitle(R.string.show_task);
-
-        View checkBoxView = View.inflate(TaskActivity.this, R.layout.show_in_widget_layout, null);
-        showInWidget = (CheckBox)checkBoxView.findViewById(R.id.alert_checkbox);
-        showInWidget.setChecked(task.isShowInWidget());
-        builder.setView(checkBoxView);
-
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                task.setShowInWidget(showInWidget.isChecked());
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
     }
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, String> {

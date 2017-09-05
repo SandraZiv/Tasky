@@ -16,7 +16,8 @@
 
     <item
         android:id="@+id/task_show"
-        android:title="@string/show_in_widget"/>
+        android:title="@string/show_in_widget"
+        android:checkable="true"/>
 
 
 
