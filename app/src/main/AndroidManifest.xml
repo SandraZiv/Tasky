@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.TaskActivity" />
+        <activity android:name=".activities.TaskActivity" android:windowSoftInputMode="adjustPan"/>
 
         <receiver android:name=".widget.TaskWidget">
             <intent-filter>
@@ -28,11 +28,11 @@
                 android:resource="@xml/task_widget_info" />
         </receiver>
 
-        <service android:name=".widget.TaskWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS">
-        </service>
+        <service
+            android:name=".widget.TaskWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <activity android:name=".activities.SettingsActivity"/>
+        <activity android:name=".activities.SettingsActivity" />
 
     </application>
 
