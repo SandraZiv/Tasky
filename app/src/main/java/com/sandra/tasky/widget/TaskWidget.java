@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.sandra.tasky.R;
+import com.sandra.tasky.activities.HomeScreenActivity;
 import com.sandra.tasky.activities.TaskActivity;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -35,6 +36,11 @@ public class TaskWidget extends AppWidgetProvider {
             Intent newTaskIntent = new Intent(context, TaskActivity.class);
             PendingIntent newTaskPI = PendingIntent.getActivity(context, 0, newTaskIntent, 0);
             widget.setOnClickPendingIntent(R.id.widget_btn_add_task, newTaskPI);
+
+            //open home screen
+            Intent openHomeScreenIntent = new Intent(context, HomeScreenActivity.class);
+            PendingIntent openHomeScreenPI = PendingIntent.getActivity(context, 0, openHomeScreenIntent, 0);
+            widget.setOnClickPendingIntent(R.id.widget_tasky, openHomeScreenPI);
 
             //open activity from widget
             Intent clickIntent = new Intent(context, TaskActivity.class);
