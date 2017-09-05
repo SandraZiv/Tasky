@@ -37,7 +37,7 @@ public class TaskWidget extends AppWidgetProvider {
             PendingIntent newTaskPI = PendingIntent.getActivity(context, 0, newTaskIntent, 0);
             widget.setOnClickPendingIntent(R.id.widget_btn_add_task, newTaskPI);
 
-            //open home screen
+            //open home screen from widget
             Intent openHomeScreenIntent = new Intent(context, HomeScreenActivity.class);
             PendingIntent openHomeScreenPI = PendingIntent.getActivity(context, 0, openHomeScreenIntent, 0);
             widget.setOnClickPendingIntent(R.id.widget_tasky, openHomeScreenPI);
