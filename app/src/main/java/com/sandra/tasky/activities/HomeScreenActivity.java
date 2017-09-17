@@ -16,11 +16,11 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.adapter.HomeListAdapter;
-import com.sandra.tasky.R;
-import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.db.TaskDatabase;
+import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.widget.TaskWidget;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -121,9 +121,9 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     private void updateTaskWidget() {
-        AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(
-                AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), TaskWidget.class))
-                , R.id.widget_list);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        ComponentName taskyWidget = new ComponentName(getApplication(), TaskWidget.class);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(taskyWidget), R.id.widget_list);
     }
 
     @Override

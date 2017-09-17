@@ -127,7 +127,6 @@ public class TaskDatabase {
         where += " and " + SHOW_IN_WIDGET_COLUMN + "=" + TRUE;
 
         String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE + where + " order by " + DATE_COLUMN;
-        Log.d("sq", sqlQuery);
         Cursor cursor = dbReadable.rawQuery(sqlQuery, null);
 
         if (cursor.moveToFirst()) {

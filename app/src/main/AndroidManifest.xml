@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sandra.tasky">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,20 +14,26 @@
         <activity android:name=".activities.HomeScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.TaskActivity" android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".activities.TaskActivity"
+            android:windowSoftInputMode="adjustPan" />
 
         <receiver android:name=".widget.TaskWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/task_widget_info" />
+        </receiver>
+
+        <receiver android:name=".receiver.UpdateWidgetReceiver">
+            <intent-filter>
+                <action android:name="com.sandra.tasky.widget.UPDATE_WIDGET" />
+            </intent-filter>
         </receiver>
 
         <service
@@ -35,5 +43,4 @@
         <activity android:name=".activities.SettingsActivity" />
 
     </application>
-
 </manifest>
