@@ -51,6 +51,12 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        updateTaskWidget();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         updateTaskWidget();
         super.onDestroy();
