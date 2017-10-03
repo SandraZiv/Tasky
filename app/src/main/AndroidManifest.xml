@@ -30,7 +30,7 @@
                 android:resource="@xml/task_widget_info" />
         </receiver>
 
-        <receiver android:name=".receiver.UpdateWidgetReceiver">
+        <receiver android:name=".receiver.UpdateWidgetReceiver" android:permission="android.permission.WAKE_LOCK">
             <intent-filter>
                 <action android:name="com.sandra.tasky.widget.UPDATE_WIDGET" />
             </intent-filter>
