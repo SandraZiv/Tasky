@@ -44,6 +44,9 @@
     <string name="no_tasks_yet">No tasks yet!</string>
     <string name="show_expired">Show expired</string>
     <string name="show_expired_summary">Tasks expired today will still be shown regardless selected option</string>
+    <string name="scheduler_restarted">Scheduler restarted, please restart widget</string>
+    <string name="please_restart_widget_to_complete">Please restart widget to complete action</string>
+    <string name="restart_scheduler_title">Restart update scheduler</string>
 
     <string-array name="time_span_values">
         <item>7 days</item>

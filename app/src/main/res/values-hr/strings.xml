@@ -59,5 +59,8 @@
     <string name="no_tasks_yet">Nema zadataka</string>
     <string name="show_expired">Prikaz isteklih</string>
     <string name="show_expired_summary">Zadaci koji su istekli danas ostat će prikazani neovisno o odabranoj opciji</string>
+    <string name="please_restart_widget_to_complete">Ponovno dovucite widget da dovršite akciju</string>
+    <string name="restart_scheduler_title">\"Pokreni incijalizaciju za ažuriranje\"</string>
+    <string name="scheduler_restarted">Inicijalizacija pokrenuta, ponovno dovucite widget</string>
 
 </resources>

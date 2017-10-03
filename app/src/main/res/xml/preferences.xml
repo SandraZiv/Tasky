@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:title="@string/widget">
+    <PreferenceCategory android:title="@string/widget">
         <SwitchPreference
+            android:defaultValue="true"
             android:key="pref_show_completed"
-            android:title="@string/show_completed"
-            android:defaultValue="true"/>
+            android:title="@string/show_completed" />
         <SwitchPreference
+            android:defaultValue="false"
             android:key="pref_show_expired"
-            android:title="@string/show_expired"
             android:summary="@string/show_expired_summary"
-            android:defaultValue="false"/>
+            android:title="@string/show_expired" />
         <ListPreference
-            android:key="pref_time_span"
-            android:title="@string/show_when"
-            android:summary="@string/show_when_summary"
+            android:defaultValue="-1"
             android:dialogTitle="@string/select_time_span"
             android:entries="@array/time_span_entries"
             android:entryValues="@array/time_span_values"
-            android:defaultValue="-1"/>
+            android:key="pref_time_span"
+            android:summary="@string/show_when_summary"
+            android:title="@string/show_when" />
+        <Preference
+            android:key="pref_restart_scheduler"
+            android:title="@string/restart_scheduler_title" />
     </PreferenceCategory>
 </PreferenceScreen>
