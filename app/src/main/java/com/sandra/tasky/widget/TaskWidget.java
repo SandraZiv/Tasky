@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
@@ -34,6 +35,8 @@ public class TaskWidget extends AppWidgetProvider {
                 .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
 
         if (firstRun) {
+            Toast.makeText(context, "Widget set", Toast.LENGTH_SHORT).show();
+
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent initUpdateWidgetIntent = new Intent(context, UpdateWidgetReceiver.class);
             initUpdateWidgetIntent.setAction(TaskyConstants.WIDGET_UPDATE_ACTION);

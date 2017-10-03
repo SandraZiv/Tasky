@@ -16,6 +16,7 @@ import com.sandra.tasky.entity.SimpleTask;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Hours;
+import org.joda.time.Minutes;
 
 import java.util.List;
 
@@ -95,12 +96,14 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
         long diffDays = Days.daysBetween(currentDate, dataDate).getDays();
         if (diffDays == 0) {
-            if (!task.isTimePresent())
+            if (!task.isTimePresent()) {
                 date = context.getString(R.string.today);
-            else if (Hours.hoursBetween(new DateTime(), task.getDueDate()).getHours() >= 0)
-                date = context.getString(R.string.today) + " " + context.getString(R.string.at) + " " + task.parseTime();
-            else
-                date = context.getString(R.string.expired);
+            } else {
+                    boolean isExpired = Hours.hoursBetween(new DateTime(), task.getDueDate()).getHours() < 0
+                            || Minutes.minutesBetween(new DateTime(), task.getDueDate()).getMinutes() < 0;
+                    date = (isExpired ? context.getString(R.string.expired) : context.getString(R.string.today))
+                            + " " + context.getString(R.string.at) + " " + task.parseTime();
+            }
         } else if (diffDays < 0) {
             date = context.getString(R.string.expired);
         } else if (diffDays == 1) {
