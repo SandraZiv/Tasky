@@ -375,7 +375,6 @@ public class TaskActivity extends AppCompatActivity {
 
             if (task.isTimePresent()
                     && (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis()) {
-                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
                 setAlarm(task.getDueDate().getMillis());
             }
         }
