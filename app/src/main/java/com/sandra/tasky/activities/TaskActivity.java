@@ -104,7 +104,6 @@ public class TaskActivity extends AppCompatActivity {
         note = (EditText) findViewById(R.id.et_note);
         if (!isTaskNew) {
             note.setText(task.getNote());
-            note.setSelection(task.getNote().length());
         }
 
         twDate = (TextView) findViewById(R.id.task_tw_date);
