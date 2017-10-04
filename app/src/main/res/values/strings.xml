@@ -47,6 +47,10 @@
     <string name="scheduler_restarted">Scheduler restarted, please restart widget</string>
     <string name="please_restart_widget_to_complete">Please restart widget to complete action</string>
     <string name="restart_scheduler_title">Restart update scheduler</string>
+    <string name="reminder_set">Reminder set</string>
+    <string name="tasky_reminder">Tasky reminder</string>
+    <string name="scheduler_to_be_init">Scheduler to be initialized</string>
+    <string name="scheduler_running">Scheduler running</string>
 
     <string-array name="time_span_values">
         <item>7 days</item>

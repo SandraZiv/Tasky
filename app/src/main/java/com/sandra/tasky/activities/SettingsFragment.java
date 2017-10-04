@@ -18,18 +18,26 @@ public class SettingsFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
+        final boolean isFirstRun = getActivity()
+                .getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
+                .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
+
         Preference preference = findPreference(TaskyConstants.PREFS_RESTART_SCHEDULER);
+        preference.setSummary(isFirstRun ? getString(R.string.scheduler_to_be_init) : getString(R.string.scheduler_running));
+        preference.setEnabled(!isFirstRun);
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (!getActivity()
-                        .getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
-                        .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true)) {
+                if (!isFirstRun) {
                     SharedPreferences.Editor editor = getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
                     editor.putBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
                     editor.apply();
+                    preference.setSummary(getString(R.string.scheduler_restarted));
+                    preference.setEnabled(false);
                     Toast.makeText(getActivity(), R.string.scheduler_restarted, Toast.LENGTH_LONG).show();
                 } else {
+                    preference.setSummary(getString(R.string.scheduler_running));
+                    //this is actually never called
                     Toast.makeText(getActivity(), R.string.please_restart_widget_to_complete, Toast.LENGTH_LONG).show();
                 }
                 return false;
