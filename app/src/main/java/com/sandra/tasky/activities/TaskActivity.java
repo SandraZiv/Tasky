@@ -64,6 +64,7 @@ public class TaskActivity extends AppCompatActivity {
     boolean isTaskNew = true;
     boolean isTimeEditable = false;
     boolean isDateChanged = false;
+    boolean isTaskVisibilityInWidgetChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -330,6 +331,7 @@ public class TaskActivity extends AppCompatActivity {
             case R.id.task_show:
                 item.setChecked(!item.isChecked());
                 task.setShowInWidget(item.isChecked());
+                isTaskVisibilityInWidgetChanged = true;
                 break;
             default:
                 Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
@@ -381,8 +383,10 @@ public class TaskActivity extends AppCompatActivity {
             }
 
             if (task.isShowInWidget()
+                    && (isDateChanged || isTaskVisibilityInWidgetChanged)
                     && task.isTimePresent()
                     && (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis()) {
+                Toast.makeText(this, R.string.reminder_set, Toast.LENGTH_SHORT).show();
                 setAlarm(task.getDueDate().getMillis());
             }
         }

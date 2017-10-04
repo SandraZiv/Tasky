@@ -21,7 +21,7 @@ public class UpdateWidgetReceiver extends BroadcastReceiver {
         wakeLock.acquire();
 
         //add log instead
-        Toast.makeText(context, "Tasky reminder", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, R.string.tasky_reminder, Toast.LENGTH_LONG).show();
 
         ComponentName taskyWidget = new ComponentName(context, TaskWidget.class);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
