@@ -357,14 +357,21 @@ public class TaskActivity extends AppCompatActivity {
             if (isDateChanged) {
                 //set date
                 if (!twDate.getText().equals(getString(R.string.select_date))) {
+                    //date is set
                     if (twTime.getText().toString().equals(getString(R.string.select_time))) {
+                        //no time
                         dateTime = dateTime.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
                         task.setTimePresent(false);
-                    } else
+                    } else {
+                        //with time
                         task.setTimePresent(true);
+                    }
                     task.setDueDate(dateTime);
-                } else
+                } else {
+                    //there is no date thus no time
                     task.setDueDate(null);
+                    task.setTimePresent(false);
+                }
             }
 
             if (isTaskNew) {
@@ -373,7 +380,8 @@ public class TaskActivity extends AppCompatActivity {
                 database.updateData(task);
             }
 
-            if (task.isTimePresent()
+            if (task.isShowInWidget()
+                    && task.isTimePresent()
                     && (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis()) {
                 setAlarm(task.getDueDate().getMillis());
             }
