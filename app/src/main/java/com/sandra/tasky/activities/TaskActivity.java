@@ -1,17 +1,13 @@
 package com.sandra.tasky.activities;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
@@ -30,17 +26,15 @@ import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.TaskyUtils;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
-import com.sandra.tasky.receiver.UpdateWidgetReceiver;
 import com.sandra.tasky.widget.TaskWidget;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-
-import static android.os.Build.VERSION.SDK_INT;
 
 public class TaskActivity extends AppCompatActivity {
 
@@ -390,23 +384,8 @@ public class TaskActivity extends AppCompatActivity {
                     && task.isTimePresent()
                     && (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis()) {
                 Toast.makeText(this, R.string.reminder_set, Toast.LENGTH_SHORT).show();
-                setAlarm(task.getDueDate().getMillis());
+                TaskyUtils.setAlarm(this, task.getDueDate().getMillis() + 60 * 1000, false);
             }
-        }
-    }
-
-    private void setAlarm(Long time) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent taskUpdateWidgetIntent = new Intent(this, UpdateWidgetReceiver.class);
-        taskUpdateWidgetIntent.setAction(TaskyConstants.WIDGET_UPDATE_ACTION);
-        PendingIntent taskUpdateWidgetPI = PendingIntent.getBroadcast(this, TaskyConstants.WIDGET_UPDATE_REQUEST_CODE, taskUpdateWidgetIntent, 0);
-
-        if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-            alarmManager.set(AlarmManager.RTC, time + 60 * 1000, taskUpdateWidgetPI);
-        } else if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M) {
-            alarmManager.setExact(AlarmManager.RTC, time + 60 * 1000, taskUpdateWidgetPI);
-        } else if (SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, time + 60 * 1000, taskUpdateWidgetPI);
         }
     }
 

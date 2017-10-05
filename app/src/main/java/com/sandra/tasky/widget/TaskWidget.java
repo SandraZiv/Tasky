@@ -1,6 +1,5 @@
 package com.sandra.tasky.widget;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -13,9 +12,9 @@ import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.TaskyUtils;
 import com.sandra.tasky.activities.HomeScreenActivity;
 import com.sandra.tasky.activities.TaskActivity;
-import com.sandra.tasky.receiver.UpdateWidgetReceiver;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -37,16 +36,10 @@ public class TaskWidget extends AppWidgetProvider {
         if (firstRun) {
             Toast.makeText(context, "Widget set", Toast.LENGTH_SHORT).show();
 
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent initUpdateWidgetIntent = new Intent(context, UpdateWidgetReceiver.class);
-            initUpdateWidgetIntent.setAction(TaskyConstants.WIDGET_UPDATE_ACTION);
-            PendingIntent initUpdateWidgetPI = PendingIntent.getBroadcast(context, TaskyConstants.WIDGET_UPDATE_REQUEST_CODE, initUpdateWidgetIntent, 0);
-
             LocalTime localTime = LocalTime.now();
             long timeMidnight = 24 * 60 * 60 - localTime.getHourOfDay() * 60 * 60 - localTime.getMinuteOfHour() * 60 - localTime.getSecondOfMinute();
             timeMidnight *= 1000;
-
-            alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis() + timeMidnight, AlarmManager.INTERVAL_DAY, initUpdateWidgetPI);
+            TaskyUtils.setAlarm(context, System.currentTimeMillis() + timeMidnight, true);
 
             SharedPreferences.Editor editor = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
             editor.putBoolean(TaskyConstants.PREFS_FIRST_RUN, false);

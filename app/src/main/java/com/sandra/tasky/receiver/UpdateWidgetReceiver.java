@@ -9,6 +9,8 @@ import android.os.PowerManager;
 import android.widget.Toast;
 
 import com.sandra.tasky.R;
+import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.TaskyUtils;
 import com.sandra.tasky.widget.TaskWidget;
 
 
@@ -28,5 +30,11 @@ public class UpdateWidgetReceiver extends BroadcastReceiver {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(taskyWidget), R.id.widget_list);
 
         wakeLock.release();
+
+        if (intent.getExtras() != null && intent.getExtras().getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
+            //set alarm for next midnight
+            TaskyUtils.setAlarm(context, System.currentTimeMillis() + TaskyConstants.INTERVAL_DAY, true);
+        }
+
     }
 }
