@@ -142,9 +142,12 @@ public class TaskActivity extends AppCompatActivity {
                 final DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        month = month + 1; //beacuse in joda it starts from 1
+                        month = month + 1; //beacuse in joda it starts from 0
+                        boolean isTimePresent = !twTime.getText().toString().equals(getString(R.string.select_time));
+                        int hour = isTimePresent ? dateTime.getHourOfDay() : new DateTime().getHourOfDay();
+                        int min = isTimePresent ? dateTime.getMinuteOfHour() : new DateTime().getMinuteOfHour();
                         dateTime = dateTime.withYear(year).withMonthOfYear(month).withDayOfMonth(dayOfMonth).
-                                withHourOfDay(new DateTime().getHourOfDay()).withMinuteOfHour(new DateTime().getMinuteOfHour());
+                                withHourOfDay(hour).withMinuteOfHour(min);
                         twDate.setText(DateTimeFormat.mediumDate().print(dateTime));
                         isDateChanged = true;
                         isTimeEditable = true;
