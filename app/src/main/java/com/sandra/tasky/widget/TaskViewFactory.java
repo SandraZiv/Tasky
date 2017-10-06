@@ -22,7 +22,7 @@ import java.util.List;
 
 
 public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
-    TaskDatabase db;
+    private TaskDatabase db;
 
     private List<SimpleTask> list;
 
@@ -33,11 +33,8 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         this.context = applicationContext;
         this.appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        db = new TaskDatabase(context);
-        this.list = db.getTasksInWidget(preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
-                preferences.getBoolean(TaskyConstants.PREFS_SHOW_EXPIRED, false),
-                preferences.getString(TaskyConstants.PREFS_TIME_SPAN, TaskyConstants.PREFS_TIME_SPAN_DEFAULT));
+        this.db = new TaskDatabase(context);
+        this.list = getTasksInWidget();
     }
 
     @Override
@@ -47,10 +44,7 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        list = db.getTasksInWidget(preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
-                preferences.getBoolean(TaskyConstants.PREFS_SHOW_EXPIRED, false),
-                preferences.getString(TaskyConstants.PREFS_TIME_SPAN, TaskyConstants.PREFS_TIME_SPAN_DEFAULT));
+        this.list = getTasksInWidget();
     }
 
     @Override
@@ -99,10 +93,10 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
             if (!task.isTimePresent()) {
                 date = context.getString(R.string.today);
             } else {
-                    boolean isExpired = Hours.hoursBetween(new DateTime(), task.getDueDate()).getHours() < 0
-                            || Minutes.minutesBetween(new DateTime(), task.getDueDate()).getMinutes() < 0;
-                    date = (isExpired ? context.getString(R.string.expired) : context.getString(R.string.today))
-                            + " " + context.getString(R.string.at) + " " + task.parseTime();
+                boolean isExpired = Hours.hoursBetween(new DateTime(), task.getDueDate()).getHours() < 0
+                        || Minutes.minutesBetween(new DateTime(), task.getDueDate()).getMinutes() < 0;
+                date = (isExpired ? context.getString(R.string.expired) : context.getString(R.string.today))
+                        + " " + context.getString(R.string.at) + " " + task.parseTime();
             }
         } else if (diffDays < 0) {
             date = context.getString(R.string.expired);
@@ -114,6 +108,14 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
             date = task.parseDate();
         }
         return context.getString(R.string.due_date) + ": " + date;
+    }
+
+    private List<SimpleTask> getTasksInWidget() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return db.getTasksInWidget(
+                preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
+                preferences.getBoolean(TaskyConstants.PREFS_SHOW_EXPIRED, false),
+                preferences.getString(TaskyConstants.PREFS_TIME_SPAN, TaskyConstants.PREFS_TIME_SPAN_DEFAULT));
     }
 
     @Override
