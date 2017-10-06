@@ -41,7 +41,7 @@ public class TaskDatabase {
     private SQLiteDatabase dbReadable;
 
     public TaskDatabase(Context context) {
-        this.taskDatabaseOpenHelper = TaskDatabaseOpenHelper.getInstance(context);
+        taskDatabaseOpenHelper = TaskDatabaseOpenHelper.getInstance(context);
 
         dbWritable = taskDatabaseOpenHelper.getWritableDatabase();
         dbReadable = taskDatabaseOpenHelper.getReadableDatabase();
@@ -60,7 +60,7 @@ public class TaskDatabase {
         newValues.put(DATE_COLUMN,
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         newValues.put(TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
-        newValues.put(SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget()? TRUE : FALSE));
+        newValues.put(SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
 
         dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE, null, newValues);
     }
@@ -74,7 +74,7 @@ public class TaskDatabase {
         updateValues.put(DATE_COLUMN,
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         updateValues.put(TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
-        updateValues.put(SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget()? TRUE : FALSE));
+        updateValues.put(SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
 
         return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE, updateValues, KEY_ID + " = " + task.getId(), null);
     }
@@ -91,7 +91,7 @@ public class TaskDatabase {
                 String title = cursor.getString(1);
                 boolean completed = (cursor.getInt(2) == TRUE);
                 String note = cursor.getString(3);
-                DateTime date = new DateTime();
+                DateTime date;
                 if (cursor.getString(4) != null)
                     date = getDateFromString(cursor.getString(4));
                 else
@@ -103,6 +103,7 @@ public class TaskDatabase {
             } while (cursor.moveToNext());
         }
 
+        cursor.close();
         return list;
     }
 
@@ -146,6 +147,8 @@ public class TaskDatabase {
 
             } while (cursor.moveToNext());
         }
+
+        cursor.close();
         return list;
     }
 
@@ -173,7 +176,7 @@ public class TaskDatabase {
         return new DateTime(date);
     }
 
-    public static class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
+    private static class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
         static final String DATABASE_NAME = "task_database.db";
         static final String DATABASE_TABLE = "taskTable";
@@ -189,7 +192,7 @@ public class TaskDatabase {
                 + SHOW_IN_WIDGET_COLUMN + " smallint default " + TRUE
                 + ");";
 
-        public static TaskDatabaseOpenHelper getInstance(Context context) {
+        private static TaskDatabaseOpenHelper getInstance(Context context) {
             if (taskDatabaseOpenHelper == null) {
                 taskDatabaseOpenHelper = new TaskDatabaseOpenHelper(context,
                         TaskDatabaseOpenHelper.DATABASE_NAME,
@@ -199,7 +202,7 @@ public class TaskDatabase {
             return taskDatabaseOpenHelper;
         }
 
-        public TaskDatabaseOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        private TaskDatabaseOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);
         }
 
