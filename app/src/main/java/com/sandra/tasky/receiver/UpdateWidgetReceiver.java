@@ -1,8 +1,6 @@
 package com.sandra.tasky.receiver;
 
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
@@ -11,7 +9,6 @@ import android.widget.Toast;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.TaskyUtils;
-import com.sandra.tasky.widget.TaskWidget;
 
 
 public class UpdateWidgetReceiver extends BroadcastReceiver {
@@ -25,9 +22,7 @@ public class UpdateWidgetReceiver extends BroadcastReceiver {
         //add log instead
         Toast.makeText(context, R.string.tasky_reminder, Toast.LENGTH_LONG).show();
 
-        ComponentName taskyWidget = new ComponentName(context, TaskWidget.class);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(taskyWidget), R.id.widget_list);
+        TaskyUtils.updateWidget(context);
 
         wakeLock.release();
 

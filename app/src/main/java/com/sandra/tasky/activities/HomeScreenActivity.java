@@ -1,7 +1,5 @@
 package com.sandra.tasky.activities;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,10 +16,10 @@ import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.TaskyUtils;
 import com.sandra.tasky.adapter.HomeListAdapter;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
-import com.sandra.tasky.widget.TaskWidget;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -52,13 +50,13 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        updateTaskWidget();
+        TaskyUtils.updateWidget(this);
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        updateTaskWidget();
+        TaskyUtils.updateWidget(this);
         super.onDestroy();
     }
 
@@ -122,22 +120,16 @@ public class HomeScreenActivity extends AppCompatActivity {
             actionBar.setTitle(getString(R.string.all_data) + " (" + list.size() + ")");
         }
 
-        updateTaskWidget();
-
-    }
-
-    private void updateTaskWidget() {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        ComponentName taskyWidget = new ComponentName(getApplication(), TaskWidget.class);
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(taskyWidget), R.id.widget_list);
+        TaskyUtils.updateWidget(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE)
+        if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 new OpenDBAsyncTask().execute("Reopen");
             }
+        }
 
     }
 
