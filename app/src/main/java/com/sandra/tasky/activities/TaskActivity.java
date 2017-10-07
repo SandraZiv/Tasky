@@ -384,7 +384,7 @@ public class TaskActivity extends AppCompatActivity {
                     && task.isTimePresent()
                     && (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis()) {
                 Toast.makeText(this, R.string.reminder_set, Toast.LENGTH_SHORT).show();
-                TaskyUtils.setAlarm(this, task.getDueDate().getMillis() + 60 * 1000, false);
+                TaskyUtils.setAlarm(this, task.getDueDate().getMillis() + 60 * 1000, task.getTitle(), false);
             }
         }
     }

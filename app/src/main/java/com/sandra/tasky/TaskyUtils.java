@@ -17,12 +17,13 @@ import static android.os.Build.VERSION.SDK_INT;
 
 public class TaskyUtils {
 
-    public static void setAlarm(Context context, long timeInMillis, boolean isRepeatable) {
+    public static void setAlarm(Context context, long timeInMillis, String taskTitle, boolean isRepeatable) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent setAlarmIntent = new Intent(context, UpdateWidgetReceiver.class);
         setAlarmIntent.setAction(TaskyConstants.WIDGET_UPDATE_ACTION);
+        setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TITLE, taskTitle);
         setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, isRepeatable);
-        PendingIntent setAlarmPI = PendingIntent.getBroadcast(context, TaskyConstants.WIDGET_UPDATE_REQUEST_CODE, setAlarmIntent, 0);
+        PendingIntent setAlarmPI = PendingIntent.getBroadcast(context, (int) System.currentTimeMillis(), setAlarmIntent, 0);
 
         if (SDK_INT < Build.VERSION_CODES.KITKAT) {
             alarmManager.set(RTC, timeInMillis, setAlarmPI);

@@ -39,7 +39,7 @@ public class TaskWidget extends AppWidgetProvider {
             LocalTime localTime = LocalTime.now();
             long timeMidnight = 24 * 60 * 60 - localTime.getHourOfDay() * 60 * 60 - localTime.getMinuteOfHour() * 60 - localTime.getSecondOfMinute();
             timeMidnight *= 1000;
-            TaskyUtils.setAlarm(context, System.currentTimeMillis() + timeMidnight, true);
+            TaskyUtils.setAlarm(context, System.currentTimeMillis() + timeMidnight, null, true);
 
             SharedPreferences.Editor editor = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
             editor.putBoolean(TaskyConstants.PREFS_FIRST_RUN, false);

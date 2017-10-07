@@ -20,7 +20,9 @@ public class UpdateWidgetReceiver extends BroadcastReceiver {
         wakeLock.acquire();
 
         //add log instead
-        Toast.makeText(context, R.string.tasky_reminder, Toast.LENGTH_LONG).show();
+        String message = (intent.getExtras() != null && intent.getExtras().getString(TaskyConstants.ALARM_EXTRA_TITLE) != null) ?
+                intent.getExtras().getString(TaskyConstants.ALARM_EXTRA_TITLE) : context.getString(R.string.app_name);
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 
         TaskyUtils.updateWidget(context);
 
@@ -28,7 +30,7 @@ public class UpdateWidgetReceiver extends BroadcastReceiver {
 
         if (intent.getExtras() != null && intent.getExtras().getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
             //set alarm for next midnight
-            TaskyUtils.setAlarm(context, System.currentTimeMillis() + TaskyConstants.INTERVAL_DAY, true);
+            TaskyUtils.setAlarm(context, System.currentTimeMillis() + TaskyConstants.INTERVAL_DAY, null, true);
         }
 
     }
