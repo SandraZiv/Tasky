@@ -66,5 +66,6 @@
     <string name="tasky_reminder">Tasky podsjetnik</string>
     <string name="scheduler_running">Ažuriranje uključeno</string>
     <string name="scheduler_to_be_init">Inicijalizacija nije još pokrenuta</string>
+    <string name="init_finished">Inicijalizacija završena</string>
 
 </resources>

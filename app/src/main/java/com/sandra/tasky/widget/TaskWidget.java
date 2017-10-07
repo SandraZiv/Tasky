@@ -34,7 +34,7 @@ public class TaskWidget extends AppWidgetProvider {
                 .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
 
         if (firstRun) {
-            Toast.makeText(context, "Widget set", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.init_finished, Toast.LENGTH_SHORT).show();
 
             LocalTime localTime = LocalTime.now();
             long timeMidnight = 24 * 60 * 60 - localTime.getHourOfDay() * 60 * 60 - localTime.getMinuteOfHour() * 60 - localTime.getSecondOfMinute();

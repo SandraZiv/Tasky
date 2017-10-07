@@ -51,6 +51,7 @@
     <string name="tasky_reminder">Tasky reminder</string>
     <string name="scheduler_to_be_init">Scheduler to be initialized</string>
     <string name="scheduler_running">Scheduler running</string>
+    <string name="init_finished">Initialization finished</string>
 
     <string-array name="time_span_values">
         <item>7 days</item>
