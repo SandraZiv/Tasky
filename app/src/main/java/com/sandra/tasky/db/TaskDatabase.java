@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class TaskDatabase {
@@ -163,7 +164,7 @@ public class TaskDatabase {
 
 
     private DateTime getDateFromString(String tmpDate) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         java.util.Date date = null;
 //        DateTime date = null;
         try {
