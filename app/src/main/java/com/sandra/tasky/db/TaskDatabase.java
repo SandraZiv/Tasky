@@ -10,6 +10,8 @@ import android.util.Log;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.entity.SimpleTask;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.joda.time.DateTime;
 
 import java.sql.Timestamp;
@@ -46,6 +48,8 @@ public class TaskDatabase {
 
         dbWritable = taskDatabaseOpenHelper.getWritableDatabase();
         dbReadable = taskDatabaseOpenHelper.getReadableDatabase();
+
+        JodaTimeAndroid.init(context);
     }
 
     public void closeDatabase() {
