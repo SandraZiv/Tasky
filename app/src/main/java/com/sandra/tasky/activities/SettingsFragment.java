@@ -23,7 +23,10 @@ public class SettingsFragment extends PreferenceFragment {
                 .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
 
         Preference preference = findPreference(TaskyConstants.PREFS_RESTART_SCHEDULER);
-        preference.setSummary(isFirstRun ? getString(R.string.scheduler_to_be_init) : getString(R.string.scheduler_running));
+        final String lastUpdate = getString(R.string.last_update) + " "
+                + getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
+                .getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
+        preference.setSummary(isFirstRun ? getString(R.string.scheduler_to_be_init) : lastUpdate);
         preference.setEnabled(!isFirstRun);
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -36,7 +39,7 @@ public class SettingsFragment extends PreferenceFragment {
                     preference.setEnabled(false);
                     Toast.makeText(getActivity(), R.string.scheduler_restarted, Toast.LENGTH_LONG).show();
                 } else {
-                    preference.setSummary(getString(R.string.scheduler_running));
+                    preference.setSummary(lastUpdate);
                     //this is actually never called
                     Toast.makeText(getActivity(), R.string.please_restart_widget_to_complete, Toast.LENGTH_LONG).show();
                 }
