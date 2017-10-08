@@ -23,10 +23,9 @@ public class SettingsFragment extends PreferenceFragment {
                 .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
 
         Preference preference = findPreference(TaskyConstants.PREFS_RESTART_SCHEDULER);
-        final String lastUpdate = getString(R.string.last_update) + " "
-                + getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
+        final String lastUpdate = getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
                 .getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
-        preference.setSummary(isFirstRun ? getString(R.string.scheduler_to_be_init) : lastUpdate);
+        preference.setSummary(isFirstRun ? getString(R.string.scheduler_to_be_init) : getString(R.string.last_update) + " " + lastUpdate);
         preference.setEnabled(!isFirstRun);
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
