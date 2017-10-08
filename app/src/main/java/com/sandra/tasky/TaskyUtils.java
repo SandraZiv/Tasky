@@ -23,6 +23,7 @@ public class TaskyUtils {
         setAlarmIntent.setAction(TaskyConstants.WIDGET_UPDATE_ACTION);
         setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TITLE, taskTitle);
         setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, isRepeatable);
+        setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TIME, timeInMillis);
         PendingIntent setAlarmPI = PendingIntent.getBroadcast(context, (int) System.currentTimeMillis(), setAlarmIntent, 0);
 
         if (SDK_INT < Build.VERSION_CODES.KITKAT) {

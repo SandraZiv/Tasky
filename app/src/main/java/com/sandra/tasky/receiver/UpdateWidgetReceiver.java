@@ -32,7 +32,7 @@ public class UpdateWidgetReceiver extends BroadcastReceiver {
 
         //update log settings
         SharedPreferences.Editor editor = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
-        editor.putString(TaskyConstants.PREFS_LAST_UPDATE, new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(new Date()));
+        editor.putString(TaskyConstants.PREFS_LAST_UPDATE, context.getString(R.string.last_update) + " " + new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(new Date()));
         editor.apply();
 
 
@@ -40,7 +40,7 @@ public class UpdateWidgetReceiver extends BroadcastReceiver {
 
         if (intent.getExtras() != null && intent.getExtras().getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
             //set alarm for next midnight
-            TaskyUtils.setAlarm(context, System.currentTimeMillis() + TaskyConstants.INTERVAL_DAY, null, true);
+            TaskyUtils.setAlarm(context, intent.getExtras().getLong(TaskyConstants.ALARM_EXTRA_TIME) + TaskyConstants.INTERVAL_DAY, null, true);
         }
 
     }

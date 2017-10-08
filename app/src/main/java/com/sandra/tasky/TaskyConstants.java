@@ -14,6 +14,7 @@ public class TaskyConstants {
     public static String PREFS_LAST_UPDATE = "prefs_last_update";
     public static String ALARM_EXTRA_TITLE = "ALARM_EXTRA_TITLE";
     public static String ALARM_EXTRA_REPEATABLE = "ALARM_EXTRA_REPEATABLE";
+    public static String ALARM_EXTRA_TIME = "ALARM_EXTRA_TIME";
 
     public static long INTERVAL_DAY = 24 * 60 * 60 * 1000;
 
