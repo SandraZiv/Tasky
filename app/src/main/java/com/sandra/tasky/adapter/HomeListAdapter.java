@@ -53,10 +53,11 @@ public class HomeListAdapter extends BaseAdapter {
             listView = LayoutInflater.from(context).inflate(R.layout.list_text_home_screen, parent, false);
             TextView text = (TextView) listView.findViewById(R.id.tw_text);
 
-            if (!task.getNote().isEmpty())
+            if (!task.getNote().isEmpty()) {
                 text.setText(task.getNote());
-            else
-                text.setText(context.getString(R.string.due_date) + ": " + (task.isTimePresent() ? task.parseDateTime() : task.parseDate()));
+            } else {
+                text.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
+            }
 
         }
 
@@ -68,7 +69,7 @@ public class HomeListAdapter extends BaseAdapter {
             note.setText(task.getNote());
 
             TextView dueDate = (TextView) listView.findViewById(R.id.tw_due_date);
-            dueDate.setText(context.getString(R.string.due_date) + ": " + (task.isTimePresent() ? task.parseDateTime() : task.parseDate()));
+            dueDate.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
         }
 
         //setup for any case, there must always be title and checkbox
