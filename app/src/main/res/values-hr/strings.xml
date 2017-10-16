@@ -6,7 +6,6 @@
     <string name="cancel">Odustani</string>
     <string name="completed">Dovršeno</string>
     <string name="create_task">Novi</string>
-    <string name="data_synced">Podaci ažurirani</string>
     <string name="days">dana</string>
     <string name="db__open_fail">Greška pri spajanju na bazu</string>
     <string name="done">Obavljeno</string>

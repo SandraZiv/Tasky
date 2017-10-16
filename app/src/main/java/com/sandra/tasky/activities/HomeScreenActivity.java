@@ -73,9 +73,6 @@ public class HomeScreenActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home_menu_btn_sync:
-                syncData();
-                break;
             case R.id.home_menu_btn_new:
                 createNewTask();
                 break;
@@ -92,11 +89,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void syncData() {
-        updateListView();
-        Toast.makeText(this, R.string.data_synced, Toast.LENGTH_SHORT).show();
-    }
 
     private void createNewTask() {
         Intent newTaskIntent = new Intent(this, TaskActivity.class);
@@ -122,7 +114,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 View optionView = LayoutInflater.from(HomeScreenActivity.this).inflate(R.layout.list_option_home_screen, parent, false);
-                TextView tw_delete = (TextView)optionView.findViewById(R.id.tw_option_delete);
+                TextView tw_delete = (TextView) optionView.findViewById(R.id.tw_option_delete);
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
                 builder.setTitle(list.get(position).getTitle());

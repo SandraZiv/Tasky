@@ -6,7 +6,6 @@
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="due_date">Due Date</string>
-    <string name="data_synced">Data synced</string>
     <string name="db__open_fail">Database open failed</string>
     <string name="all_data">All data</string>
     <string name="title">Title</string>
