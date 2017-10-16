@@ -15,12 +15,12 @@ import com.sandra.tasky.entity.SimpleTask;
 import java.util.List;
 
 public class HomeListAdapter extends BaseAdapter {
-    private List<SimpleTask> taskList;
     private Context context;
+    private List<SimpleTask> taskList;
 
     public HomeListAdapter(Context context, List<SimpleTask> taskList) {
-        this.taskList = taskList;
         this.context = context;
+        this.taskList = taskList;
     }
 
     @Override
@@ -47,7 +47,6 @@ public class HomeListAdapter extends BaseAdapter {
         if (task.getNote().isEmpty() && task.getDueDate() == null) {
             listView = LayoutInflater.from(context).inflate(R.layout.list_title_home_screen, parent, false);
         }
-
         //in case note or due date is empty
         else if (task.getNote().isEmpty() || task.getDueDate() == null) {
             listView = LayoutInflater.from(context).inflate(R.layout.list_text_home_screen, parent, false);
@@ -60,7 +59,6 @@ public class HomeListAdapter extends BaseAdapter {
             }
 
         }
-
         //in case everything is present
         else {
             listView = LayoutInflater.from(context).inflate(R.layout.list_all_home_screen, parent, false);

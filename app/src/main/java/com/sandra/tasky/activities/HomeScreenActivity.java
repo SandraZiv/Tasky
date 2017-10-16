@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sandra.tasky.R;
@@ -112,6 +115,31 @@ public class HomeScreenActivity extends AppCompatActivity {
                 Intent openTaskIntent = new Intent(HomeScreenActivity.this, TaskActivity.class);
                 openTaskIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, list.get(position));
                 startActivityForResult(openTaskIntent, REQUEST_CODE);
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                View optionView = LayoutInflater.from(HomeScreenActivity.this).inflate(R.layout.list_option_home_screen, parent, false);
+                TextView tw_delete = (TextView)optionView.findViewById(R.id.tw_option_delete);
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
+                builder.setTitle(list.get(position).getTitle());
+                builder.setView(optionView);
+                final AlertDialog dialog = builder.show();
+
+                tw_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(HomeScreenActivity.this, R.string.task_deleted, Toast.LENGTH_SHORT).show();
+                        database.deleteData(list.get(position));
+                        dialog.cancel();
+                        updateListView();
+                    }
+                });
+
+                return true;
             }
         });
 

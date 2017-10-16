@@ -69,5 +69,6 @@
     <string name="init_finished">Inicijalizacija završena</string>
     <string name="last_update">Zadnje ažurirano:</string>
     <string name="reminder">Podsjetnik na:</string>
+    <string name="task_deleted">Zadatak obrisan</string>
 
 </resources>
