@@ -124,8 +124,8 @@ public class HomeScreenActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(HomeScreenActivity.this, R.string.task_deleted, Toast.LENGTH_SHORT).show();
                         database.deleteData(list.get(position));
-                        dialog.cancel();
                         updateListView();
+                        dialog.cancel();
                     }
                 });
 
