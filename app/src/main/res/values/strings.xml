@@ -88,6 +88,8 @@
 
     <string name="pref_version_title">Version</string>
     <string name="pref_version_summary" translatable="false">1.0</string>
+    <string name="reset">Reset</string>
+    <string name="settings_reset">Settings reset</string>
 
 
 </resources>
