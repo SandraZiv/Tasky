@@ -20,4 +20,8 @@ public class TaskyConstants {
 
     public static int EMPTY_ID = -1;
     public static String TASK_BUNDLE_KEY = "task";
+
+    public static int MAX_TITLE_LENGTH = 35;
+    public static int MAX_TEXT_LENGTH = 100;
+
 }

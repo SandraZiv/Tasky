@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.sandra.tasky.R;
+import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 
@@ -53,7 +54,7 @@ public class HomeListAdapter extends BaseAdapter {
             TextView text = (TextView) listView.findViewById(R.id.tw_text);
 
             if (!task.getNote().isEmpty()) {
-                text.setText(task.getNote());
+                text.setText(cutText(task.getNote(), TaskyConstants.MAX_TEXT_LENGTH));
             } else {
                 text.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
             }
@@ -64,7 +65,7 @@ public class HomeListAdapter extends BaseAdapter {
             listView = LayoutInflater.from(context).inflate(R.layout.list_all_home_screen, parent, false);
 
             TextView note = (TextView) listView.findViewById(R.id.tw_note);
-            note.setText(task.getNote());
+            note.setText(cutText(task.getNote(), TaskyConstants.MAX_TEXT_LENGTH));
 
             TextView dueDate = (TextView) listView.findViewById(R.id.tw_due_date);
             dueDate.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
@@ -72,7 +73,7 @@ public class HomeListAdapter extends BaseAdapter {
 
         //setup for any case, there must always be title and checkbox
         TextView title = (TextView) listView.findViewById(R.id.tw_title);
-        title.setText(task.getTitle());
+        title.setText(cutText(task.getTitle(), TaskyConstants.MAX_TITLE_LENGTH));
 
         final CheckBox checkBox = (CheckBox) listView.findViewById(R.id.check_box);
         checkBox.setChecked(task.isCompleted());
@@ -86,5 +87,9 @@ public class HomeListAdapter extends BaseAdapter {
         });
 
         return listView;
+    }
+
+    private String cutText(String text, int limit) {
+        return text.length() > limit ? text.substring(0, limit) + "..." : text;
     }
 }
