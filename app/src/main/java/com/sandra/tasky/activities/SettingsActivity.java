@@ -22,9 +22,9 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 .commit();
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Settings");
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_task_home);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
     }
 

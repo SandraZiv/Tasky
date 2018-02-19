@@ -30,7 +30,9 @@
                 android:resource="@xml/task_widget_info" />
         </receiver>
 
-        <receiver android:name=".receiver.UpdateWidgetReceiver" android:permission="android.permission.WAKE_LOCK">
+        <receiver
+            android:name=".receiver.UpdateWidgetReceiver"
+            android:permission="android.permission.WAKE_LOCK">
             <intent-filter>
                 <action android:name="com.sandra.tasky.widget.UPDATE_WIDGET" />
             </intent-filter>
@@ -40,7 +42,14 @@
             android:name=".widget.TaskWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <activity android:name=".activities.SettingsActivity" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/settings"
+            android:parentActivityName=".activities.HomeScreenActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeScreenActivity" />
+        </activity>
 
     </application>
 </manifest>
