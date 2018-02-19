@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -34,12 +35,22 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     private TaskDatabase database;
 
+    private FloatingActionButton fabAddTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         JodaTimeAndroid.init(this);
+
+        fabAddTask = (FloatingActionButton) findViewById(R.id.fab_add_task);
+        fabAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createNewTask();
+            }
+        });
 
         //open db
         new OpenDBAsyncTask().execute("Open");
@@ -73,9 +84,6 @@ public class HomeScreenActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home_menu_btn_new:
-                createNewTask();
-                break;
             case R.id.home_menu_btn_delete_all:
                 database.deleteAllData();
                 updateListView();

@@ -4,13 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/home_menu_btn_new"
-        android:title="@string/new_task"
-        android:icon="@drawable/ic_new"
-        app:showAsAction="always">
-    </item>
-
-    <item
         android:id="@+id/home_menu_btn_delete_all"
         android:title="@string/delete_all">
     </item>
