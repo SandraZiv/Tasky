@@ -113,9 +113,9 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private List<SimpleTask> getTasksInWidget() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return db.getTasksInWidget(
-                preferences.getBoolean(TaskyConstants.PREFS_SHOW_COMPLETED, true),
-                preferences.getBoolean(TaskyConstants.PREFS_SHOW_EXPIRED, false),
-                preferences.getString(TaskyConstants.PREFS_TIME_SPAN, TaskyConstants.PREFS_TIME_SPAN_DEFAULT));
+                preferences.getBoolean(context.getString(R.string.pref_show_completed_key), context.getResources().getBoolean(R.bool.pref_show_completed_default)),
+                preferences.getBoolean(context.getString(R.string.pref_show_expired_key), context.getResources().getBoolean(R.bool.pref_show_expired_default)),
+                preferences.getString(context.getString(R.string.pref_time_span_key), context.getString(R.string.pref_time_span_default)));
     }
 
     @Override

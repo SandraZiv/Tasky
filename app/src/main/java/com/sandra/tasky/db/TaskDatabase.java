@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.R;
 import com.sandra.tasky.entity.SimpleTask;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -43,7 +43,11 @@ public class TaskDatabase {
     private SQLiteDatabase dbWritable;
     private SQLiteDatabase dbReadable;
 
+    private Context context;
+
     public TaskDatabase(Context context) {
+        this.context = context;
+
         taskDatabaseOpenHelper = TaskDatabaseOpenHelper.getInstance(context);
 
         dbWritable = taskDatabaseOpenHelper.getWritableDatabase();
@@ -116,7 +120,7 @@ public class TaskDatabase {
     public List<SimpleTask> getTasksInWidget(boolean showCompleted, boolean showExpired, String timeSpan) {
         List<SimpleTask> list = new LinkedList<>();
         String where = " where (" + DATE_COLUMN + " is null or ";
-        if (timeSpan.equals(TaskyConstants.PREFS_TIME_SPAN_DEFAULT)) {
+        if (timeSpan.equals(context.getString(R.string.pref_time_span_default))) {
             if (showExpired) {
                 where += DATE_COLUMN + " is not null)";
             } else {

@@ -27,7 +27,7 @@ public class SettingsFragment extends PreferenceFragment
                 .getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
                 .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
 
-        Preference preference = findPreference(TaskyConstants.PREFS_RESTART_SCHEDULER);
+        Preference preference = findPreference(getString(R.string.pref_restart_scheduler_key));
         final String lastUpdate = getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
                 .getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
         preference.setSummary(isFirstRun ? getString(R.string.scheduler_to_be_init) : lastUpdate);
@@ -53,7 +53,7 @@ public class SettingsFragment extends PreferenceFragment
         });
 
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
-        Preference p = findPreference("pref_time_span");
+        Preference p = findPreference(getString(R.string.pref_time_span_key));
         String prefValue = sharedPreferences.getString(p.getKey(), "");
         setPreferenceSummary(p, prefValue);
 
@@ -77,7 +77,7 @@ public class SettingsFragment extends PreferenceFragment
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference p = findPreference(key);
-        if (p != null) {
+        if (p != null && p instanceof ListPreference) {
             setPreferenceSummary(p, sharedPreferences.getString(key, ""));
         }
     }

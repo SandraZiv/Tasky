@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--preference default values-->
+    <bool name="pref_show_completed_default">true</bool>
+    <bool name="pref_show_expired_default">false</bool>
+
+</resources>
