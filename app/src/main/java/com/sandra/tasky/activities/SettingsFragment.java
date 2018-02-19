@@ -1,7 +1,11 @@
 package com.sandra.tasky.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -56,6 +60,31 @@ public class SettingsFragment extends PreferenceFragment
         Preference p = findPreference(getString(R.string.pref_time_span_key));
         String prefValue = sharedPreferences.getString(p.getKey(), "");
         setPreferenceSummary(p, prefValue);
+
+        //open in google play
+        Preference pGooglePlay = findPreference(getString(R.string.pref_view_in_google_play_key));
+        pGooglePlay.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final String appPackageName = getActivity().getApplicationContext().getPackageName();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.google_play_market) + appPackageName)));
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.google_play_url) + appPackageName)));
+                }
+                return true;
+            }
+        });
+
+
+        //set version
+        Preference pVersion = findPreference(getString(R.string.pref_version_key));
+        try {
+            pVersion.setSummary(getActivity().getApplicationContext().getPackageManager().getPackageInfo
+                    (getActivity().getApplicationContext().getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 

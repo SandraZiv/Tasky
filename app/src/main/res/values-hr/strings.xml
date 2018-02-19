@@ -70,5 +70,8 @@
     <string name="reminder">Podsjetnik na:</string>
     <string name="task_deleted">Zadatak obrisan</string>
     <string name="in_advance">unaprijed</string>
+    <string name="about">O aplikaciji</string>
+    <string name="pref_version_title">Verzija</string>
+    <string name="pref_view_in_google_play_title">Pregled preko Trgovina Play</string>
 
 </resources>

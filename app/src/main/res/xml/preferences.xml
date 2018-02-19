@@ -21,4 +21,15 @@
             android:key="@string/pref_restart_scheduler_key"
             android:title="@string/restart_scheduler_title" />
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/about">
+        <Preference
+            android:key="@string/pref_view_in_google_play_key"
+            android:title="@string/pref_view_in_google_play_title" />
+        <Preference
+            android:key="@string/pref_version_key"
+            android:title="@string/pref_version_title"
+            android:summary="@string/pref_version_summary"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

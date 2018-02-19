@@ -77,7 +77,19 @@
     <string name="pref_show_expired_key" translatable="false">pref_show_expired</string>
     <string name="pref_time_span_key" translatable="false">pref_time_span</string>
     <string name="pref_restart_scheduler_key" translatable="false">pref_restart_scheduler</string>
+    <string name="pref_view_in_google_play_key" translatable="false">pref_view_in_google_play</string>
+    <string name="pref_version_key" translatable="false">pref_version</string>
 
     <string name="pref_time_span_default" translatable="false">-1</string>
+
+    <string name="about">About</string>
+
+    <string name="pref_view_in_google_play_title">View in Google Play</string>
+    <string name="google_play_market" translatable="false">market://details?id=</string>
+    <string name="google_play_url" translatable="false">https://play.google.com/store/apps/details?id=</string>
+
+    <string name="pref_version_title">Version</string>
+    <string name="pref_version_summary" translatable="false">1.0</string>
+
 
 </resources>
