@@ -37,7 +37,7 @@
     <string name="settings">Postavke</string>
     <string name="select_time_span">Odaberite vremenski raspon</string>
     <string name="show_completed">Prikaz obavljenih zadataka</string>
-    <string name="show_when">Odaberite kada želite prikazati zadatak</string>
+    <string name="show_when">Prikaži zadatke</string>
     <string name="show_when_summary">Vremenski raspon određuje se u odnosu na današnji datum</string>
 
     <string-array name="time_span_values">
@@ -69,5 +69,6 @@
     <string name="last_update">Zadnje ažurirano:</string>
     <string name="reminder">Podsjetnik na:</string>
     <string name="task_deleted">Zadatak obrisan</string>
+    <string name="in_advance">unaprijed</string>
 
 </resources>

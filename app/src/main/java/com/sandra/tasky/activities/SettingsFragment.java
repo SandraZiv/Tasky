@@ -3,6 +3,7 @@ package com.sandra.tasky.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
@@ -12,11 +13,15 @@ import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragment
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
         final boolean isFirstRun = getActivity()
                 .getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
@@ -46,5 +51,40 @@ public class SettingsFragment extends PreferenceFragment {
                 return false;
             }
         });
+
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+        Preference p = findPreference("pref_time_span");
+        String prefValue = sharedPreferences.getString(p.getKey(), "");
+        setPreferenceSummary(p, prefValue);
+
+    }
+
+    private void setPreferenceSummary(Preference preference, String value) {
+        if (preference instanceof ListPreference) {
+            // For list preferences, figure out the label of the selected value
+            ListPreference listPreference = (ListPreference) preference;
+            int prefIndex = listPreference.findIndexOfValue(value);
+            if (prefIndex >= 0) {
+                // Set the summary to that label
+                listPreference.setSummary(
+                        prefIndex == listPreference.getEntries().length - 1 ?
+                                listPreference.getEntries()[prefIndex]
+                                : listPreference.getEntries()[prefIndex] + " " + getString(R.string.in_advance));
+            }
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Preference p = findPreference(key);
+        if (p != null) {
+            setPreferenceSummary(p, sharedPreferences.getString(key, ""));
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 }

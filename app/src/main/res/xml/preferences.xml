@@ -16,7 +16,6 @@
             android:entries="@array/time_span_entries"
             android:entryValues="@array/time_span_values"
             android:key="pref_time_span"
-            android:summary="@string/show_when_summary"
             android:title="@string/show_when" />
         <Preference
             android:key="pref_restart_scheduler"
