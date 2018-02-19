@@ -7,7 +7,7 @@
     <string name="cancel">Cancel</string>
     <string name="due_date">Due Date</string>
     <string name="db__open_fail">Database open failed</string>
-    <string name="all_data">All data</string>
+    <string name="all_tasks">All tasks</string>
     <string name="title">Title</string>
     <string name="completed">Completed</string>
     <string name="note">Note</string>
@@ -25,7 +25,6 @@
     <string name="in">in</string>
     <string name="days">days</string>
     <string name="to_do">To do</string>
-    <string name="sync">Sync</string>
     <string name="new_task">New task</string>
     <string name="delete_all">Delete all</string>
     <string name="delete">Delete</string>
@@ -41,8 +40,7 @@
     <string name="select_time_span">Select time span</string>
     <string name="widget" translatable="false">Widget</string>
     <string name="no_tasks_yet">No tasks yet!</string>
-    <string name="show_expired">Show expired</string>
-    <string name="show_expired_summary">Tasks expired today will still be shown regardless selected option</string>
+    <string name="show_expired">Show expired tasks</string>
     <string name="scheduler_restarted">Scheduler restarted, please restart widget</string>
     <string name="please_restart_widget_to_complete">Please restart widget to complete action</string>
     <string name="restart_scheduler_title">Restart update scheduler</string>
@@ -84,7 +82,7 @@
 
     <string name="about">About</string>
 
-    <string name="pref_view_in_google_play_title">View in Google Play</string>
+    <string name="pref_view_in_google_play_title">View on Google Play</string>
     <string name="google_play_market" translatable="false">market://details?id=</string>
     <string name="google_play_url" translatable="false">https://play.google.com/store/apps/details?id=</string>
 

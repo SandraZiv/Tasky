@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tasky</string>
-    <string name="all_data">Sve</string>
+    <string name="all_tasks">Sve</string>
     <string name="at">u</string>
     <string name="cancel">Odustani</string>
     <string name="completed">Dovršeno</string>
@@ -30,13 +30,12 @@
     <string name="delete_all">Izbriši sve</string>
     <string name="new_task">Novi zadatak</string>
     <string name="save">Pohrani</string>
-    <string name="sync">Sinkroniziraj</string>
     <string name="show_task">Prikaži zadatak</string>
     <string name="show_task_in_widget">Prikaži zadatak u widgetu</string>
     <string name="show_in_widget">Prikaz zadatka</string>
     <string name="settings">Postavke</string>
     <string name="select_time_span">Odaberite vremenski raspon</string>
-    <string name="show_completed">Prikaz obavljenih zadataka</string>
+    <string name="show_completed">Prikaži zadatke</string>
     <string name="show_when">Prikaži zadatke</string>
     <string name="show_when_summary">Vremenski raspon određuje se u odnosu na današnji datum</string>
 
@@ -56,8 +55,7 @@
         <item>Neograničeno</item>
     </string-array>
     <string name="no_tasks_yet">Nema zadataka</string>
-    <string name="show_expired">Prikaz isteklih</string>
-    <string name="show_expired_summary">Zadaci koji su istekli danas ostat će prikazani neovisno o odabranoj opciji</string>
+    <string name="show_expired">Prikaži istekle zadatake</string>
     <string name="please_restart_widget_to_complete">Ponovno dovucite widget da dovršite akciju</string>
     <string name="restart_scheduler_title">"Pokreni incijalizaciju za ažuriranje"</string>
     <string name="scheduler_restarted">Inicijalizacija pokrenuta, ponovno dovucite widget</string>

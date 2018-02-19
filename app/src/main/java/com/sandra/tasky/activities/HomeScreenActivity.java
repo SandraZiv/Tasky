@@ -136,7 +136,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(getString(R.string.all_data) + " (" + list.size() + ")");
+            actionBar.setTitle(getString(R.string.all_tasks) + " (" + list.size() + ")");
         }
 
         TaskyUtils.updateWidget(this);

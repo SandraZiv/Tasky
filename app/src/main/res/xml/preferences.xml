@@ -8,7 +8,6 @@
         <SwitchPreference
             android:defaultValue="@bool/pref_show_expired_default"
             android:key="@string/pref_show_expired_key"
-            android:summary="@string/show_expired_summary"
             android:title="@string/show_expired" />
         <ListPreference
             android:defaultValue="@string/pref_time_span_default"
