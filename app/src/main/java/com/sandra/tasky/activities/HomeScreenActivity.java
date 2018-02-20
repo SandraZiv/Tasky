@@ -186,6 +186,7 @@ public class HomeScreenActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_manage:
+                startActivity(new Intent(HomeScreenActivity.this, CategoriesActivity.class));
                 break;
             case R.id.nav_settings:
                 startActivity(new Intent(HomeScreenActivity.this, SettingsActivity.class));

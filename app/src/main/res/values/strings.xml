@@ -93,6 +93,7 @@
     <string name="open_nav">Open navigation drawer</string>
     <string name="close_nav">Close navigation drawer</string>
     <string name="manage_categories">Manage categories</string>
+    <string name="add_category">Add Category</string>
 
 
 </resources>
