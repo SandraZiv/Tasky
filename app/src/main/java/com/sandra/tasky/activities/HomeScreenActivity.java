@@ -4,10 +4,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,20 +35,38 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.List;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int REQUEST_CODE = 1;
 
     private TaskDatabase database;
 
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
     private FloatingActionButton fabAddTask;
+    private NavigationView navigationView;
+
+    private boolean isNavListInit = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
+        setContentView(R.layout.activity_home_screen_drawer);
+
         JodaTimeAndroid.init(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         fabAddTask = (FloatingActionButton) findViewById(R.id.fab_add_task);
         fabAddTask.setOnClickListener(new View.OnClickListener() {
@@ -87,9 +111,6 @@ public class HomeScreenActivity extends AppCompatActivity {
             case R.id.home_menu_btn_delete_all:
                 database.deleteAllData();
                 updateListView();
-                break;
-            case R.id.home_menu_settings:
-                startActivity(new Intent(HomeScreenActivity.this, SettingsActivity.class));
                 break;
             default:
                 Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
@@ -147,6 +168,12 @@ public class HomeScreenActivity extends AppCompatActivity {
             actionBar.setTitle(getString(R.string.all_tasks) + " (" + list.size() + ")");
         }
 
+        if (!isNavListInit) {
+            navigationView.getMenu().add(R.id.menu_group_top, 1, 1, (getString(R.string.all_tasks) + " (" + list.size() + ")"));
+            navigationView.getMenu().add(R.id.menu_group_top, 2, 2, "Others (1)");
+            isNavListInit = true;
+        }
+
         TaskyUtils.updateWidget(this);
     }
 
@@ -158,6 +185,22 @@ public class HomeScreenActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_manage:
+                break;
+            case R.id.nav_settings:
+                startActivity(new Intent(HomeScreenActivity.this, SettingsActivity.class));
+                break;
+            default:
+                break;
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, String> {

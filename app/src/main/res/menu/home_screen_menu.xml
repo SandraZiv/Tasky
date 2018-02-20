@@ -8,8 +8,4 @@
         android:title="@string/delete_all">
     </item>
 
-    <item
-        android:id="@+id/home_menu_settings"
-        android:title="@string/settings"/>
-
 </menu>
