@@ -27,16 +27,18 @@ public class TaskDatabase {
     private static final int TRUE = 1;
     private static final int FALSE = 0;
 
-    //creating table columns
-    private static final String TITLE_COLUMN = "TASK_TITLE_COLUMN";
-    private static final String COMPLETED_COLUMN = "TASK_COMPLETED_COLUMN";
-    private static final String NOTE_COLUMN = "TASK_NOTE_COLUMN";
-    private static final String DATE_COLUMN = "TASK_DATE_COLUMN";
-    private static final String TIME_PRESENT_COLUMN = "TASK_TIME_PRESENT_COLUMN";
-    private static final String SHOW_IN_WIDGET_COLUMN = "SHOW_IN_WIDGET_COLUMN";
+    //creating table columns for tasks table
+    private static final String TASKS_KEY_ID = "ID";
+    private static final String TASK_TITLE_COLUMN = "TASK_TITLE_COLUMN";
+    private static final String TASK_COMPLETED_COLUMN = "TASK_COMPLETED_COLUMN";
+    private static final String TASK_NOTE_COLUMN = "TASK_NOTE_COLUMN";
+    private static final String TASK_DATE_COLUMN = "TASK_DATE_COLUMN";
+    private static final String TASK_TIME_PRESENT_COLUMN = "TASK_TIME_PRESENT_COLUMN";
+    private static final String TASK_SHOW_IN_WIDGET_COLUMN = "SHOW_IN_WIDGET_COLUMN";
 
-    //creating index
-    private static final String KEY_ID = "ID";
+    //creating table columns for categories table
+    private static final String CATEGORIES_KEY_ID = "ID";
+    private static final String CATEGORIES_TITLE = "CATEGORIES_TITLE";
 
     private static TaskDatabaseOpenHelper taskDatabaseOpenHelper = null;
 
@@ -63,35 +65,35 @@ public class TaskDatabase {
     public void addData(SimpleTask task) {
         ContentValues newValues = new ContentValues();
 
-        newValues.put(TITLE_COLUMN, task.getTitle());
-        newValues.put(COMPLETED_COLUMN, (task.isCompleted() ? TRUE : FALSE));
-        newValues.put(NOTE_COLUMN, task.getNote());
-        newValues.put(DATE_COLUMN,
+        newValues.put(TASK_TITLE_COLUMN, task.getTitle());
+        newValues.put(TASK_COMPLETED_COLUMN, (task.isCompleted() ? TRUE : FALSE));
+        newValues.put(TASK_NOTE_COLUMN, task.getNote());
+        newValues.put(TASK_DATE_COLUMN,
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
-        newValues.put(TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
-        newValues.put(SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
+        newValues.put(TASK_TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
+        newValues.put(TASK_SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
 
-        dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE, null, newValues);
+        dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, newValues);
     }
 
     public int updateData(SimpleTask task) {
         ContentValues updateValues = new ContentValues();
 
-        updateValues.put(TITLE_COLUMN, task.getTitle());
-        updateValues.put(COMPLETED_COLUMN, (task.isCompleted() ? TRUE : FALSE));
-        updateValues.put(NOTE_COLUMN, task.getNote());
-        updateValues.put(DATE_COLUMN,
+        updateValues.put(TASK_TITLE_COLUMN, task.getTitle());
+        updateValues.put(TASK_COMPLETED_COLUMN, (task.isCompleted() ? TRUE : FALSE));
+        updateValues.put(TASK_NOTE_COLUMN, task.getNote());
+        updateValues.put(TASK_DATE_COLUMN,
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
-        updateValues.put(TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
-        updateValues.put(SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
+        updateValues.put(TASK_TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
+        updateValues.put(TASK_SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
 
-        return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE, updateValues, KEY_ID + " = " + task.getId(), null);
+        return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, updateValues, TASKS_KEY_ID + " = " + task.getId(), null);
     }
 
     public List<SimpleTask> getAllData() {
         List<SimpleTask> list = new LinkedList<>();
 
-        String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE + " order by " + DATE_COLUMN;
+        String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS + " order by " + TASK_DATE_COLUMN;
         Cursor cursor = dbReadable.rawQuery(sqlQuery, null);
 
         if (cursor.moveToFirst()) {
@@ -119,24 +121,24 @@ public class TaskDatabase {
     //used only in widget
     public List<SimpleTask> getTasksInWidget(boolean showCompleted, boolean showExpired, String timeSpan) {
         List<SimpleTask> list = new LinkedList<>();
-        String where = " where (" + DATE_COLUMN + " is null or ";
+        String where = " where (" + TASK_DATE_COLUMN + " is null or ";
         if (timeSpan.equals(context.getString(R.string.pref_time_span_default))) {
             if (showExpired) {
-                where += DATE_COLUMN + " is not null)";
+                where += TASK_DATE_COLUMN + " is not null)";
             } else {
-                where += "date(" + DATE_COLUMN + ")" + " >= date('now'))";
+                where += "date(" + TASK_DATE_COLUMN + ")" + " >= date('now'))";
             }
         } else {
             if (showExpired) {
-                where += "date(" + DATE_COLUMN + ")" + " <= date('now', '" + timeSpan + "'))";
+                where += "date(" + TASK_DATE_COLUMN + ")" + " <= date('now', '" + timeSpan + "'))";
             } else {
-                where += "date(" + DATE_COLUMN + ")" + " between date('now') and date('now', '" + timeSpan + "'))";
+                where += "date(" + TASK_DATE_COLUMN + ")" + " between date('now') and date('now', '" + timeSpan + "'))";
             }
         }
-        where += (showCompleted ? "" : " and " + COMPLETED_COLUMN + " = " + FALSE);
-        where += " and " + SHOW_IN_WIDGET_COLUMN + "=" + TRUE;
+        where += (showCompleted ? "" : " and " + TASK_COMPLETED_COLUMN + " = " + FALSE);
+        where += " and " + TASK_SHOW_IN_WIDGET_COLUMN + "=" + TRUE;
 
-        String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE + where + " order by " + DATE_COLUMN;
+        String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS + where + " order by " + TASK_DATE_COLUMN;
         Cursor cursor = dbReadable.rawQuery(sqlQuery, null);
 
         if (cursor.moveToFirst()) {
@@ -163,11 +165,11 @@ public class TaskDatabase {
 
     public int deleteData(SimpleTask task) {
         int id = task.getId();
-        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE, KEY_ID + " = " + id, null);
+        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, TASKS_KEY_ID + " = " + id, null);
     }
 
     public int deleteAllData() {
-        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE, "", null);
+        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, "", null);
     }
 
 
@@ -188,17 +190,23 @@ public class TaskDatabase {
     private static class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
         static final String DATABASE_NAME = "task_database.db";
-        static final String DATABASE_TABLE = "taskTable";
-        static final int DATABASE_VERSION = 7;
+        static final String DATABASE_TABLE_TASKS = "taskTable";
+        static final String DATABASE_TABLE_CATEGORIES = "categoriesTable";
+        static final int DATABASE_VERSION = 8;
 
-        static final String CREATE_TABLE = "create table " + DATABASE_TABLE + " ( "
-                + KEY_ID + " integer primary key autoincrement,"
-                + TITLE_COLUMN + " text not null,"
-                + COMPLETED_COLUMN + " smallint check (" + COMPLETED_COLUMN + " in (0,1)),"
-                + NOTE_COLUMN + " text,"
-                + DATE_COLUMN + " timestamp,"
-                + TIME_PRESENT_COLUMN + " smallint check (" + TIME_PRESENT_COLUMN + " in (0,1)),"
-                + SHOW_IN_WIDGET_COLUMN + " smallint default " + TRUE
+        static final String CREATE_TABLE_TASKS = "create table " + DATABASE_TABLE_TASKS + " ( "
+                + TASKS_KEY_ID + " integer primary key autoincrement,"
+                + TASK_TITLE_COLUMN + " text not null,"
+                + TASK_COMPLETED_COLUMN + " smallint check (" + TASK_COMPLETED_COLUMN + " in (0,1)),"
+                + TASK_NOTE_COLUMN + " text,"
+                + TASK_DATE_COLUMN + " timestamp,"
+                + TASK_TIME_PRESENT_COLUMN + " smallint check (" + TASK_TIME_PRESENT_COLUMN + " in (0,1)),"
+                + TASK_SHOW_IN_WIDGET_COLUMN + " smallint default " + TRUE
+                + ");";
+
+        static final String CREATE_TABLE_CATEGORIES = "create table " + DATABASE_TABLE_CATEGORIES + " ( "
+                + CATEGORIES_KEY_ID + " integer primary key autoincrement,"
+                + CATEGORIES_TITLE + " text not null"
                 + ");";
 
         private static TaskDatabaseOpenHelper getInstance(Context context) {
@@ -217,17 +225,20 @@ public class TaskDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(CREATE_TABLE);
+            db.execSQL(CREATE_TABLE_TASKS);
+            db.execSQL(CREATE_TABLE_CATEGORIES);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("alter table " + DATABASE_TABLE + " rename to old");
-            db.execSQL(CREATE_TABLE);
-            String columns = KEY_ID + "," + TITLE_COLUMN + "," + COMPLETED_COLUMN + "," + NOTE_COLUMN + "," + DATE_COLUMN + "," + TIME_PRESENT_COLUMN;
-            db.execSQL("insert into " + DATABASE_TABLE + "(" + columns + ")"
+            db.execSQL("alter table " + DATABASE_TABLE_TASKS + " rename to old");
+            db.execSQL(CREATE_TABLE_TASKS);
+            String columns = TASKS_KEY_ID + "," + TASK_TITLE_COLUMN + "," + TASK_COMPLETED_COLUMN + "," + TASK_NOTE_COLUMN + "," + TASK_DATE_COLUMN + "," + TASK_TIME_PRESENT_COLUMN;
+            db.execSQL("insert into " + DATABASE_TABLE_TASKS + "(" + columns + ")"
                     + " select " + columns + " from old");
             db.execSQL("drop table old");
+
+            db.execSQL(CREATE_TABLE_CATEGORIES);
         }
     }
 
