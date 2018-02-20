@@ -47,9 +47,6 @@ public class HomeScreenActivity extends AppCompatActivity
     private FloatingActionButton fabAddTask;
     private NavigationView navigationView;
 
-    private boolean isNavListInit = false;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,11 +165,9 @@ public class HomeScreenActivity extends AppCompatActivity
             actionBar.setTitle(getString(R.string.all_tasks) + " (" + list.size() + ")");
         }
 
-        if (!isNavListInit) {
-            navigationView.getMenu().add(R.id.menu_group_top, 1, 1, (getString(R.string.all_tasks) + " (" + list.size() + ")"));
-            navigationView.getMenu().add(R.id.menu_group_top, 2, 2, "Others (1)");
-            isNavListInit = true;
-        }
+        navigationView.getMenu().removeGroup(R.id.menu_group_top);
+        navigationView.getMenu().add(R.id.menu_group_top, 1, 1, (getString(R.string.all_tasks) + " (" + list.size() + ")"));
+        navigationView.getMenu().add(R.id.menu_group_top, 2, 2, "Others (1)");
 
         TaskyUtils.updateWidget(this);
     }
