@@ -94,6 +94,9 @@
     <string name="close_nav">Close navigation drawer</string>
     <string name="manage_categories">Manage categories</string>
     <string name="add_category">Add Category</string>
+    <string name="no_categories_yet">No categories yet!</string>
+    <string name="enter_title">Enter title</string>
+    <string name="please_enter_title">Please enter category title</string>
 
 
 </resources>
