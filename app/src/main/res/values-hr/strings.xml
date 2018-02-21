@@ -73,5 +73,9 @@
     <string name="pref_view_in_google_play_title">Pregled preko Trgovina Play</string>
     <string name="reset">Resetiraj vrijednosti</string>
     <string name="settings_reset">Postavke resetirane</string>
+    <string name="add_category">Dodaj kategoriju</string>
+    <string name="close_nav">Zatvaranje menija</string>
+    <string name="manage_categories">Upravljanje kategorijama</string>
+    <string name="open_nav">Otvaranje menija</string>
 
 </resources>
