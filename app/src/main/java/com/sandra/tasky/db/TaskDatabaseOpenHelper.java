@@ -11,7 +11,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "task_database.db";
     static final String DATABASE_TABLE_TASKS = "taskTable";
     static final String DATABASE_TABLE_CATEGORIES = "categoriesTable";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     private static final String CREATE_TABLE_TASKS = "create table " + DATABASE_TABLE_TASKS + " ( "
             + TASKS_KEY_ID + " integer primary key autoincrement,"
@@ -25,7 +25,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_CATEGORIES = "create table " + DATABASE_TABLE_CATEGORIES + " ( "
             + CATEGORIES_KEY_ID + " integer primary key autoincrement,"
-            + CATEGORIES_TITLE + " text not null"
+            + CATEGORIES_TITLE + " text not null unique"
             + ");";
 
     static TaskDatabaseOpenHelper getInstance(Context context, TaskDatabaseOpenHelper taskDatabaseOpenHelper) {
@@ -57,6 +57,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 //                + " select " + columns + " from old");
 //        db.execSQL("drop table old");
 
+        db.execSQL("drop table " + DATABASE_TABLE_CATEGORIES);
         db.execSQL(CREATE_TABLE_CATEGORIES);
     }
 }

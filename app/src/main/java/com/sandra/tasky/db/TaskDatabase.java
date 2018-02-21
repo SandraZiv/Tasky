@@ -71,10 +71,10 @@ public class TaskDatabase {
         dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, newValues);
     }
 
-    public void addCategory(TaskCategory category) {
+    public boolean addCategory(TaskCategory category) {
         ContentValues values = new ContentValues();
         values.put(CATEGORIES_TITLE, category.getTitle());
-        dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, null, values);
+        return dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, null, values) != -1;
     }
 
     public int updateTask(SimpleTask task) {

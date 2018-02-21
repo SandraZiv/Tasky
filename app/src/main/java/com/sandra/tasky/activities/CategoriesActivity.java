@@ -81,9 +81,12 @@ public class CategoriesActivity extends AppCompatActivity {
                 } else {
                     //save new category
                     TaskDatabase database = new TaskDatabase(CategoriesActivity.this);
-                    database.addCategory(new TaskCategory(inputTitle));
-                    //update UI
-                    new CategoryAsyncTask().execute(CategoriesActivity.this);
+                    if (database.addCategory(new TaskCategory(inputTitle))) {
+                        //update UI
+                        new CategoryAsyncTask().execute(CategoriesActivity.this);
+                    } else {
+                        mToast = TaskyUtils.addToast(mToast, CategoriesActivity.this, R.string.category_exists, true);
+                    }
                 }
             }
         });
@@ -96,7 +99,7 @@ public class CategoriesActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private class CategoryAsyncTask extends AsyncTask<Context, Integer ,List<TaskCategory>> {
+    private class CategoryAsyncTask extends AsyncTask<Context, Integer, List<TaskCategory>> {
         private Context context;
 
         @Override
