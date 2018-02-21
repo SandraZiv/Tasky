@@ -77,5 +77,9 @@
     <string name="close_nav">Zatvaranje menija</string>
     <string name="manage_categories">Upravljanje kategorijama</string>
     <string name="open_nav">Otvaranje menija</string>
+    <string name="category_exists">Kategorija s tim nazivom već postoji</string>
+    <string name="enter_title">Unesite naslov</string>
+    <string name="no_categories_yet">Nema kategorija</string>
+    <string name="please_enter_title">Naslov kategorije ne smije biti prazan</string>
 
 </resources>
