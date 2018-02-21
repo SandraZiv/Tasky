@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.widget.Toast;
 
 import com.sandra.tasky.receiver.UpdateWidgetReceiver;
 import com.sandra.tasky.widget.TaskWidget;
@@ -39,5 +40,20 @@ public class TaskyUtils {
         ComponentName taskyWidget = new ComponentName(context, TaskWidget.class);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(taskyWidget), R.id.widget_list);
+    }
+
+    public static Toast addToast(Toast toast, Context context, String msg, boolean isShort) {
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(context, msg, isShort ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG);
+        toast.show();
+
+        return toast;
+    }
+
+    public static Toast addToast(Toast toast, Context context, int id, boolean isShort) {
+        String msg = context.getString(id);
+        return addToast(toast, context, msg, isShort);
     }
 }
