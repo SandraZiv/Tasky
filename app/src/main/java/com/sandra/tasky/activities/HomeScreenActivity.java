@@ -106,7 +106,7 @@ public class HomeScreenActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home_menu_btn_delete_all:
-                database.deleteAllData();
+                database.deleteAllTasks();
                 updateListView();
                 break;
             default:
@@ -122,7 +122,7 @@ public class HomeScreenActivity extends AppCompatActivity
     }
 
     private void updateListView() {
-        final List<SimpleTask> list = database.getAllData();
+        final List<SimpleTask> list = database.getAllTasks();
         ListAdapter homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
         ListView listView = (ListView) findViewById(R.id.home_list);
         listView.setAdapter(homeListAdapter);
@@ -149,7 +149,7 @@ public class HomeScreenActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(HomeScreenActivity.this, R.string.task_deleted, Toast.LENGTH_SHORT).show();
-                        database.deleteData(list.get(position));
+                        database.deleteTasks(list.get(position));
                         updateListView();
                         dialog.cancel();
                     }

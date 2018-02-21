@@ -54,7 +54,7 @@ public class TaskDatabase {
         taskDatabaseOpenHelper.close();
     }
 
-    public void addData(SimpleTask task) {
+    public void addTask(SimpleTask task) {
         ContentValues newValues = new ContentValues();
 
         newValues.put(TASK_TITLE_COLUMN, task.getTitle());
@@ -68,7 +68,7 @@ public class TaskDatabase {
         dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, newValues);
     }
 
-    public int updateData(SimpleTask task) {
+    public int updateTask(SimpleTask task) {
         ContentValues updateValues = new ContentValues();
 
         updateValues.put(TASK_TITLE_COLUMN, task.getTitle());
@@ -82,7 +82,7 @@ public class TaskDatabase {
         return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, updateValues, TASKS_KEY_ID + " = " + task.getId(), null);
     }
 
-    public List<SimpleTask> getAllData() {
+    public List<SimpleTask> getAllTasks() {
         List<SimpleTask> list = new LinkedList<>();
 
         String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS + " order by " + TASK_DATE_COLUMN;
@@ -155,12 +155,12 @@ public class TaskDatabase {
         return list;
     }
 
-    public int deleteData(SimpleTask task) {
+    public int deleteTasks(SimpleTask task) {
         int id = task.getId();
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, TASKS_KEY_ID + " = " + id, null);
     }
 
-    public int deleteAllData() {
+    public int deleteAllTasks() {
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, "", null);
     }
 

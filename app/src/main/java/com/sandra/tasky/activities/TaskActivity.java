@@ -307,7 +307,7 @@ public class TaskActivity extends AppCompatActivity {
                 setupForOnBackPressed();
                 break;
             case R.id.task_delete:
-                database.deleteData(task);
+                database.deleteTasks(task);
                 setupForOnBackPressed();
                 break;
             case R.id.task_save:
@@ -374,9 +374,9 @@ public class TaskActivity extends AppCompatActivity {
             }
 
             if (isTaskNew) {
-                database.addData(task);
+                database.addTask(task);
             } else {
-                database.updateData(task);
+                database.updateTask(task);
             }
 
             if (task.isShowInWidget()

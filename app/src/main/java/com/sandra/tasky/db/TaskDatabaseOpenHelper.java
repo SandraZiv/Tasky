@@ -50,12 +50,12 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("alter table " + DATABASE_TABLE_TASKS + " rename to old");
-        db.execSQL(CREATE_TABLE_TASKS);
-        String columns = TASKS_KEY_ID + "," + TASK_TITLE_COLUMN + "," + TASK_COMPLETED_COLUMN + "," + TASK_NOTE_COLUMN + "," + TASK_DATE_COLUMN + "," + TASK_TIME_PRESENT_COLUMN;
-        db.execSQL("insert into " + DATABASE_TABLE_TASKS + "(" + columns + ")"
-                + " select " + columns + " from old");
-        db.execSQL("drop table old");
+//        db.execSQL("alter table " + DATABASE_TABLE_TASKS + " rename to old");
+//        db.execSQL(CREATE_TABLE_TASKS);
+//        String columns = TASKS_KEY_ID + "," + TASK_TITLE_COLUMN + "," + TASK_COMPLETED_COLUMN + "," + TASK_NOTE_COLUMN + "," + TASK_DATE_COLUMN + "," + TASK_TIME_PRESENT_COLUMN;
+//        db.execSQL("insert into " + DATABASE_TABLE_TASKS + "(" + columns + ")"
+//                + " select " + columns + " from old");
+//        db.execSQL("drop table old");
 
         db.execSQL(CREATE_TABLE_CATEGORIES);
     }
