@@ -10,7 +10,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "task_database.db";
     static final String DATABASE_TABLE_TASKS = "taskTable";
-    private static final String DATABASE_TABLE_CATEGORIES = "categoriesTable";
+    static final String DATABASE_TABLE_CATEGORIES = "categoriesTable";
     private static final int DATABASE_VERSION = 8;
 
     private static final String CREATE_TABLE_TASKS = "create table " + DATABASE_TABLE_TASKS + " ( "

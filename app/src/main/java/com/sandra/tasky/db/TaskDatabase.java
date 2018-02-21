@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.entity.SimpleTask;
+import com.sandra.tasky.entity.TaskCategory;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -20,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.sandra.tasky.db.DatabaseConstants.CATEGORIES_KEY_ID;
+import static com.sandra.tasky.db.DatabaseConstants.CATEGORIES_TITLE;
 import static com.sandra.tasky.db.DatabaseConstants.FALSE;
 import static com.sandra.tasky.db.DatabaseConstants.TASKS_KEY_ID;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_COMPLETED_COLUMN;
@@ -68,6 +71,12 @@ public class TaskDatabase {
         dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, newValues);
     }
 
+    public void addCategory(TaskCategory category) {
+        ContentValues values = new ContentValues();
+        values.put(CATEGORIES_TITLE, category.getTitle());
+        dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, null, values);
+    }
+
     public int updateTask(SimpleTask task) {
         ContentValues updateValues = new ContentValues();
 
@@ -79,7 +88,15 @@ public class TaskDatabase {
         updateValues.put(TASK_TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
         updateValues.put(TASK_SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
 
-        return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, updateValues, TASKS_KEY_ID + " = " + task.getId(), null);
+        String where = TASKS_KEY_ID + " = " + task.getId();
+
+        return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, updateValues, where, null);
+    }
+
+    public int updateCategory(TaskCategory category) {
+        ContentValues values = new ContentValues();
+        String where = CATEGORIES_KEY_ID + " = " + category.getId();
+        return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, values, where, null);
     }
 
     public List<SimpleTask> getAllTasks() {
@@ -108,6 +125,22 @@ public class TaskDatabase {
 
         cursor.close();
         return list;
+    }
+
+    public List<TaskCategory> getAllCategories() {
+        List<TaskCategory> categories = new LinkedList<>();
+
+        Cursor cursor = dbReadable.query(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES,
+                null, null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            TaskCategory category = new TaskCategory(cursor.getLong(cursor.getColumnIndex(CATEGORIES_KEY_ID)),
+                    cursor.getString(cursor.getColumnIndex(CATEGORIES_TITLE)));
+            categories.add(category);
+        }
+
+        cursor.close();
+        return categories;
     }
 
     //used only in widget
@@ -157,11 +190,22 @@ public class TaskDatabase {
 
     public int deleteTasks(SimpleTask task) {
         int id = task.getId();
-        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, TASKS_KEY_ID + " = " + id, null);
+        String where = TASKS_KEY_ID + " = " + id;
+        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, where, null);
+    }
+
+    public int deleteCategory(TaskCategory category) {
+        Long id = category.getId();
+        String where = TASKS_KEY_ID + " = " + id;
+        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, where, null);
     }
 
     public int deleteAllTasks() {
-        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, "", null);
+        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, null);
+    }
+
+    public int deleteAllCategories() {
+        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, null, null);
     }
 
 
