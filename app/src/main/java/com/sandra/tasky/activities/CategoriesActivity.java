@@ -2,6 +2,7 @@ package com.sandra.tasky.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -62,6 +63,8 @@ public class CategoriesActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         adapter.unregisterDataSetObserver(observer);
+        Intent returnIntent = new Intent();
+        setResult(RESULT_OK, returnIntent);
     }
 
     private void openNewCategoryDialog() {
