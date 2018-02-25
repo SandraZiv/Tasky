@@ -81,5 +81,8 @@
     <string name="enter_title">Unesite naslov</string>
     <string name="no_categories_yet">Nema kategorija</string>
     <string name="please_enter_title">Naslov kategorije ne smije biti prazan</string>
+    <string name="all">Sve</string>
+    <string name="category">Kategorija</string>
+    <string name="select_category">Odaberite kategoriju</string>
 
 </resources>
