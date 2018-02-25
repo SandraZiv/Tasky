@@ -17,6 +17,10 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/task_category"
+        android:title="@string/category"/>
+
+    <item
         android:id="@+id/task_show"
         android:title="@string/show_in_widget"
         android:checkable="true"/>

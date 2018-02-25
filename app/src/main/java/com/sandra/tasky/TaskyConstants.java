@@ -19,4 +19,5 @@ public class TaskyConstants {
     public static int MAX_TITLE_LENGTH = 35;
     public static int MAX_TEXT_LENGTH = 100;
 
+    public static long DEFAULT_CATEGORY_ID = -1L;
 }

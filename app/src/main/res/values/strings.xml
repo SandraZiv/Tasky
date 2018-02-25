@@ -98,6 +98,8 @@
     <string name="enter_title">Enter title</string>
     <string name="please_enter_title">Please enter category title</string>
     <string name="category_exists">Category already exists</string>
+    <string name="category">Category</string>
+    <string name="select_category">Select category</string>
 
 
 </resources>

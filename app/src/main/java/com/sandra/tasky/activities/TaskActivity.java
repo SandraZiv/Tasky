@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,14 +28,18 @@ import android.widget.Toast;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.TaskyUtils;
+import com.sandra.tasky.adapter.CategoryPickerAdapter;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
+import com.sandra.tasky.entity.TaskCategory;
 import com.sandra.tasky.widget.TaskWidget;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+
+import java.util.List;
 
 public class TaskActivity extends AppCompatActivity {
 
@@ -59,6 +64,8 @@ public class TaskActivity extends AppCompatActivity {
     boolean isTimeEditable = false;
     boolean isDateChanged = false;
     boolean isTaskVisibilityInWidgetChanged = false;
+
+    private CategoryPickerAdapter categoryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -325,6 +332,9 @@ public class TaskActivity extends AppCompatActivity {
                 }
                 onBackPressed();
                 break;
+            case R.id.task_category:
+                openCategoryAlert();
+                break;
             case R.id.task_show:
                 item.setChecked(!item.isChecked());
                 task.setShowInWidget(item.isChecked());
@@ -389,12 +399,43 @@ public class TaskActivity extends AppCompatActivity {
         }
     }
 
-    private class OpenDBAsyncTask extends AsyncTask<String, Integer, String> {
+    private void openCategoryAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
+
+        builder.setTitle(R.string.select_category);
+
+        builder.setSingleChoiceItems(categoryAdapter, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void setCategoriesPicker(List<TaskCategory> categories) {
+        categoryAdapter = new CategoryPickerAdapter(TaskActivity.this, categories);
+    }
+
+    private class OpenDBAsyncTask extends AsyncTask<String, Integer, List<TaskCategory>> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected List<TaskCategory> doInBackground(String... params) {
             database = new TaskDatabase(TaskActivity.this);
-            return null;
+            return database.getAllCategories();
+        }
+
+        @Override
+        protected void onPostExecute(List<TaskCategory> categories) {
+            setCategoriesPicker(categories);
         }
     }
 }
