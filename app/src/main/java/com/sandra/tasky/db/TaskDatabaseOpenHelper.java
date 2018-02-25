@@ -52,6 +52,9 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("drop table if exists " + DATABASE_TABLE_CATEGORIES);
+        db.execSQL(CREATE_TABLE_CATEGORIES);
+
         db.execSQL("alter table " + DATABASE_TABLE_TASKS + " rename to old");
         db.execSQL(CREATE_TABLE_TASKS);
         String columns = TASKS_KEY_ID + "," + TASK_TITLE_COLUMN + "," + TASK_COMPLETED_COLUMN + ","
@@ -61,7 +64,5 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
                 + " select " + columns + " from old");
         db.execSQL("drop table old");
 
-        db.execSQL("drop table if exists " + DATABASE_TABLE_CATEGORIES);
-        db.execSQL(CREATE_TABLE_CATEGORIES);
     }
 }
