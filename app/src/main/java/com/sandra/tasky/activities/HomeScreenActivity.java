@@ -35,6 +35,7 @@ import com.sandra.tasky.entity.TaskCategory;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.List;
+import java.util.Map;
 
 public class HomeScreenActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +48,9 @@ public class HomeScreenActivity extends AppCompatActivity
     private ActionBarDrawerToggle drawerToggle;
     private FloatingActionButton fabAddTask;
     private NavigationView navigationView;
+
+    private List<TaskCategory> categories;
+    private Map<Long, Integer> categoriesCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +173,7 @@ public class HomeScreenActivity extends AppCompatActivity
         }
 
         navigationView.getMenu().removeGroup(R.id.menu_group_top);
-        navigationView.getMenu().add(R.id.menu_group_top, 1, 1, (getString(R.string.all_tasks) + " (" + list.size() + ")"));
+        navigationView.getMenu().add(R.id.menu_group_top, (int)TaskyConstants.DEFAULT_CATEGORY_ID, 1, (getString(R.string.all_tasks) + " (" + list.size() + ")"));
 
         TaskyUtils.updateWidget(this);
     }
@@ -194,6 +198,7 @@ public class HomeScreenActivity extends AppCompatActivity
                 startActivity(new Intent(HomeScreenActivity.this, SettingsActivity.class));
                 break;
             default:
+                openCategory(item.getItemId(), item.getTitle());
                 break;
         }
 
@@ -201,16 +206,28 @@ public class HomeScreenActivity extends AppCompatActivity
         return true;
     }
 
-    private void updateCategoriesList(List<TaskCategory> categories) {
-        for (TaskCategory category : categories) {
-            navigationView.getMenu().add(R.id.menu_group_top, 2, 2, category.getTitle() + " (0)");
+    private void openCategory(int categoryId, CharSequence categoryTitle) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(categoryTitle);
         }
+    }
+
+    private void updateCategoriesList(List<TaskCategory> categories) {
+        this.categories = categories;
+
+        for (TaskCategory category : categories) {
+            navigationView.getMenu().add(R.id.menu_group_top, (int)category.getId().longValue(), 2,
+                    category.getTitle() + " (" + categoriesCount.get(category.getId()) + ")");
+        }
+
     }
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, List<TaskCategory>> {
         @Override
         protected List<TaskCategory> doInBackground(String... params) {
             database = new TaskDatabase(HomeScreenActivity.this);
+            categoriesCount = database.getCategoriesTaskCount();
             return database.getAllCategories();
         }
 

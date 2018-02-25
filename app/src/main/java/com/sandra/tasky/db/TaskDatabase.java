@@ -17,9 +17,11 @@ import org.joda.time.DateTime;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.sandra.tasky.db.DatabaseConstants.CATEGORIES_KEY_ID;
 import static com.sandra.tasky.db.DatabaseConstants.CATEGORIES_TITLE;
@@ -156,6 +158,26 @@ public class TaskDatabase {
 
         cursor.close();
         return categories;
+    }
+
+    public Map<Long, Integer> getCategoriesTaskCount() {
+        List<TaskCategory> categories = getAllCategories();
+        List<SimpleTask> tasks = getAllTasks();
+        Map<Long, Integer> categoriesCount = new LinkedHashMap<>(categories.size());
+
+        for (TaskCategory category : categories) {
+            categoriesCount.put(category.getId(), 0);
+        }
+
+        for (SimpleTask task : tasks) {
+            if (task.getCategory() == null) {
+                continue;
+            }
+            Long categoryId = task.getCategory().getId();
+            categoriesCount.put(categoryId, categoriesCount.get(categoryId) + 1);
+        }
+
+        return categoriesCount;
     }
 
     //used only in widget
