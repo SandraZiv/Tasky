@@ -1,6 +1,8 @@
 package com.sandra.tasky.entity;
 
-public class TaskCategory {
+import java.io.Serializable;
+
+public class TaskCategory implements Serializable{
     private Long id;
     private String title;
 

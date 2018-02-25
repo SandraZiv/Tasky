@@ -100,6 +100,7 @@
     <string name="category_exists">Category already exists</string>
     <string name="category">Category</string>
     <string name="select_category">Select category</string>
+    <string name="all">All</string>
 
 
 </resources>

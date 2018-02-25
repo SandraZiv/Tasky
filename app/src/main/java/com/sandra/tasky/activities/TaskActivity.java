@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.TaskyUtils;
-import com.sandra.tasky.adapter.CategoryPickerAdapter;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.entity.TaskCategory;
@@ -65,7 +64,9 @@ public class TaskActivity extends AppCompatActivity {
     boolean isDateChanged = false;
     boolean isTaskVisibilityInWidgetChanged = false;
 
-    private CategoryPickerAdapter categoryAdapter;
+    private List<TaskCategory> categories;
+    private String[] categoriesTitle;
+    private long[] categoriesId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -404,10 +405,13 @@ public class TaskActivity extends AppCompatActivity {
 
         builder.setTitle(R.string.select_category);
 
-        builder.setSingleChoiceItems(categoryAdapter, 0, new DialogInterface.OnClickListener() {
+        int selectedCategory = task.getCategory() == null ? 0 : categories.indexOf(task.getCategory());
+
+        builder.setSingleChoiceItems(categoriesTitle, selectedCategory, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                task.setCategory(categories.get(which));
+                dialog.dismiss();
             }
         });
 
@@ -422,7 +426,16 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void setCategoriesPicker(List<TaskCategory> categories) {
-        categoryAdapter = new CategoryPickerAdapter(TaskActivity.this, categories);
+        this.categories = categories;
+        this.categories.add(0, new TaskCategory(TaskyConstants.DEFAULT_CATEGORY_ID, getString(R.string.all)));
+
+        categoriesTitle = new String[categories.size()];
+        categoriesId = new long[categories.size()];
+
+        for (int i = 0; i < categories.size(); i++) {
+            categoriesTitle[i] = categories.get(i).getTitle();
+            categoriesId[i] = categories.get(i).getId();
+        }
     }
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, List<TaskCategory>> {

@@ -13,6 +13,7 @@ class DatabaseConstants {
     static final String TASK_DATE_COLUMN = "TASK_DATE_COLUMN";
     static final String TASK_TIME_PRESENT_COLUMN = "TASK_TIME_PRESENT_COLUMN";
     static final String TASK_SHOW_IN_WIDGET_COLUMN = "SHOW_IN_WIDGET_COLUMN";
+    static final String TASK_CATEGORY_FK = "TASK_CATEGORY_FK";
 
     //creating table columns for categories table
     static final String CATEGORIES_KEY_ID = "ID";

@@ -16,6 +16,7 @@ public class SimpleTask implements Serializable {
     private boolean completed;
     private boolean timePresent;
     private boolean showInWidget;
+    private TaskCategory category;
 
     public SimpleTask() {
         this.id = TaskyConstants.EMPTY_ID;
@@ -25,9 +26,10 @@ public class SimpleTask implements Serializable {
         this.completed = false;
         this.timePresent = false;
         this.showInWidget = true;
+        this.category = null;
     }
 
-    public SimpleTask(int id, String title, String note, DateTime dueDate, boolean completed, boolean timePresent, boolean showInWidget) {
+    public SimpleTask(int id, String title, String note, DateTime dueDate, boolean completed, boolean timePresent, boolean showInWidget, TaskCategory category) {
         this.id = id;
         this.title = title;
         this.note = note;
@@ -35,6 +37,7 @@ public class SimpleTask implements Serializable {
         this.completed = completed;
         this.timePresent = timePresent;
         this.showInWidget = showInWidget;
+        this.category = category;
     }
 
     public int getId() {
@@ -103,6 +106,14 @@ public class SimpleTask implements Serializable {
 
     public void setShowInWidget(boolean showInWidget) {
         this.showInWidget = showInWidget;
+    }
+
+    public TaskCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(TaskCategory category) {
+        this.category = category;
     }
 
     @Override

@@ -11,7 +11,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "task_database.db";
     static final String DATABASE_TABLE_TASKS = "taskTable";
     static final String DATABASE_TABLE_CATEGORIES = "categoriesTable";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     private static final String CREATE_TABLE_TASKS = "create table " + DATABASE_TABLE_TASKS + " ( "
             + TASKS_KEY_ID + " integer primary key autoincrement,"
@@ -20,7 +20,9 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
             + TASK_NOTE_COLUMN + " text,"
             + TASK_DATE_COLUMN + " timestamp,"
             + TASK_TIME_PRESENT_COLUMN + " smallint check (" + TASK_TIME_PRESENT_COLUMN + " in (0,1)),"
-            + TASK_SHOW_IN_WIDGET_COLUMN + " smallint default " + TRUE
+            + TASK_SHOW_IN_WIDGET_COLUMN + " smallint default " + TRUE + ","
+            + TASK_CATEGORY_FK + " integer,"
+            + "foreign key (" + TASK_CATEGORY_FK + ") references " + DATABASE_TABLE_CATEGORIES + "(" + CATEGORIES_KEY_ID + ")"
             + ");";
 
     private static final String CREATE_TABLE_CATEGORIES = "create table " + DATABASE_TABLE_CATEGORIES + " ( "
@@ -50,12 +52,14 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        db.execSQL("alter table " + DATABASE_TABLE_TASKS + " rename to old");
-//        db.execSQL(CREATE_TABLE_TASKS);
-//        String columns = TASKS_KEY_ID + "," + TASK_TITLE_COLUMN + "," + TASK_COMPLETED_COLUMN + "," + TASK_NOTE_COLUMN + "," + TASK_DATE_COLUMN + "," + TASK_TIME_PRESENT_COLUMN;
-//        db.execSQL("insert into " + DATABASE_TABLE_TASKS + "(" + columns + ")"
-//                + " select " + columns + " from old");
-//        db.execSQL("drop table old");
+        db.execSQL("alter table " + DATABASE_TABLE_TASKS + " rename to old");
+        db.execSQL(CREATE_TABLE_TASKS);
+        String columns = TASKS_KEY_ID + "," + TASK_TITLE_COLUMN + "," + TASK_COMPLETED_COLUMN + ","
+                + TASK_NOTE_COLUMN + "," + TASK_DATE_COLUMN + "," + TASK_TIME_PRESENT_COLUMN + ","
+                + TASK_SHOW_IN_WIDGET_COLUMN;
+        db.execSQL("insert into " + DATABASE_TABLE_TASKS + "(" + columns + ")"
+                + " select " + columns + " from old");
+        db.execSQL("drop table old");
 
         db.execSQL("drop table if exists " + DATABASE_TABLE_CATEGORIES);
         db.execSQL(CREATE_TABLE_CATEGORIES);

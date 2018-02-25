@@ -25,6 +25,7 @@ import static com.sandra.tasky.db.DatabaseConstants.CATEGORIES_KEY_ID;
 import static com.sandra.tasky.db.DatabaseConstants.CATEGORIES_TITLE;
 import static com.sandra.tasky.db.DatabaseConstants.FALSE;
 import static com.sandra.tasky.db.DatabaseConstants.TASKS_KEY_ID;
+import static com.sandra.tasky.db.DatabaseConstants.TASK_CATEGORY_FK;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_COMPLETED_COLUMN;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_DATE_COLUMN;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_NOTE_COLUMN;
@@ -67,6 +68,7 @@ public class TaskDatabase {
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         newValues.put(TASK_TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
         newValues.put(TASK_SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
+        newValues.put(TASK_CATEGORY_FK, task.getCategory() == null ? null : task.getCategory().getId());
 
         dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, newValues);
     }
@@ -87,6 +89,7 @@ public class TaskDatabase {
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         updateValues.put(TASK_TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
         updateValues.put(TASK_SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
+        updateValues.put(TASK_CATEGORY_FK, task.getCategory() == null ? null : task.getCategory().getId());
 
         String where = TASKS_KEY_ID + " = " + task.getId();
 
@@ -118,13 +121,25 @@ public class TaskDatabase {
                     date = null;
                 boolean timePresent = (cursor.getInt(5) == TRUE);
                 boolean showInWidget = (cursor.getInt(6) == TRUE);
-                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget));
+
+                long categoryId = cursor.getInt(7);
+                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget, getCategoryById(categoryId)));
 
             } while (cursor.moveToNext());
         }
 
         cursor.close();
         return list;
+    }
+
+    private TaskCategory getCategoryById(long id) {
+        List<TaskCategory> categories = getAllCategories();
+        for (TaskCategory category : categories) {
+            if (category.getId() == id) {
+                return category;
+            }
+        }
+        return null;
     }
 
     public List<TaskCategory> getAllCategories() {
@@ -179,7 +194,8 @@ public class TaskDatabase {
                     date = null;
                 boolean timePresent = (cursor.getInt(5) == TRUE);
                 boolean showInWidget = (cursor.getInt(6) == TRUE);
-                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget));
+                long categoryId = cursor.getInt(7);
+                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget, getCategoryById(categoryId)));
 
             } while (cursor.moveToNext());
         }
