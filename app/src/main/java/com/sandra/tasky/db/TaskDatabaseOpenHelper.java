@@ -57,7 +57,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 //                + " select " + columns + " from old");
 //        db.execSQL("drop table old");
 
-        db.execSQL("drop table " + DATABASE_TABLE_CATEGORIES);
+        db.execSQL("drop table if exists " + DATABASE_TABLE_CATEGORIES);
         db.execSQL(CREATE_TABLE_CATEGORIES);
     }
 }
