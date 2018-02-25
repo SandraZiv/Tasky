@@ -68,6 +68,8 @@ public class TaskActivity extends AppCompatActivity {
     private String[] categoriesTitle;
     private long[] categoriesId;
 
+    private int selectedCategory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +96,11 @@ public class TaskActivity extends AppCompatActivity {
 
         //open db
         new OpenDBAsyncTask().execute("open");
+
+        selectedCategory = getIntent().getExtras().getInt(TaskyConstants.SELECTED_CATEGORY_KEY);
+        if (selectedCategory == TaskyConstants.DEFAULT_CATEGORY_ID) {
+            selectedCategory = 0;
+        }
 
         title = (EditText) findViewById(R.id.et_title);
         if (!isTaskNew) {
@@ -405,9 +412,9 @@ public class TaskActivity extends AppCompatActivity {
 
         builder.setTitle(R.string.select_category);
 
-        int selectedCategory = task.getCategory() == null ? 0 : categories.indexOf(task.getCategory());
+        int preselected = task.getCategory() == null ? selectedCategory : categories.indexOf(task.getCategory());
 
-        builder.setSingleChoiceItems(categoriesTitle, selectedCategory, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(categoriesTitle, preselected, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 task.setCategory(categories.get(which));

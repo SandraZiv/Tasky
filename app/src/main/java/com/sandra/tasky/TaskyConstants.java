@@ -20,4 +20,6 @@ public class TaskyConstants {
     public static int MAX_TEXT_LENGTH = 100;
 
     public static long DEFAULT_CATEGORY_ID = -1L;
+
+    public static String SELECTED_CATEGORY_KEY = "SELECTED_CATEGORY_KEY";
 }

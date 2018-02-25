@@ -52,6 +52,8 @@ public class HomeScreenActivity extends AppCompatActivity
     private List<TaskCategory> categories;
     private Map<Long, Integer> categoriesCount;
 
+    private int selectedCategory = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +125,7 @@ public class HomeScreenActivity extends AppCompatActivity
 
     private void createNewTask() {
         Intent newTaskIntent = new Intent(this, TaskActivity.class);
+        newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategory);
         startActivityForResult(newTaskIntent, REQUEST_CODE);
     }
 
@@ -139,6 +142,7 @@ public class HomeScreenActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent openTaskIntent = new Intent(HomeScreenActivity.this, TaskActivity.class);
                 openTaskIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, list.get(position));
+                openTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategory);
                 startActivityForResult(openTaskIntent, REQUEST_CODE);
             }
         });
@@ -211,6 +215,8 @@ public class HomeScreenActivity extends AppCompatActivity
         if (actionBar != null) {
             actionBar.setTitle(categoryTitle);
         }
+
+        selectedCategory = categoryId;
     }
 
     private void updateCategoriesList(List<TaskCategory> categories) {
