@@ -443,6 +443,11 @@ public class TaskActivity extends AppCompatActivity {
             categoriesTitle[i] = categories.get(i).getTitle();
             categoriesId[i] = categories.get(i).getId();
         }
+
+        if (isTaskNew && selectedCategory != 0 && selectedCategory != TaskyConstants.DEFAULT_CATEGORY_ID) {
+            //set default category if task is new and category is different than ALL
+            task.setCategory(new TaskCategory(categoriesId[selectedCategory], categoriesTitle[selectedCategory]));
+        }
     }
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, List<TaskCategory>> {

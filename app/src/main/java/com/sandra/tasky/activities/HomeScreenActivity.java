@@ -34,6 +34,7 @@ import com.sandra.tasky.entity.TaskCategory;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,7 @@ public class HomeScreenActivity extends AppCompatActivity
     private FloatingActionButton fabAddTask;
     private NavigationView navigationView;
 
+    private List<SimpleTask> tasks;
     private List<TaskCategory> categories;
     private Map<Long, Integer> categoriesCount;
 
@@ -114,7 +116,7 @@ public class HomeScreenActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.home_menu_btn_delete_all:
                 database.deleteAllTasks();
-                updateListView();
+                new OpenDBAsyncTask().execute();
                 break;
             default:
                 Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
@@ -129,8 +131,8 @@ public class HomeScreenActivity extends AppCompatActivity
         startActivityForResult(newTaskIntent, REQUEST_CODE);
     }
 
-    private void updateListView() {
-        final List<SimpleTask> list = database.getAllTasks();
+    private void updateListView(final List<SimpleTask> list) {
+//        final List<SimpleTask> list = database.getAllTasks();
         ListAdapter homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
         ListView listView = (ListView) findViewById(R.id.home_list);
         listView.setAdapter(homeListAdapter);
@@ -161,7 +163,7 @@ public class HomeScreenActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(HomeScreenActivity.this, R.string.task_deleted, Toast.LENGTH_SHORT).show();
                         database.deleteTasks(list.get(position));
-                        updateListView();
+                        new OpenDBAsyncTask().execute();
                         dialog.cancel();
                     }
                 });
@@ -171,15 +173,14 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         });
 
+        TaskyUtils.updateWidget(this);
+    }
+
+    private void setActionBar(CharSequence title) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(getString(R.string.all_tasks) + " (" + list.size() + ")");
+            actionBar.setTitle(title);
         }
-
-        navigationView.getMenu().removeGroup(R.id.menu_group_top);
-        navigationView.getMenu().add(R.id.menu_group_top, (int)TaskyConstants.DEFAULT_CATEGORY_ID, 1, (getString(R.string.all_tasks) + " (" + list.size() + ")"));
-
-        TaskyUtils.updateWidget(this);
     }
 
     @Override
@@ -211,36 +212,70 @@ public class HomeScreenActivity extends AppCompatActivity
     }
 
     private void openCategory(int categoryId, CharSequence categoryTitle) {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(categoryTitle);
-        }
+        setActionBar(categoryTitle);
 
         selectedCategory = categoryId;
+
+        updateListView(filterTasks());
     }
 
     private void updateCategoriesList(List<TaskCategory> categories) {
         this.categories = categories;
 
+        navigationView.getMenu().removeGroup(R.id.menu_group_top);
+        navigationView.getMenu().add(R.id.menu_group_top, (int) TaskyConstants.DEFAULT_CATEGORY_ID, 1,
+                (getString(R.string.all_tasks) + " (" + tasks.size() + ")"));
+
         for (TaskCategory category : categories) {
-            navigationView.getMenu().add(R.id.menu_group_top, (int)category.getId().longValue(), 2,
+            navigationView.getMenu().add(R.id.menu_group_top, (int) category.getId().longValue(), 2,
                     category.getTitle() + " (" + categoriesCount.get(category.getId()) + ")");
         }
+    }
 
+    private List<SimpleTask> filterTasks() {
+        if (selectedCategory == 0 || selectedCategory == TaskyConstants.DEFAULT_CATEGORY_ID) {
+            return tasks;
+        }
+        List<SimpleTask> filteredTasks = new LinkedList<>();
+
+
+        for (SimpleTask task : tasks) {
+            if (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategory)) {
+                filteredTasks.add(task);
+            }
+        }
+
+        return filteredTasks;
     }
 
     private class OpenDBAsyncTask extends AsyncTask<String, Integer, List<TaskCategory>> {
         @Override
         protected List<TaskCategory> doInBackground(String... params) {
             database = new TaskDatabase(HomeScreenActivity.this);
+            tasks = database.getAllTasks();
             categoriesCount = database.getCategoriesTaskCount();
             return database.getAllCategories();
         }
 
         @Override
         protected void onPostExecute(List<TaskCategory> categories) {
-            updateListView();
             updateCategoriesList(categories);
+
+            if (selectedCategory != 0 && selectedCategory != TaskyConstants.DEFAULT_CATEGORY_ID) {
+                List<SimpleTask> filteredTasks = new LinkedList<>();
+                for (SimpleTask task : tasks) {
+                    if (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategory)) {
+                        filteredTasks.add(task);
+                    }
+                }
+                updateListView(filteredTasks);
+                setActionBar(navigationView.getMenu().getItem(selectedCategory).getTitle());
+
+            } else {
+                updateListView(tasks);
+                setActionBar(navigationView.getMenu().getItem(0).getTitle());
+            }
+
         }
     }
 
