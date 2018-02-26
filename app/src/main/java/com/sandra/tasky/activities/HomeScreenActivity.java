@@ -54,7 +54,7 @@ public class HomeScreenActivity extends AppCompatActivity
     private List<TaskCategory> categories;
     private Map<Long, Integer> categoriesCount;
 
-    private int selectedCategory = 0;
+    private int selectedCategoryId = (int) TaskyConstants.DEFAULT_CATEGORY_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +127,7 @@ public class HomeScreenActivity extends AppCompatActivity
 
     private void createNewTask() {
         Intent newTaskIntent = new Intent(this, TaskActivity.class);
-        newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategory);
+        newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId);
         startActivityForResult(newTaskIntent, REQUEST_CODE);
     }
 
@@ -144,7 +144,7 @@ public class HomeScreenActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent openTaskIntent = new Intent(HomeScreenActivity.this, TaskActivity.class);
                 openTaskIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, list.get(position));
-                openTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategory);
+                openTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId);
                 startActivityForResult(openTaskIntent, REQUEST_CODE);
             }
         });
@@ -214,7 +214,7 @@ public class HomeScreenActivity extends AppCompatActivity
     private void openCategory(int categoryId, CharSequence categoryTitle) {
         setActionBar(categoryTitle);
 
-        selectedCategory = categoryId;
+        selectedCategoryId = categoryId;
 
         updateListView(filterTasks());
     }
@@ -233,14 +233,14 @@ public class HomeScreenActivity extends AppCompatActivity
     }
 
     private List<SimpleTask> filterTasks() {
-        if (selectedCategory == 0 || selectedCategory == TaskyConstants.DEFAULT_CATEGORY_ID) {
+        if (selectedCategoryId == TaskyConstants.DEFAULT_CATEGORY_ID) {
             return tasks;
         }
+
         List<SimpleTask> filteredTasks = new LinkedList<>();
 
-
         for (SimpleTask task : tasks) {
-            if (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategory)) {
+            if (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategoryId)) {
                 filteredTasks.add(task);
             }
         }
@@ -260,22 +260,9 @@ public class HomeScreenActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(List<TaskCategory> categories) {
             updateCategoriesList(categories);
+            updateListView(filterTasks());
 
-            if (selectedCategory != 0 && selectedCategory != TaskyConstants.DEFAULT_CATEGORY_ID) {
-                List<SimpleTask> filteredTasks = new LinkedList<>();
-                for (SimpleTask task : tasks) {
-                    if (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategory)) {
-                        filteredTasks.add(task);
-                    }
-                }
-                updateListView(filteredTasks);
-                setActionBar(navigationView.getMenu().getItem(selectedCategory).getTitle());
-
-            } else {
-                updateListView(tasks);
-                setActionBar(navigationView.getMenu().getItem(0).getTitle());
-            }
-
+            setActionBar(navigationView.getMenu().findItem(selectedCategoryId).getTitle());
         }
     }
 

@@ -68,7 +68,8 @@ public class TaskActivity extends AppCompatActivity {
     private String[] categoriesTitle;
     private long[] categoriesId;
 
-    private int selectedCategory;
+    //index for above arrays calculated on given categories and selectedCategoryId from intent extras
+    private int selectedCategoryIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +97,6 @@ public class TaskActivity extends AppCompatActivity {
 
         //open db
         new OpenDBAsyncTask().execute("open");
-
-        selectedCategory = getIntent().getExtras().getInt(TaskyConstants.SELECTED_CATEGORY_KEY);
-        if (selectedCategory == TaskyConstants.DEFAULT_CATEGORY_ID) {
-            selectedCategory = 0;
-        }
 
         title = (EditText) findViewById(R.id.et_title);
         if (!isTaskNew) {
@@ -412,7 +408,7 @@ public class TaskActivity extends AppCompatActivity {
 
         builder.setTitle(R.string.select_category);
 
-        int preselected = task.getCategory() == null ? selectedCategory : categories.indexOf(task.getCategory());
+        int preselected = task.getCategory() == null ? selectedCategoryIndex : categories.indexOf(task.getCategory());
 
         builder.setSingleChoiceItems(categoriesTitle, preselected, new DialogInterface.OnClickListener() {
             @Override
@@ -436,6 +432,8 @@ public class TaskActivity extends AppCompatActivity {
         this.categories = categories;
         this.categories.add(0, new TaskCategory(TaskyConstants.DEFAULT_CATEGORY_ID, getString(R.string.all)));
 
+        setSelectedCategory();
+
         categoriesTitle = new String[categories.size()];
         categoriesId = new long[categories.size()];
 
@@ -444,9 +442,27 @@ public class TaskActivity extends AppCompatActivity {
             categoriesId[i] = categories.get(i).getId();
         }
 
-        if (isTaskNew && selectedCategory != 0 && selectedCategory != TaskyConstants.DEFAULT_CATEGORY_ID) {
-            //set default category if task is new and category is different than ALL
-            task.setCategory(new TaskCategory(categoriesId[selectedCategory], categoriesTitle[selectedCategory]));
+        //set default category if task is new and category is different than ALL
+        //need in case user doesn't want to change category manually
+        if (isTaskNew && selectedCategoryIndex != 0) {
+            long categoryId = categoriesId[selectedCategoryIndex];
+            String categoryTitle = categoriesTitle[selectedCategoryIndex];
+            task.setCategory(new TaskCategory(categoryId, categoryTitle));
+        }
+    }
+
+    private void setSelectedCategory() {
+        //to handle opening new task activity from widget
+        int selectedCategoryId = getIntent().getExtras() == null ?
+                (int) TaskyConstants.DEFAULT_CATEGORY_ID
+                : getIntent().getExtras().getInt(TaskyConstants.SELECTED_CATEGORY_KEY);
+        //init
+        this.selectedCategoryIndex = 0;
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getId() == selectedCategoryId) {
+                this.selectedCategoryIndex = i;
+                break;
+            }
         }
     }
 
