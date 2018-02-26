@@ -46,8 +46,6 @@ public class HomeScreenActivity extends AppCompatActivity
     private TaskDatabase database;
 
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle drawerToggle;
-    private FloatingActionButton fabAddTask;
     private NavigationView navigationView;
 
     private List<SimpleTask> tasks;
@@ -67,14 +65,16 @@ public class HomeScreenActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
+
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fabAddTask = (FloatingActionButton) findViewById(R.id.fab_add_task);
+        FloatingActionButton fabAddTask = (FloatingActionButton) findViewById(R.id.fab_add_task);
         fabAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,13 +83,13 @@ public class HomeScreenActivity extends AppCompatActivity
         });
 
         //open db
-        new OpenDBAsyncTask().execute("Open");
+        new getDataAsyncTask().execute();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        new OpenDBAsyncTask().execute("Open");
+        new getDataAsyncTask().execute();
     }
 
     @Override
@@ -154,7 +154,7 @@ public class HomeScreenActivity extends AppCompatActivity
                         }
                         database.deleteAllTasksInCategory(ids);
                     }
-                    new OpenDBAsyncTask().execute();
+                    new getDataAsyncTask().execute();
                 }
             });
 
@@ -207,7 +207,7 @@ public class HomeScreenActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(HomeScreenActivity.this, R.string.task_deleted, Toast.LENGTH_SHORT).show();
                         database.deleteTasks(list.get(position));
-                        new OpenDBAsyncTask().execute();
+                        new getDataAsyncTask().execute();
                         dialog.cancel();
                     }
                 });
@@ -231,7 +231,7 @@ public class HomeScreenActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                new OpenDBAsyncTask().execute("Reopen");
+                new getDataAsyncTask().execute();
             }
         }
 
@@ -263,8 +263,7 @@ public class HomeScreenActivity extends AppCompatActivity
         updateListView(filterTasks());
     }
 
-    private void updateCategoriesList(List<TaskCategory> categories) {
-        this.categories = categories;
+    private void updateCategoriesList() {
 
         navigationView.getMenu().removeGroup(R.id.menu_group_top);
         navigationView.getMenu().add(R.id.menu_group_top, (int) TaskyConstants.ALL_CATEGORY_ID, 1,
@@ -302,18 +301,21 @@ public class HomeScreenActivity extends AppCompatActivity
         return filteredTasks;
     }
 
-    private class OpenDBAsyncTask extends AsyncTask<String, Integer, List<TaskCategory>> {
+    private class getDataAsyncTask extends AsyncTask<String, Integer, Integer> {
         @Override
-        protected List<TaskCategory> doInBackground(String... params) {
+        protected Integer doInBackground(String... params) {
             database = new TaskDatabase(HomeScreenActivity.this);
+
             tasks = database.getAllTasks();
             categoriesCount = database.getCategoriesTaskCount();
-            return database.getAllCategories();
+            categories = database.getAllCategories();
+
+            return null;
         }
 
         @Override
-        protected void onPostExecute(List<TaskCategory> categories) {
-            updateCategoriesList(categories);
+        protected void onPostExecute(Integer retValue) {
+            updateCategoriesList();
             updateListView(filterTasks());
 
             setActionBar(navigationView.getMenu().findItem(selectedCategoryId).getTitle());
