@@ -30,6 +30,24 @@
                 android:value=".activities.HomeScreenActivity" />
         </activity>
 
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/settings"
+            android:parentActivityName=".activities.HomeScreenActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeScreenActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.CategoriesActivity"
+            android:label="@string/manage_categories"
+            android:parentActivityName=".activities.HomeScreenActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeScreenActivity" />
+        </activity>
+
         <receiver android:name=".widget.TaskWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -50,24 +68,6 @@
         <service
             android:name=".widget.TaskWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <activity
-            android:name=".activities.SettingsActivity"
-            android:label="@string/settings"
-            android:parentActivityName=".activities.HomeScreenActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.HomeScreenActivity" />
-        </activity>
-
-        <activity
-            android:name=".activities.CategoriesActivity"
-            android:label="@string/manage_categories"
-            android:parentActivityName=".activities.HomeScreenActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.HomeScreenActivity" />
-        </activity>
 
     </application>
 
