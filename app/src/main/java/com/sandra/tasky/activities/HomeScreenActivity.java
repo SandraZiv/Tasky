@@ -268,7 +268,7 @@ public class HomeScreenActivity extends AppCompatActivity
 
         navigationView.getMenu().removeGroup(R.id.menu_group_top);
         navigationView.getMenu().add(R.id.menu_group_top, (int) TaskyConstants.ALL_CATEGORY_ID, 1,
-                (getString(R.string.all_tasks) + " (" + tasks.size() + ")"));
+                (getString(R.string.all_tasks, tasks.size())));
 
         int categorySize = 0;
         for (TaskCategory category : categories) {
@@ -280,7 +280,7 @@ public class HomeScreenActivity extends AppCompatActivity
         //add others if there is at least one category
         if (categories.size() != 0) {
             navigationView.getMenu().add(R.id.menu_group_top, (int) TaskyConstants.OTHERS_CATEGORY_ID,
-                    categories.size() + 1, getString(R.string.others) + " (" + (tasks.size() - categorySize) + ")");
+                    categories.size() + 1, getString(R.string.others, tasks.size() - categorySize));
         }
     }
 
