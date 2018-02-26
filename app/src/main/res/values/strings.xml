@@ -26,7 +26,7 @@
     <string name="days">days</string>
     <string name="to_do">To do</string>
     <string name="new_task">New task</string>
-    <string name="delete_all">Delete all</string>
+    <string name="delete_all">Delete all tasks</string>
     <string name="delete">Delete</string>
     <string name="save">Save</string>
     <string name="ok" translatable="false">OK</string>
@@ -102,6 +102,14 @@
     <string name="select_category">Select category</string>
     <string name="all">All</string>
     <string name="others">Others</string>
+
+    <plurals name="delete_alert">
+        <item quantity="one">You are about to delete %d task. Are you sure?</item>
+        <item quantity="few">You are about to delete %d tasks. Are you sure?</item>
+        <item quantity="other">You are about to delete %d tasks. Are you sure?</item>
+    </plurals>
+
+    <string name="nothing_to_delete">No tasks to delete</string>
 
 
 </resources>

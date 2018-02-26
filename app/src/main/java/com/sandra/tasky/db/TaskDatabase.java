@@ -242,6 +242,17 @@ public class TaskDatabase {
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, null);
     }
 
+    public int deleteAllTasksInCategory(long[] tasksIds) {
+        String where = "";
+        for (int i = 0; i < tasksIds.length; i++) {
+            if (i != 0) {
+                where += " OR ";
+            }
+            where += TASKS_KEY_ID + " = " + tasksIds[i];
+        }
+        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, where, null);
+    }
+
     public int deleteAllCategories() {
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, null, null);
     }

@@ -86,4 +86,12 @@
     <string name="select_category">Odaberite kategoriju</string>
     <string name="others">Ostali</string>
 
+    <plurals name="delete_alert">
+        <item quantity="one">Jeste li sigurni da želite obrisati %d zadatak?</item>
+        <item quantity="few">Jeste li sigurni da želite obrisati %d zadatka?</item>
+        <item quantity="other">Jeste li sigurni da želite obrisati %d zadataka?</item>
+    </plurals>
+
+    <string name="nothing_to_delete">Nema zadataka za brisanje</string>
+
 </resources>

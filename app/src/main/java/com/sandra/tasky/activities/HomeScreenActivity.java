@@ -115,13 +115,58 @@ public class HomeScreenActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home_menu_btn_delete_all:
-                database.deleteAllTasks();
-                new OpenDBAsyncTask().execute();
+                deleteTasks();
                 break;
             default:
                 Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteTasks() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
+        builder.setTitle(getString(R.string.delete));
+
+        final List<SimpleTask> filteredTasks = filterTasks();
+
+        if (filteredTasks.size() == 0) {
+            builder.setMessage(R.string.nothing_to_delete);
+
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        } else {
+
+            builder.setMessage(getResources().getQuantityString(R.plurals.delete_alert, filteredTasks.size(), filteredTasks.size()));
+
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (selectedCategoryId == TaskyConstants.ALL_CATEGORY_ID) {
+                        database.deleteAllTasks();
+                    } else {
+                        long[] ids = new long[filteredTasks.size()];
+                        for (int i = 0; i < filteredTasks.size(); i++) {
+                            ids[i] = filteredTasks.get(i).getId();
+                        }
+                        database.deleteAllTasksInCategory(ids);
+                    }
+                    new OpenDBAsyncTask().execute();
+                }
+            });
+
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+        }
+
+        builder.show();
     }
 
 
@@ -132,7 +177,6 @@ public class HomeScreenActivity extends AppCompatActivity
     }
 
     private void updateListView(final List<SimpleTask> list) {
-//        final List<SimpleTask> list = database.getAllTasks();
         ListAdapter homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
         ListView listView = (ListView) findViewById(R.id.home_list);
         listView.setAdapter(homeListAdapter);
