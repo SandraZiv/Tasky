@@ -54,6 +54,8 @@ public class HomeScreenActivity extends AppCompatActivity
 
     private int selectedCategoryId = (int) TaskyConstants.ALL_CATEGORY_ID;
 
+    private Toast mToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +120,7 @@ public class HomeScreenActivity extends AppCompatActivity
                 deleteTasks();
                 break;
             default:
-                Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+                mToast = TaskyUtils.addToast(mToast, this, getString(R.string.error), true);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -205,7 +207,7 @@ public class HomeScreenActivity extends AppCompatActivity
                 builder.setAdapter(optionList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(HomeScreenActivity.this, R.string.task_deleted, Toast.LENGTH_SHORT).show();
+                        mToast = TaskyUtils.addToast(mToast, HomeScreenActivity.this, R.string.task_deleted, true);
                         database.deleteTasks(list.get(position));
                         new getDataAsyncTask().execute();
                         dialog.cancel();

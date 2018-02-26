@@ -71,6 +71,8 @@ public class TaskActivity extends AppCompatActivity {
     //index for above arrays calculated on given categories and selectedCategoryId from intent extras
     private int selectedCategoryIndex = 0;
 
+    private Toast mToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +92,7 @@ public class TaskActivity extends AppCompatActivity {
         //implementation for back button_close
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(isTaskNew? R.string.create_task : R.string.edit_task);
+            actionBar.setTitle(isTaskNew ? R.string.create_task : R.string.edit_task);
         }
 
         //open db
@@ -321,7 +323,7 @@ public class TaskActivity extends AppCompatActivity {
                 break;
             case R.id.task_save:
                 if (title.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(TaskActivity.this, R.string.empty_title, Toast.LENGTH_SHORT).show();
+                    mToast = TaskyUtils.addToast(mToast, TaskActivity.this, R.string.empty_title, true);
                     setupForOnBackPressed();
                     break;
                 }
@@ -329,7 +331,7 @@ public class TaskActivity extends AppCompatActivity {
                 break;
             case R.id.task_confirm:
                 if (title.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(TaskActivity.this, R.string.empty_title_confirmed, Toast.LENGTH_SHORT).show();
+                    mToast = TaskyUtils.addToast(mToast, TaskActivity.this, R.string.empty_title_confirmed, true);
                     break;
                 }
                 onBackPressed();
@@ -343,7 +345,7 @@ public class TaskActivity extends AppCompatActivity {
                 isTaskVisibilityInWidgetChanged = true;
                 break;
             default:
-                Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+                mToast = TaskyUtils.addToast(mToast, this, R.string.error, true);
                 setupForOnBackPressed();
         }
         return super.onOptionsItemSelected(item);
@@ -395,7 +397,7 @@ public class TaskActivity extends AppCompatActivity {
                     && (isDateChanged || isTaskVisibilityInWidgetChanged)
                     && task.isTimePresent()
                     && (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis()) {
-                Toast.makeText(this, R.string.reminder_set, Toast.LENGTH_SHORT).show();
+                mToast = TaskyUtils.addToast(mToast, this, R.string.reminder_set, true);
                 TaskyUtils.setAlarm(this, task.getDueDate().getMillis() + 60 * 1000, task.getTitle(), false);
             }
         }

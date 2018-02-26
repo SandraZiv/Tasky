@@ -19,10 +19,13 @@ import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.TaskyUtils;
 
 
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private Toast mToast;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,11 +55,11 @@ public class SettingsFragment extends PreferenceFragment
                     editor.apply();
                     preference.setSummary(getString(R.string.scheduler_restarted));
                     preference.setEnabled(false);
-                    Toast.makeText(getActivity(), R.string.scheduler_restarted, Toast.LENGTH_LONG).show();
+                    mToast = TaskyUtils.addToast(mToast, getActivity(), R.string.scheduler_restarted, true);
                 } else {
                     preference.setSummary(lastUpdate);
                     //this is actually never called
-                    Toast.makeText(getActivity(), R.string.please_restart_widget_to_complete, Toast.LENGTH_LONG).show();
+                    mToast = TaskyUtils.addToast(mToast, getActivity(), R.string.please_restart_widget_to_complete, false);
                 }
                 return false;
             }
@@ -148,7 +151,7 @@ public class SettingsFragment extends PreferenceFragment
         Preference timeSpan = findPreference(getString(R.string.pref_time_span_key));
         setPreferenceSummary(timeSpan, getString(R.string.pref_time_span_default));
 
-        Toast.makeText(getActivity().getApplicationContext(), R.string.settings_reset, Toast.LENGTH_SHORT).show();
+        mToast = TaskyUtils.addToast(mToast, getActivity().getApplicationContext(), R.string.settings_reset, true);
     }
 
     @Override
