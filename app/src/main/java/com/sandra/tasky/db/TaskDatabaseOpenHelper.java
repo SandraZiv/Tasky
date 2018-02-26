@@ -11,7 +11,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "task_database.db";
     static final String DATABASE_TABLE_TASKS = "taskTable";
     static final String DATABASE_TABLE_CATEGORIES = "categoriesTable";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     private static final String CREATE_TABLE_TASKS = "create table " + DATABASE_TABLE_TASKS + " ( "
             + TASKS_KEY_ID + " integer primary key autoincrement,"
@@ -23,6 +23,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
             + TASK_SHOW_IN_WIDGET_COLUMN + " smallint default " + TRUE + ","
             + TASK_CATEGORY_FK + " integer,"
             + "foreign key (" + TASK_CATEGORY_FK + ") references " + DATABASE_TABLE_CATEGORIES + "(" + CATEGORIES_KEY_ID + ")"
+            + "on delete set null"
             + ");";
 
     private static final String CREATE_TABLE_CATEGORIES = "create table " + DATABASE_TABLE_CATEGORIES + " ( "
