@@ -101,6 +101,7 @@
     <string name="category">Category</string>
     <string name="select_category">Select category</string>
     <string name="all">All</string>
+    <string name="others">Others</string>
 
 
 </resources>

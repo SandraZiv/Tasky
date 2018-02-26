@@ -54,7 +54,7 @@ public class HomeScreenActivity extends AppCompatActivity
     private List<TaskCategory> categories;
     private Map<Long, Integer> categoriesCount;
 
-    private int selectedCategoryId = (int) TaskyConstants.DEFAULT_CATEGORY_ID;
+    private int selectedCategoryId = (int) TaskyConstants.ALL_CATEGORY_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,24 +223,34 @@ public class HomeScreenActivity extends AppCompatActivity
         this.categories = categories;
 
         navigationView.getMenu().removeGroup(R.id.menu_group_top);
-        navigationView.getMenu().add(R.id.menu_group_top, (int) TaskyConstants.DEFAULT_CATEGORY_ID, 1,
+        navigationView.getMenu().add(R.id.menu_group_top, (int) TaskyConstants.ALL_CATEGORY_ID, 1,
                 (getString(R.string.all_tasks) + " (" + tasks.size() + ")"));
 
+        int categorySize = 0;
         for (TaskCategory category : categories) {
             navigationView.getMenu().add(R.id.menu_group_top, (int) category.getId().longValue(), 2,
                     category.getTitle() + " (" + categoriesCount.get(category.getId()) + ")");
+            categorySize += categoriesCount.get(category.getId());
+        }
+
+        //add others if there is at least one category
+        if (categories.size() != 0) {
+            navigationView.getMenu().add(R.id.menu_group_top, (int) TaskyConstants.OTHERS_CATEGORY_ID,
+                    categories.size() + 1, getString(R.string.others) + " (" + (tasks.size() - categorySize) + ")");
         }
     }
 
     private List<SimpleTask> filterTasks() {
-        if (selectedCategoryId == TaskyConstants.DEFAULT_CATEGORY_ID) {
+        if (selectedCategoryId == TaskyConstants.ALL_CATEGORY_ID) {
             return tasks;
         }
 
         List<SimpleTask> filteredTasks = new LinkedList<>();
 
         for (SimpleTask task : tasks) {
-            if (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategoryId)) {
+            //get others or selected category
+            if ((task.getCategory() == null && selectedCategoryId == TaskyConstants.OTHERS_CATEGORY_ID)
+                    || (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategoryId))) {
                 filteredTasks.add(task);
             }
         }

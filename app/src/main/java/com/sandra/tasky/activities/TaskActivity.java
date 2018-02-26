@@ -430,7 +430,8 @@ public class TaskActivity extends AppCompatActivity {
 
     private void setCategoriesPicker(List<TaskCategory> categories) {
         this.categories = categories;
-        this.categories.add(0, new TaskCategory(TaskyConstants.DEFAULT_CATEGORY_ID, getString(R.string.all)));
+        this.categories.add(new TaskCategory(TaskyConstants.OTHERS_CATEGORY_ID,
+                getString(categories.size() == 0 ? R.string.all : R.string.others)));
 
         setSelectedCategory();
 
@@ -442,9 +443,9 @@ public class TaskActivity extends AppCompatActivity {
             categoriesId[i] = categories.get(i).getId();
         }
 
-        //set default category if task is new and category is different than ALL
+        //set category others if task is new and category is different than others
         //need in case user doesn't want to change category manually
-        if (isTaskNew && selectedCategoryIndex != 0) {
+        if (isTaskNew && selectedCategoryIndex != categories.size() - 1) {
             long categoryId = categoriesId[selectedCategoryIndex];
             String categoryTitle = categoriesTitle[selectedCategoryIndex];
             task.setCategory(new TaskCategory(categoryId, categoryTitle));
@@ -454,10 +455,10 @@ public class TaskActivity extends AppCompatActivity {
     private void setSelectedCategory() {
         //to handle opening new task activity from widget
         int selectedCategoryId = getIntent().getExtras() == null ?
-                (int) TaskyConstants.DEFAULT_CATEGORY_ID
+                (int) TaskyConstants.OTHERS_CATEGORY_ID
                 : getIntent().getExtras().getInt(TaskyConstants.SELECTED_CATEGORY_KEY);
         //init
-        this.selectedCategoryIndex = 0;
+        this.selectedCategoryIndex = categories.size() - 1;
         for (int i = 0; i < categories.size(); i++) {
             if (categories.get(i).getId() == selectedCategoryId) {
                 this.selectedCategoryIndex = i;

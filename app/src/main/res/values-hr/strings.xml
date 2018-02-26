@@ -84,5 +84,6 @@
     <string name="all">Sve</string>
     <string name="category">Kategorija</string>
     <string name="select_category">Odaberite kategoriju</string>
+    <string name="others">Ostali</string>
 
 </resources>
