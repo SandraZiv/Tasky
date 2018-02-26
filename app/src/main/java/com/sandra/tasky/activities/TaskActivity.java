@@ -83,20 +83,18 @@ public class TaskActivity extends AppCompatActivity {
         } else if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(TaskyConstants.TASK_BUNDLE_KEY)) {
             isTaskNew = false;
             task = (SimpleTask) getIntent().getExtras().getSerializable(TaskyConstants.TASK_BUNDLE_KEY);
-        } else
+        } else {
             task = new SimpleTask();
+        }
 
         //implementation for back button_close
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_task_home);
-        if (!isTaskNew)
-            actionBar.setTitle(R.string.edit_task);
-        else
-            actionBar.setTitle(R.string.create_task);
+        if (actionBar != null) {
+            actionBar.setTitle(isTaskNew? R.string.create_task : R.string.edit_task);
+        }
 
         //open db
-        new OpenDBAsyncTask().execute("open");
+        new getDataAsyncTask().execute();
 
         title = (EditText) findViewById(R.id.et_title);
         if (!isTaskNew) {
@@ -247,7 +245,7 @@ public class TaskActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new OpenDBAsyncTask().execute("Open");
+        new getDataAsyncTask().execute();
     }
 
     @Override
@@ -467,7 +465,7 @@ public class TaskActivity extends AppCompatActivity {
         }
     }
 
-    private class OpenDBAsyncTask extends AsyncTask<String, Integer, List<TaskCategory>> {
+    private class getDataAsyncTask extends AsyncTask<String, Integer, List<TaskCategory>> {
 
         @Override
         protected List<TaskCategory> doInBackground(String... params) {

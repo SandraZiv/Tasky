@@ -7,7 +7,7 @@
     <string name="cancel">Cancel</string>
     <string name="due_date">Due Date</string>
     <string name="db__open_fail">Database open failed</string>
-    <string name="all_tasks">All tasks (%d)</string>
+    <string name="all_num">All tasks (%d)</string>
     <string name="title">Title</string>
     <string name="completed">Completed</string>
     <string name="note">Note</string>
@@ -100,8 +100,9 @@
     <string name="category_exists">Category already exists</string>
     <string name="category">Category</string>
     <string name="select_category">Select category</string>
-    <string name="all">All</string>
-    <string name="others">Others (%d)</string>
+    <string name="all">All tasks</string>
+    <string name="others_num">Others (%d)</string>
+    <string name="others">Others</string>
 
     <plurals name="delete_alert">
         <item quantity="one">You are about to delete %d task. Are you sure?</item>

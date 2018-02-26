@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tasky</string>
-    <string name="all_tasks">Sve (%d)</string>
+    <string name="all_num">Sve (%d)</string>
     <string name="at">u</string>
     <string name="cancel">Odustani</string>
     <string name="completed">Dovršeno</string>
@@ -84,7 +84,7 @@
     <string name="all">Sve</string>
     <string name="category">Kategorija</string>
     <string name="select_category">Odaberite kategoriju</string>
-    <string name="others">Ostali (%d)</string>
+    <string name="others">Ostali</string>
 
     <plurals name="delete_alert">
         <item quantity="one">Jeste li sigurni da želite obrisati %d zadatak?</item>
@@ -93,5 +93,6 @@
     </plurals>
 
     <string name="nothing_to_delete">Nema zadataka za brisanje</string>
+    <string name="others_num">Ostali (%d)</string>
 
 </resources>

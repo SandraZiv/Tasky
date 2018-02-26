@@ -11,28 +11,34 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activities.HomeScreenActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.TaskActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:parentActivityName=".activities.HomeScreenActivity"
+            android:windowSoftInputMode="adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeScreenActivity" />
+        </activity>
 
         <receiver android:name=".widget.TaskWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/task_widget_info" />
         </receiver>
+
         <receiver
             android:name=".receiver.UpdateWidgetReceiver"
             android:permission="android.permission.WAKE_LOCK">
@@ -53,13 +59,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HomeScreenActivity" />
         </activity>
-        <activity android:name=".activities.CategoriesActivity"
+
+        <activity
+            android:name=".activities.CategoriesActivity"
             android:label="@string/manage_categories"
             android:parentActivityName=".activities.HomeScreenActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.HomeScreenActivity"/>
+                android:value=".activities.HomeScreenActivity" />
         </activity>
+
     </application>
 
 </manifest>
