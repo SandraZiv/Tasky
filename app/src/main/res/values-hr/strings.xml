@@ -96,5 +96,6 @@
     <string name="others_num">Ostali (%d)</string>
     <string name="search">Pretraži</string>
     <string name="sort_by">Sortiraj prema</string>
+    <string name="search_hint">Pretraži zadatke</string>
 
 </resources>

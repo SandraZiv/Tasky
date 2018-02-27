@@ -1,5 +1,7 @@
 package com.sandra.tasky.activities;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,14 +12,15 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -92,6 +95,15 @@ public class HomeScreenActivity extends AppCompatActivity
 
         //open db
         new getDataAsyncTask().execute();
+
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        handleIntent(intent);
     }
 
     @Override
@@ -115,8 +127,28 @@ public class HomeScreenActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.home_screen_menu, menu);
+        getMenuInflater().inflate(R.menu.home_screen_menu, menu);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.home_menu_search));
+
+        SearchManager manager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        ComponentName componentName = getComponentName();
+
+        searchView.setSearchableInfo(manager.getSearchableInfo(componentName));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                search(newText);
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -124,7 +156,6 @@ public class HomeScreenActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home_menu_search:
-                search();
                 return true;
             case R.id.home_menu_sort:
                 sortBy();
@@ -138,8 +169,15 @@ public class HomeScreenActivity extends AppCompatActivity
         }
     }
 
-    private void search() {
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            search(query);
+        }
+    }
 
+    private void search(String query) {
+        updateListView(query);
     }
 
     private void sortBy() {
@@ -158,7 +196,7 @@ public class HomeScreenActivity extends AppCompatActivity
                         .putInt(TaskyConstants.PREF_SORT, which)
                         .apply();
 
-                updateListView();
+                updateListView(null);
 
                 dialog.dismiss();
             }
@@ -178,7 +216,7 @@ public class HomeScreenActivity extends AppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
         builder.setTitle(getString(R.string.delete));
 
-        final List<SimpleTask> filteredTasks = sortAndFilterTasks();
+        final List<SimpleTask> filteredTasks = sortAndFilterTasks(null);
 
         if (filteredTasks.size() == 0) {
             builder.setMessage(R.string.nothing_to_delete);
@@ -227,8 +265,8 @@ public class HomeScreenActivity extends AppCompatActivity
         startActivityForResult(newTaskIntent, REQUEST_CODE);
     }
 
-    private void updateListView() {
-        final List<SimpleTask> list = sortAndFilterTasks();
+    private void updateListView(String query) {
+        final List<SimpleTask> list = sortAndFilterTasks(query);
 
         observer = new TasksDataObserver();
 
@@ -317,7 +355,7 @@ public class HomeScreenActivity extends AppCompatActivity
 
         selectedCategoryId = categoryId;
 
-        updateListView();
+        updateListView(null);
     }
 
     private void updateCategoriesList() {
@@ -340,7 +378,7 @@ public class HomeScreenActivity extends AppCompatActivity
         }
     }
 
-    private List<SimpleTask> sortAndFilterTasks() {
+    private List<SimpleTask> sortAndFilterTasks(String query) {
         List<SimpleTask> filteredTasks;
 
         //filter by category
@@ -357,8 +395,21 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         }
 
+        List<SimpleTask> queryTasks;
+
+        if (query != null) {
+            queryTasks = new LinkedList<>();
+            for (SimpleTask task : filteredTasks) {
+                if (task.getTitle().toLowerCase().contains(query.toLowerCase().trim())) {
+                    queryTasks.add(task);
+                }
+            }
+        } else {
+            queryTasks = new LinkedList<>(filteredTasks);
+        }
+
         //sort
-        Collections.sort(filteredTasks, new Comparator<SimpleTask>() {
+        Collections.sort(queryTasks, new Comparator<SimpleTask>() {
             @Override
             public int compare(SimpleTask o1, SimpleTask o2) {
                 switch (getSharedPreferences(TaskyConstants.PREF_GENERAL, MODE_PRIVATE).getInt(TaskyConstants.PREF_SORT, TaskyConstants.SORT_DEFAULT)) {
@@ -367,7 +418,7 @@ public class HomeScreenActivity extends AppCompatActivity
                     case TaskyConstants.SORT_TITLE:
                         return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
                     case TaskyConstants.SORT_COMPLETED:
-                        return o1.isCompleted()? 1 : -1;
+                        return o1.isCompleted() ? 1 : -1;
                     default:
                         return 0;
 
@@ -375,7 +426,7 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         });
 
-        return filteredTasks;
+        return queryTasks;
     }
 
     private class getDataAsyncTask extends AsyncTask<String, Integer, Integer> {
@@ -393,7 +444,7 @@ public class HomeScreenActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Integer retValue) {
             updateCategoriesList();
-            updateListView();
+            updateListView(null);
 
             setActionBar(navigationView.getMenu().findItem(selectedCategoryId).getTitle());
         }
@@ -403,7 +454,7 @@ public class HomeScreenActivity extends AppCompatActivity
         @Override
         public void onChanged() {
             super.onChanged();
-            updateListView();
+            updateListView(null);
         }
     }
 
