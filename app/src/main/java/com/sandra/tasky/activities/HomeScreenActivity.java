@@ -365,7 +365,7 @@ public class HomeScreenActivity extends AppCompatActivity
                     case TaskyConstants.SORT_DUE_DATE:
                         return 0;
                     case TaskyConstants.SORT_TITLE:
-                        return o1.getTitle().compareTo(o2.getTitle());
+                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
                     case TaskyConstants.SORT_COMPLETED:
                         return o1.isCompleted()? 1 : -1;
                     default:
