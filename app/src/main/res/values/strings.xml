@@ -113,7 +113,6 @@
     <string name="nothing_to_delete">No tasks to delete</string>
     <string name="search">Search</string>
     <string name="sort_by">Sort by</string>
-    <string name="date_modified">Date modified</string>
 
 
 </resources>
