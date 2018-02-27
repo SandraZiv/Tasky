@@ -54,6 +54,8 @@ public class HomeScreenActivity extends AppCompatActivity
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
+    private FloatingActionButton fabAddTask;
+
     private List<SimpleTask> tasks;
     private List<TaskCategory> categories;
     private Map<Long, Integer> categoriesCount;
@@ -85,7 +87,7 @@ public class HomeScreenActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        FloatingActionButton fabAddTask = (FloatingActionButton) findViewById(R.id.fab_add_task);
+        fabAddTask = (FloatingActionButton) findViewById(R.id.fab_add_task);
         fabAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,7 +128,7 @@ public class HomeScreenActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.home_screen_menu, menu);
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.home_menu_search));
@@ -149,7 +151,31 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         });
 
+        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.home_menu_search), new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                hideItems(menu);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                showItems(menu);
+                return true;
+            }
+        });
+
         return true;
+    }
+
+    private void hideItems(Menu menu) {
+        menu.setGroupVisible(R.id.menu_group_hidden, false);
+        fabAddTask.setVisibility(View.GONE);
+    }
+
+    private void showItems(Menu menu) {
+        menu.setGroupVisible(R.id.menu_group_hidden, true);
+        fabAddTask.setVisibility(View.VISIBLE);
     }
 
     @Override

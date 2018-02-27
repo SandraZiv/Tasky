@@ -6,15 +6,17 @@
         android:id="@+id/home_menu_search"
         android:icon="@drawable/ic_search"
         android:title="@string/search"
-        app:showAsAction="ifRoom|collapseActionView"
-        app:actionViewClass="android.support.v7.widget.SearchView" />
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
 
-    <item
-        android:id="@+id/home_menu_sort"
-        android:title="@string/sort_by" />
+    <group android:id="@+id/menu_group_hidden">
+        <item
+            android:id="@+id/home_menu_sort"
+            android:title="@string/sort_by" />
 
-    <item
-        android:id="@+id/home_menu_delete_all"
-        android:title="@string/delete_all" />
+        <item
+            android:id="@+id/home_menu_delete_all"
+            android:title="@string/delete_all" />
+    </group>
 
 </menu>
