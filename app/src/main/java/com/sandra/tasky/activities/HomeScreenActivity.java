@@ -2,6 +2,8 @@ package com.sandra.tasky.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ import com.sandra.tasky.entity.TaskCategory;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +58,9 @@ public class HomeScreenActivity extends AppCompatActivity
     private int selectedCategoryId = (int) TaskyConstants.ALL_CATEGORY_ID;
 
     private Toast mToast;
+
+    private TasksDataObserver observer;
+    private HomeListAdapter homeListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +110,7 @@ public class HomeScreenActivity extends AppCompatActivity
     protected void onDestroy() {
         TaskyUtils.updateWidget(this);
         super.onDestroy();
+        homeListAdapter.unregisterDataSetObserver(observer);
     }
 
     @Override
@@ -139,11 +146,20 @@ public class HomeScreenActivity extends AppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.sort_by);
 
-        String[] sortOptions = {getString(R.string.title), getString(R.string.due_date), getString(R.string.completed)};
+        final SharedPreferences preferences = getSharedPreferences(TaskyConstants.PREF_GENERAL, MODE_PRIVATE);
+        final int selectedSortOption = preferences.getInt(TaskyConstants.PREF_SORT, TaskyConstants.SORT_DEFAULT);
 
-        builder.setSingleChoiceItems(sortOptions, 0, new DialogInterface.OnClickListener() {
+        String[] sortOptions = {getString(R.string.due_date), getString(R.string.title), getString(R.string.completed)};
+
+        builder.setSingleChoiceItems(sortOptions, selectedSortOption, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                preferences.edit()
+                        .putInt(TaskyConstants.PREF_SORT, which)
+                        .apply();
+
+                updateListView();
+
                 dialog.dismiss();
             }
         });
@@ -162,7 +178,7 @@ public class HomeScreenActivity extends AppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
         builder.setTitle(getString(R.string.delete));
 
-        final List<SimpleTask> filteredTasks = filterTasks();
+        final List<SimpleTask> filteredTasks = sortAndFilterTasks();
 
         if (filteredTasks.size() == 0) {
             builder.setMessage(R.string.nothing_to_delete);
@@ -211,8 +227,14 @@ public class HomeScreenActivity extends AppCompatActivity
         startActivityForResult(newTaskIntent, REQUEST_CODE);
     }
 
-    private void updateListView(final List<SimpleTask> list) {
-        ListAdapter homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
+    private void updateListView() {
+        final List<SimpleTask> list = sortAndFilterTasks();
+
+        observer = new TasksDataObserver();
+
+        homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
+        homeListAdapter.registerDataSetObserver(observer);
+
         ListView listView = (ListView) findViewById(R.id.home_list);
         listView.setAdapter(homeListAdapter);
 
@@ -295,7 +317,7 @@ public class HomeScreenActivity extends AppCompatActivity
 
         selectedCategoryId = categoryId;
 
-        updateListView(filterTasks());
+        updateListView();
     }
 
     private void updateCategoriesList() {
@@ -318,20 +340,40 @@ public class HomeScreenActivity extends AppCompatActivity
         }
     }
 
-    private List<SimpleTask> filterTasks() {
+    private List<SimpleTask> sortAndFilterTasks() {
+        List<SimpleTask> filteredTasks;
+
+        //filter by category
         if (selectedCategoryId == TaskyConstants.ALL_CATEGORY_ID) {
-            return tasks;
-        }
-
-        List<SimpleTask> filteredTasks = new LinkedList<>();
-
-        for (SimpleTask task : tasks) {
-            //get others or selected category
-            if ((task.getCategory() == null && selectedCategoryId == TaskyConstants.OTHERS_CATEGORY_ID)
-                    || (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategoryId))) {
-                filteredTasks.add(task);
+            filteredTasks = new LinkedList<>(tasks);
+        } else {
+            filteredTasks = new LinkedList<>();
+            for (SimpleTask task : tasks) {
+                //get others or selected category
+                if ((task.getCategory() == null && selectedCategoryId == TaskyConstants.OTHERS_CATEGORY_ID)
+                        || (task.getCategory() != null && task.getCategory().getId().equals((long) selectedCategoryId))) {
+                    filteredTasks.add(task);
+                }
             }
         }
+
+        //sort
+        Collections.sort(filteredTasks, new Comparator<SimpleTask>() {
+            @Override
+            public int compare(SimpleTask o1, SimpleTask o2) {
+                switch (getSharedPreferences(TaskyConstants.PREF_GENERAL, MODE_PRIVATE).getInt(TaskyConstants.PREF_SORT, TaskyConstants.SORT_DEFAULT)) {
+                    case TaskyConstants.SORT_DUE_DATE:
+                        return 0;
+                    case TaskyConstants.SORT_TITLE:
+                        return o1.getTitle().compareTo(o2.getTitle());
+                    case TaskyConstants.SORT_COMPLETED:
+                        return o1.isCompleted()? 1 : -1;
+                    default:
+                        return 0;
+
+                }
+            }
+        });
 
         return filteredTasks;
     }
@@ -351,9 +393,17 @@ public class HomeScreenActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Integer retValue) {
             updateCategoriesList();
-            updateListView(filterTasks());
+            updateListView();
 
             setActionBar(navigationView.getMenu().findItem(selectedCategoryId).getTitle());
+        }
+    }
+
+    private class TasksDataObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            updateListView();
         }
     }
 

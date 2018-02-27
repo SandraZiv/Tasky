@@ -83,6 +83,7 @@ public class HomeListAdapter extends BaseAdapter {
                 task.setCompleted(checkBox.isChecked());
                 TaskDatabase db = new TaskDatabase(context);
                 db.updateTask(task);
+                notifyDataSetChanged();
             }
         });
 

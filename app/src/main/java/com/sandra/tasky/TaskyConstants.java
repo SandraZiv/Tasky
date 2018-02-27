@@ -23,4 +23,13 @@ public class TaskyConstants {
     public static long OTHERS_CATEGORY_ID = -2L;
 
     public static String SELECTED_CATEGORY_KEY = "SELECTED_CATEGORY_KEY";
+
+    public static String PREF_GENERAL = "PREF_GENERAL";
+
+    public static String PREF_SORT = "PREF_SORT";
+    public static final int SORT_DUE_DATE = 0;
+    public static final int SORT_TITLE = 1;
+    public static final int SORT_COMPLETED = 2;
+    public static final int SORT_DEFAULT = SORT_DUE_DATE;
+
 }
