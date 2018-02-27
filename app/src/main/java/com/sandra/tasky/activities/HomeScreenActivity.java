@@ -116,13 +116,46 @@ public class HomeScreenActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home_menu_btn_delete_all:
+            case R.id.home_menu_search:
+                search();
+                return true;
+            case R.id.home_menu_sort:
+                sortBy();
+                return true;
+            case R.id.home_menu_delete_all:
                 deleteTasks();
-                break;
+                return true;
             default:
                 mToast = TaskyUtils.addToast(mToast, this, getString(R.string.error), true);
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    private void search() {
+
+    }
+
+    private void sortBy() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.sort_by);
+
+        String[] sortOptions = {getString(R.string.title), getString(R.string.due_date), getString(R.string.completed)};
+
+        builder.setSingleChoiceItems(sortOptions, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private void deleteTasks() {
