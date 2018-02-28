@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <android.support.v7.preference.PreferenceCategory android:title="@string/widget">
-        <SwitchPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="@bool/pref_show_completed_default"
             android:key="@string/pref_show_completed_key"
             android:title="@string/show_completed" />
-        <SwitchPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="@bool/pref_show_expired_default"
             android:key="@string/pref_show_expired_key"
             android:title="@string/show_expired" />
