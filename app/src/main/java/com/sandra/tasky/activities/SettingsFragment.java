@@ -7,11 +7,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
-import android.support.annotation.Nullable;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.SwitchPreferenceCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,14 +21,13 @@ import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.TaskyUtils;
 
 
-public class SettingsFragment extends PreferenceFragment
+public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private Toast mToast;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences);
 
         setHasOptionsMenu(true);
@@ -142,10 +140,10 @@ public class SettingsFragment extends PreferenceFragment
         editor.clear();
         editor.apply();
 
-        SwitchPreference showCompleted = (SwitchPreference) findPreference(getString(R.string.pref_show_completed_key));
+        SwitchPreferenceCompat showCompleted = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_show_completed_key));
         showCompleted.setChecked(getResources().getBoolean(R.bool.pref_show_completed_default));
 
-        SwitchPreference showExpired = (SwitchPreference) findPreference(getString(R.string.pref_show_expired_key));
+        SwitchPreferenceCompat showExpired = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_show_expired_key));
         showExpired.setChecked(getResources().getBoolean(R.bool.pref_show_expired_default));
 
         Preference timeSpan = findPreference(getString(R.string.pref_time_span_key));

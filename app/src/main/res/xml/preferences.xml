@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/widget">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.preference.PreferenceCategory android:title="@string/widget">
         <SwitchPreference
             android:defaultValue="@bool/pref_show_completed_default"
             android:key="@string/pref_show_completed_key"
@@ -16,19 +16,19 @@
             android:entryValues="@array/time_span_values"
             android:key="@string/pref_time_span_key"
             android:title="@string/show_when" />
-        <Preference
+        <android.support.v7.preference.Preference
             android:key="@string/pref_restart_scheduler_key"
             android:title="@string/restart_scheduler_title" />
-    </PreferenceCategory>
+    </android.support.v7.preference.PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/about">
-        <Preference
+    <android.support.v7.preference.PreferenceCategory android:title="@string/about">
+        <android.support.v7.preference.Preference
             android:key="@string/pref_view_in_google_play_key"
             android:title="@string/pref_view_in_google_play_title" />
-        <Preference
+        <android.support.v7.preference.Preference
             android:key="@string/pref_version_key"
             android:title="@string/pref_version_title"
             android:summary="@string/pref_version_summary"/>
-    </PreferenceCategory>
+    </android.support.v7.preference.PreferenceCategory>
 
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

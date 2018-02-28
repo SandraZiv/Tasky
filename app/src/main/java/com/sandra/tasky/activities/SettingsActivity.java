@@ -16,10 +16,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
+        setContentView(R.layout.activity_settings);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
