@@ -21,7 +21,7 @@
     <string name="today">today</string>
     <string name="expired">expired</string>
     <string name="at">at</string>
-    <string name="tommorow">tomorrow</string>
+    <string name="tomorrow">tomorrow</string>
     <string name="in">in</string>
     <string name="days">days</string>
     <string name="to_do">To do</string>
@@ -31,7 +31,6 @@
     <string name="save">Save</string>
     <string name="ok" translatable="false">OK</string>
     <string name="show_task">Show task</string>
-    <string name="show_task_in_widget">Show task in widget</string>
     <string name="show_in_widget">Show in widget</string>
     <string name="settings">Settings</string>
     <string name="show_completed">Show completed tasks</string>

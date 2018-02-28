@@ -101,7 +101,7 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
         } else if (diffDays < 0) {
             date = context.getString(R.string.expired);
         } else if (diffDays == 1) {
-            date = context.getString(R.string.tommorow) + (task.isTimePresent() ? " " + context.getString(R.string.at) + " " + task.parseTime() : "");
+            date = context.getString(R.string.tomorrow) + (task.isTimePresent() ? " " + context.getString(R.string.at) + " " + task.parseTime() : "");
         } else if (diffDays <= 10) {
             date = context.getString(R.string.in) + " " + diffDays + " " + context.getString(R.string.days);
         } else {
