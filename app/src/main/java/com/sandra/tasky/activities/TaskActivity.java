@@ -239,6 +239,9 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 twTime.setText(getString(R.string.select_time));
+                dateTime = dateTime
+                        .withHourOfDay(new DateTime().getHourOfDay())
+                        .withMinuteOfHour(new DateTime().getMinuteOfHour());
                 isDateChanged = true;
             }
         });
