@@ -39,7 +39,7 @@
     <string name="show_when_summary">Time span is relative regarding current date</string>
     <string name="select_time_span">Select time span</string>
     <string name="widget" translatable="false">Widget</string>
-    <string name="no_tasks_yet">No tasks yet!</string>
+    <string name="no_tasks_here">No tasks here!</string>
     <string name="show_expired">Show expired tasks</string>
     <string name="scheduler_restarted">Scheduler restarted, please restart widget</string>
     <string name="please_restart_widget_to_complete">Please restart widget to complete action</string>
