@@ -81,6 +81,9 @@ public class CategoriesActivity extends AppCompatActivity {
                 final String inputTitle = etTitle.getText().toString().trim();
                 if (inputTitle.isEmpty()) {
                     mToast = TaskyUtils.addToast(mToast, CategoriesActivity.this, R.string.please_enter_title, true);
+                } else if (inputTitle.toLowerCase().equals(getString(R.string.all).toLowerCase())
+                        || inputTitle.toLowerCase().equals(getString(R.string.others).toLowerCase())) {
+                    mToast = TaskyUtils.addToast(mToast, CategoriesActivity.this, R.string.reserved_title, true);
                 } else {
                     //save new category
                     TaskDatabase database = new TaskDatabase(CategoriesActivity.this);

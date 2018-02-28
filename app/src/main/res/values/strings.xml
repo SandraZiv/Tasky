@@ -114,6 +114,7 @@
     <string name="search">Search</string>
     <string name="sort_by">Sort by</string>
     <string name="search_hint">Search tasks</string>
+    <string name="reserved_title">Reserved category title</string>
 
 
 </resources>

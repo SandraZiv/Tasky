@@ -78,9 +78,9 @@
     <string name="manage_categories">Upravljanje kategorijama</string>
     <string name="open_nav">Otvaranje menija</string>
     <string name="category_exists">Kategorija s tim nazivom već postoji</string>
-    <string name="enter_title">Unesite naslov</string>
+    <string name="enter_title">Unesite naziv</string>
     <string name="no_categories_yet">Nema kategorija</string>
-    <string name="please_enter_title">Naslov kategorije ne smije biti prazan</string>
+    <string name="please_enter_title">Naziv kategorije ne smije biti prazan</string>
     <string name="all">Sve</string>
     <string name="category">Kategorija</string>
     <string name="select_category">Odaberite kategoriju</string>
@@ -97,5 +97,6 @@
     <string name="search">Pretraži</string>
     <string name="sort_by">Sortiraj prema</string>
     <string name="search_hint">Pretraži zadatke</string>
+    <string name="reserved_title">Rezerviran naziv za kategoriju</string>
 
 </resources>
