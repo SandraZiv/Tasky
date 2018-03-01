@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.sandra.tasky.NotificationUtils;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.TaskyUtils;
@@ -402,6 +403,8 @@ public class TaskActivity extends AppCompatActivity {
                     && (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis()) {
                 mToast = TaskyUtils.addToast(mToast, this, R.string.reminder_set, true);
                 TaskyUtils.setAlarm(this, task.getDueDate().getMillis() + 60 * 1000, task.getTitle(), false);
+
+                NotificationUtils.setNotificationReminder(this, task);
             }
         }
     }

@@ -13,6 +13,12 @@ import android.widget.Toast;
 import com.sandra.tasky.receiver.UpdateWidgetReceiver;
 import com.sandra.tasky.widget.TaskWidget;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import static android.app.AlarmManager.RTC;
 import static android.os.Build.VERSION.SDK_INT;
 
@@ -55,5 +61,19 @@ public class TaskyUtils {
     public static Toast addToast(Toast toast, Context context, int id, boolean isShort) {
         String msg = context.getString(id);
         return addToast(toast, context, msg, isShort);
+    }
+
+
+    public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(out);
+        os.writeObject(obj);
+        return out.toByteArray();
+    }
+
+    public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        ObjectInputStream is = new ObjectInputStream(in);
+        return is.readObject();
     }
 }
