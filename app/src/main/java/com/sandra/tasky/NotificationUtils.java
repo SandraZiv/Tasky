@@ -34,9 +34,10 @@ public class NotificationUtils {
                 .cancelAll();
     }
 
-    public static void cancelNotification(Context context, int id) {
+    public static void cancelNotification(Context context, SimpleTask task) {
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
-                .cancel(TASK_REMINDER_NOTIFICATION_ID + id);
+                .cancel(TASK_REMINDER_NOTIFICATION_ID + task.getId());
+
     }
 
     public static void taskReminder(Context context, SimpleTask task) {
@@ -45,7 +46,7 @@ public class NotificationUtils {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setContentTitle(task.getTitle())
-                .setContentText(task.parseDateTime())
+                .setContentText(task.isTimePresent()? task.parseDateTime() : task.parseDate())
                 .setContentIntent(openTaskActivity(context, task))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(largeIcon(context))
@@ -54,12 +55,12 @@ public class NotificationUtils {
 
         builder.setPriority(PRIORITY_HIGH);
 
+        //If there is notification with the same id and it has not yet been canceled
+        //it will be replaced by the updated information.
         manager.notify(TASK_REMINDER_NOTIFICATION_ID + task.getId(), builder.build());
     }
 
     public static void setNotificationReminder(Context context, SimpleTask task) {
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
         Intent setAlarmIntent = new Intent(context, NotificationReceiver.class);
         setAlarmIntent.setAction(TaskyConstants.NOTIFICATION_ACTION);
 
@@ -69,7 +70,13 @@ public class NotificationUtils {
             e.printStackTrace();
         }
 
-        PendingIntent pi = PendingIntent.getBroadcast(context, (int) System.currentTimeMillis(), setAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent.getBroadcast(
+                context,
+                TaskyConstants.NOTIFICATION_PI_REQUEST_CODE(task),
+                setAlarmIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         if (SDK_INT < Build.VERSION_CODES.KITKAT) {
             manager.set(RTC_WAKEUP, task.getDueDate().getMillis(), pi);

@@ -400,13 +400,19 @@ public class TaskActivity extends AppCompatActivity {
             if (task.isShowInWidget()
                     && (isDateChanged || isTaskVisibilityInWidgetChanged)
                     && task.isTimePresent()
-                    && (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis()) {
-                mToast = TaskyUtils.addToast(mToast, this, R.string.reminder_set, true);
+                    && isInFuture(task)) {
                 TaskyUtils.setAlarm(this, task.getDueDate().getMillis() + 60 * 1000, task.getTitle(), false);
+            }
 
+            if (task.getDueDate() != null && isInFuture(task)) {
+                mToast = TaskyUtils.addToast(mToast, this, R.string.reminder_set, true);
                 NotificationUtils.setNotificationReminder(this, task);
             }
         }
+    }
+
+    private boolean isInFuture(SimpleTask task) {
+        return (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis();
     }
 
     private void openCategoryAlert() {

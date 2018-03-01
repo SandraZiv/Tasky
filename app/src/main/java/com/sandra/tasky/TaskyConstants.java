@@ -1,10 +1,16 @@
 package com.sandra.tasky;
 
 
+import com.sandra.tasky.entity.SimpleTask;
+
 public class TaskyConstants {
 
     public static final String NOTIFICATION_ACTION = "com.sandra.tasky.notification.ACTION";
     public static final String NOTIFICATION_TASK_BUNDLE_KEY = "com.sandra.tasky.notification.TASK_BUNDLE_KEY";
+
+    public static final int NOTIFICATION_PI_REQUEST_CODE(SimpleTask task) {
+        return TASK_BUNDLE_KEY.hashCode() + task.getId();
+    }
 
     public static final String WIDGET_UPDATE_ACTION = "com.sandra.tasky.widget.UPDATE_WIDGET";
     public static final String WIDGET_FIRST_RUN = "first_run_of_widget_1.19";

@@ -104,6 +104,33 @@ public class TaskDatabase {
         return dbWritable.update(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, values, where, null);
     }
 
+    public SimpleTask getTaskById(int id) {
+        String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS
+                + " where " + TASKS_KEY_ID + " = " + id;
+        Cursor cursor = dbReadable.rawQuery(sqlQuery, null);
+
+        SimpleTask task = null;
+
+        if (cursor.moveToFirst()) {
+            String title = cursor.getString(1);
+            boolean completed = (cursor.getInt(2) == TRUE);
+            String note = cursor.getString(3);
+            DateTime date;
+            if (cursor.getString(4) != null)
+                date = getDateFromString(cursor.getString(4));
+            else
+                date = null;
+            boolean timePresent = (cursor.getInt(5) == TRUE);
+            boolean showInWidget = (cursor.getInt(6) == TRUE);
+
+            long categoryId = cursor.getInt(7);
+            task = new SimpleTask(id, title, note, date, completed, timePresent, showInWidget, getCategoryById(categoryId));
+        }
+
+        cursor.close();
+        return task;
+    }
+
     public List<SimpleTask> getAllTasks() {
         List<SimpleTask> list = new LinkedList<>();
 
