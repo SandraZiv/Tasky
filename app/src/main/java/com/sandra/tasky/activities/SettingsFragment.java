@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -33,6 +34,11 @@ public class SettingsFragment extends PreferenceFragmentCompat
         setHasOptionsMenu(true);
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+
+        //set vibrate and sound enabled
+        enableVibrateAndSound(sharedPreferences, getString(R.string.pref_show_notifications_key));
 
         final boolean isFirstRun = getActivity()
                 .getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
@@ -63,7 +69,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
             }
         });
 
-        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         Preference p = findPreference(getString(R.string.pref_time_span_key));
         String prefValue = sharedPreferences.getString(p.getKey(), "");
         setPreferenceSummary(p, prefValue);
@@ -110,11 +115,22 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
     }
 
+    private void enableVibrateAndSound(SharedPreferences sharedPreferences, String notificationPrefKey) {
+        CheckBoxPreference vibrate = (CheckBoxPreference) findPreference(getString(R.string.pref_vibrate_key));
+        CheckBoxPreference sound = (CheckBoxPreference) findPreference(getString(R.string.pref_sound_key));
+
+        boolean enabled = sharedPreferences.getBoolean(notificationPrefKey, getResources().getBoolean(R.bool.pref_show_notifications_default));
+        vibrate.setEnabled(enabled);
+        sound.setEnabled(enabled);
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference p = findPreference(key);
         if (p != null && p instanceof ListPreference) {
             setPreferenceSummary(p, sharedPreferences.getString(key, ""));
+        } else if (p != null && key.equals(getString(R.string.pref_show_notifications_key))) {
+            enableVibrateAndSound(sharedPreferences, key);
         }
     }
 

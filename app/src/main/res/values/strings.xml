@@ -70,12 +70,19 @@
     </string-array>
 
     <!--preferences keys-->
+    <string name="pref_show_notifications_key" translatable="false">pref_show_notifications</string>
+    <string name="pref_vibrate_key" translatable="false">pref_vibrate</string>
+    <string name="pref_sound_key" translatable="false">pref_sound</string>
     <string name="pref_show_completed_key" translatable="false">pref_show_completed</string>
     <string name="pref_show_expired_key" translatable="false">pref_show_expired</string>
     <string name="pref_time_span_key" translatable="false">pref_time_span</string>
     <string name="pref_restart_scheduler_key" translatable="false">pref_restart_scheduler</string>
     <string name="pref_view_in_google_play_key" translatable="false">pref_view_in_google_play</string>
     <string name="pref_version_key" translatable="false">pref_version</string>
+
+    <string name="show_notifications">Show notifications</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="sound">Sound</string>
 
     <string name="pref_time_span_default" translatable="false">-1</string>
 
@@ -114,6 +121,8 @@
     <string name="sort_by">Sort by</string>
     <string name="search_hint">Search tasks</string>
     <string name="reserved_title">Reserved category title</string>
+
+    <string name="notifications">Notifications</string>
 
 
 </resources>

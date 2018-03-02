@@ -97,5 +97,9 @@
     <string name="sort_by">Sortiraj prema</string>
     <string name="search_hint">Pretraži zadatke</string>
     <string name="reserved_title">Rezerviran naziv za kategoriju</string>
+    <string name="notifications">Obavijesti</string>
+    <string name="show_notifications">Prikaži obavijesti</string>
+    <string name="sound">Zvuk</string>
+    <string name="vibrate">Vibracija</string>
 
 </resources>

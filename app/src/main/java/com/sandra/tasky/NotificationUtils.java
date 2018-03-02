@@ -6,10 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.sandra.tasky.activities.TaskActivity;
@@ -46,20 +48,40 @@ public class NotificationUtils {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setContentTitle(task.getTitle())
-                .setContentText(task.isTimePresent()? task.parseDateTime() : task.parseDate())
+                .setContentText(task.isTimePresent() ? task.parseDateTime() : task.parseDate())
                 .setContentIntent(openTaskActivity(context, task))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(largeIcon(context))
                 .setAutoCancel(true);
 
         //deprecated in API 26
-        builder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
+        builder.setDefaults(setNotificationDefaults(context));
 
         builder.setPriority(PRIORITY_HIGH);
 
         //If there is notification with the same id and it has not yet been canceled
         //it will be replaced by the updated information.
         manager.notify(TASK_REMINDER_NOTIFICATION_ID + task.getId(), builder.build());
+    }
+
+    //vibrate and sound
+    private static int setNotificationDefaults (Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean vibrate = preferences.getBoolean(context.getString(R.string.pref_vibrate_key),
+                context.getResources().getBoolean(R.bool.pref_vibrate_default));
+        boolean sound = preferences.getBoolean(context.getString(R.string.pref_sound_key),
+                context.getResources().getBoolean(R.bool.pref_sound_default));
+
+        int defaults;
+        if (vibrate && sound) {
+            defaults = Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND;
+        } else if (vibrate) {
+            defaults = Notification.DEFAULT_VIBRATE;
+        } else {
+            defaults = Notification.DEFAULT_SOUND;
+        }
+
+        return defaults;
     }
 
     public static void setNotificationReminder(Context context, SimpleTask task) {

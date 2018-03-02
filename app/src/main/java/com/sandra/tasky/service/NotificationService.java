@@ -2,9 +2,12 @@ package com.sandra.tasky.service;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.sandra.tasky.NotificationUtils;
+import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.TaskyUtils;
 import com.sandra.tasky.db.TaskDatabase;
@@ -20,7 +23,10 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        if (intent != null && TaskyConstants.NOTIFICATION_ACTION.equals(intent.getAction())) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean prefShowNotifications = preferences.getBoolean(getString(R.string.pref_show_notifications_key), getResources().getBoolean(R.bool.pref_show_notifications_default));
+
+        if (prefShowNotifications && intent != null && TaskyConstants.NOTIFICATION_ACTION.equals(intent.getAction())) {
             try {
                 //TODO two tasks at the same time?
                 JodaTimeAndroid.init(this);

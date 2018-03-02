@@ -6,9 +6,11 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -406,8 +408,10 @@ public class TaskActivity extends AppCompatActivity {
                 TaskyUtils.setAlarm(this, task.getDueDate().getMillis() + 60 * 1000, task.getTitle(), false);
             }
 
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean prefShowNotifications = preferences.getBoolean(getString(R.string.pref_show_notifications_key), getResources().getBoolean(R.bool.pref_show_notifications_default));
             if (task.getDueDate() != null && isInFuture(task)) {
-                mToast = TaskyUtils.addToast(mToast, this, R.string.reminder_set, true);
+                if (prefShowNotifications) mToast = TaskyUtils.addToast(mToast, this, R.string.reminder_set, true);
                 NotificationUtils.setNotificationReminder(this, task);
             }
         }

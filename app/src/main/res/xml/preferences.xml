@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.preference.PreferenceCategory android:title="@string/notifications">
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="@bool/pref_show_notifications_default"
+            android:key="@string/pref_show_notifications_key"
+            android:title="@string/show_notifications" />
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="@bool/pref_vibrate_default"
+            android:key="@string/pref_vibrate_key"
+            android:title="@string/vibrate" />
+    <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="@bool/pref_sound_default"
+            android:key="@string/pref_sound_key"
+            android:title="@string/sound" />
+    </android.support.v7.preference.PreferenceCategory>
+
     <android.support.v7.preference.PreferenceCategory android:title="@string/widget">
         <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="@bool/pref_show_completed_default"
@@ -27,8 +42,8 @@
             android:title="@string/pref_view_in_google_play_title" />
         <android.support.v7.preference.Preference
             android:key="@string/pref_version_key"
-            android:title="@string/pref_version_title"
-            android:summary="@string/pref_version_summary"/>
+            android:summary="@string/pref_version_summary"
+            android:title="@string/pref_version_title" />
     </android.support.v7.preference.PreferenceCategory>
 
 </android.support.v7.preference.PreferenceScreen>
