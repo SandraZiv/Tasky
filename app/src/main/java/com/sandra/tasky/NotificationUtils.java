@@ -85,7 +85,6 @@ public class NotificationUtils {
     }
 
     public static void setNotificationReminder(Context context, SimpleTask task) {
-//        Intent setAlarmIntent = new Intent(context, NotificationReceiver.class);
         Intent setAlarmIntent = new Intent(context, NotificationService.class);
         setAlarmIntent.setAction(TaskyConstants.NOTIFICATION_ACTION);
 
@@ -96,7 +95,6 @@ public class NotificationUtils {
         }
 
         PendingIntent pi = PendingIntent.getService(
-//        PendingIntent pi = PendingIntent.getBroadcast(
                 context,
                 TaskyConstants.NOTIFICATION_PI_REQUEST_CODE(task),
                 setAlarmIntent,
