@@ -324,7 +324,7 @@ public class TaskActivity extends AppCompatActivity {
                 setupForOnBackPressed();
                 break;
             case R.id.task_delete:
-                database.deleteTasks(task);
+                database.deleteTask(this, task);
                 setupForOnBackPressed();
                 break;
             case R.id.task_save:

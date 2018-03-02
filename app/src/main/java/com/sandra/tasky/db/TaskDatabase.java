@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.sandra.tasky.NotificationUtils;
 import com.sandra.tasky.R;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.entity.TaskCategory;
@@ -253,29 +254,33 @@ public class TaskDatabase {
         return list;
     }
 
-    public int deleteTasks(SimpleTask task) {
-        int id = task.getId();
-        String where = TASKS_KEY_ID + " = " + id;
-        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, where, null);
-    }
-
     public int deleteCategory(TaskCategory category) {
         Long id = category.getId();
         String where = TASKS_KEY_ID + " = " + id;
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, where, null);
     }
 
-    public int deleteAllTasks() {
+    public int deleteTask(Context context, SimpleTask task) {
+        NotificationUtils.cancelNotification(context, task);
+
+        int id = task.getId();
+        String where = TASKS_KEY_ID + " = " + id;
+        return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, where, null);
+    }
+
+    public int deleteAllTasks(Context context) {
+        NotificationUtils.cancelAllNotifications(context);
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, null);
     }
 
-    public int deleteAllTasksInCategory(long[] tasksIds) {
+    public int deleteAllTasksInCategory(Context context, int[] tasksIds) {
         String where = "";
         for (int i = 0; i < tasksIds.length; i++) {
             if (i != 0) {
                 where += " OR ";
             }
             where += TASKS_KEY_ID + " = " + tasksIds[i];
+            NotificationUtils.cancelNotification(context, tasksIds[i]);
         }
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, where, null);
     }

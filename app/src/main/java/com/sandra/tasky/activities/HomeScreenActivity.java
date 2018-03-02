@@ -261,13 +261,13 @@ public class HomeScreenActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (selectedCategoryId == TaskyConstants.ALL_CATEGORY_ID) {
-                        database.deleteAllTasks();
+                        database.deleteAllTasks(HomeScreenActivity.this);
                     } else {
-                        long[] ids = new long[filteredTasks.size()];
+                        int[] ids = new int[filteredTasks.size()];
                         for (int i = 0; i < filteredTasks.size(); i++) {
                             ids[i] = filteredTasks.get(i).getId();
                         }
-                        database.deleteAllTasksInCategory(ids);
+                        database.deleteAllTasksInCategory(HomeScreenActivity.this, ids);
                     }
                     new getDataAsyncTask().execute();
                 }
@@ -327,7 +327,7 @@ public class HomeScreenActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mToast = TaskyUtils.addToast(mToast, HomeScreenActivity.this, R.string.task_deleted, true);
-                        database.deleteTasks(list.get(position));
+                        database.deleteTask(HomeScreenActivity.this, list.get(position));
                         new getDataAsyncTask().execute();
                         dialog.cancel();
                     }

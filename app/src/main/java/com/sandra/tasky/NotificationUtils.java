@@ -31,15 +31,18 @@ public class NotificationUtils {
 
     private static final String TASK_REMINDER_CHANNEL_ID = "TASK_REMINDER_CHANNEL_ID";
 
-    public static void clearAllNotifications(Context context) {
+    public static void cancelAllNotifications(Context context) {
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
                 .cancelAll();
     }
 
     public static void cancelNotification(Context context, SimpleTask task) {
-        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
-                .cancel(TASK_REMINDER_NOTIFICATION_ID + task.getId());
+        cancelNotification(context, task.getId());
+    }
 
+    public static void cancelNotification(Context context, int id) {
+        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
+                .cancel(TASK_REMINDER_NOTIFICATION_ID + id);
     }
 
     public static void taskReminder(Context context, SimpleTask task) {
@@ -54,8 +57,7 @@ public class NotificationUtils {
                 .setLargeIcon(largeIcon(context))
                 .setAutoCancel(true);
 
-        //deprecated in API 26
-        builder.setDefaults(setNotificationDefaults(context));
+        setNotificationDefaults(context, builder);
 
         builder.setPriority(PRIORITY_HIGH);
 
@@ -65,7 +67,7 @@ public class NotificationUtils {
     }
 
     //vibrate and sound
-    private static int setNotificationDefaults (Context context) {
+    private static void setNotificationDefaults(Context context, NotificationCompat.Builder builder) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean vibrate = preferences.getBoolean(context.getString(R.string.pref_vibrate_key),
                 context.getResources().getBoolean(R.bool.pref_vibrate_default));
@@ -77,11 +79,15 @@ public class NotificationUtils {
             defaults = Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND;
         } else if (vibrate) {
             defaults = Notification.DEFAULT_VIBRATE;
-        } else {
+        } else if (sound) {
             defaults = Notification.DEFAULT_SOUND;
+        } else {
+            return;
         }
 
-        return defaults;
+        //deprecated in API 26
+        builder.setDefaults(defaults);
+
     }
 
     public static void setNotificationReminder(Context context, SimpleTask task) {
