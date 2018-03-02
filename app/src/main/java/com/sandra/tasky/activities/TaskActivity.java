@@ -377,12 +377,14 @@ public class TaskActivity extends AppCompatActivity {
                     //date is set
                     if (twTime.getText().toString().equals(getString(R.string.select_time))) {
                         //no time
-                        dateTime = dateTime.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
+                        dateTime = resetTime(dateTime);
                         task.setTimePresent(false);
                     } else {
                         //with time
                         task.setTimePresent(true);
                     }
+                    //doesn't matter for task precision
+                    dateTime = setupDateTimeForDB(dateTime);
                     task.setDueDate(dateTime);
                 } else {
                     //there is no date thus no time
@@ -409,6 +411,14 @@ public class TaskActivity extends AppCompatActivity {
                 NotificationUtils.setNotificationReminder(this, task);
             }
         }
+    }
+
+    private DateTime setupDateTimeForDB(DateTime dateTime) {
+        return dateTime.withSecondOfMinute(0).withMillisOfSecond(0);
+    }
+
+    private DateTime resetTime(DateTime dateTime) {
+        return dateTime.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
     }
 
     private boolean isInFuture(SimpleTask task) {

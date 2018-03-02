@@ -14,7 +14,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.sandra.tasky.activities.TaskActivity;
 import com.sandra.tasky.entity.SimpleTask;
-import com.sandra.tasky.receiver.NotificationReceiver;
+import com.sandra.tasky.service.NotificationService;
 
 import java.io.IOException;
 
@@ -50,8 +50,10 @@ public class NotificationUtils {
                 .setContentIntent(openTaskActivity(context, task))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(largeIcon(context))
-                .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setAutoCancel(true);
+
+        //deprecated in API 26
+        builder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
 
         builder.setPriority(PRIORITY_HIGH);
 
@@ -61,7 +63,8 @@ public class NotificationUtils {
     }
 
     public static void setNotificationReminder(Context context, SimpleTask task) {
-        Intent setAlarmIntent = new Intent(context, NotificationReceiver.class);
+//        Intent setAlarmIntent = new Intent(context, NotificationReceiver.class);
+        Intent setAlarmIntent = new Intent(context, NotificationService.class);
         setAlarmIntent.setAction(TaskyConstants.NOTIFICATION_ACTION);
 
         try {
@@ -70,7 +73,8 @@ public class NotificationUtils {
             e.printStackTrace();
         }
 
-        PendingIntent pi = PendingIntent.getBroadcast(
+        PendingIntent pi = PendingIntent.getService(
+//        PendingIntent pi = PendingIntent.getBroadcast(
                 context,
                 TaskyConstants.NOTIFICATION_PI_REQUEST_CODE(task),
                 setAlarmIntent,
