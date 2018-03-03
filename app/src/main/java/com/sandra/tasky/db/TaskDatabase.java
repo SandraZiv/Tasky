@@ -61,7 +61,7 @@ public class TaskDatabase {
         taskDatabaseOpenHelper.close();
     }
 
-    public void addTask(SimpleTask task) {
+    public int addTask(SimpleTask task) {
         ContentValues newValues = new ContentValues();
 
         newValues.put(TASK_TITLE_COLUMN, task.getTitle());
@@ -73,7 +73,7 @@ public class TaskDatabase {
         newValues.put(TASK_SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
         newValues.put(TASK_CATEGORY_FK, task.getCategory() == null ? null : task.getCategory().getId());
 
-        dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, newValues);
+        return (int) dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, newValues);
     }
 
     public boolean addCategory(TaskCategory category) {

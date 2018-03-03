@@ -396,7 +396,7 @@ public class TaskActivity extends AppCompatActivity {
             }
 
             if (isTaskNew) {
-                database.addTask(task);
+                task.setId(database.addTask(task));
             } else {
                 database.updateTask(task);
             }
