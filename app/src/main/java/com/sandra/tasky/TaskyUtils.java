@@ -1,6 +1,5 @@
 package com.sandra.tasky;
 
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -10,7 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.widget.Toast;
 
-import com.sandra.tasky.receiver.UpdateWidgetReceiver;
+import com.sandra.tasky.service.UpdateWidgetService;
 import com.sandra.tasky.widget.TaskWidget;
 
 import java.io.ByteArrayInputStream;
@@ -19,20 +18,27 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import static android.app.AlarmManager.INTERVAL_DAY;
 import static android.app.AlarmManager.RTC;
 import static android.os.Build.VERSION.SDK_INT;
 
 public class TaskyUtils {
 
     public static void setAlarm(Context context, long timeInMillis, String taskTitle, boolean isRepeatable) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent setAlarmIntent = new Intent(context, UpdateWidgetReceiver.class);
+        Intent setAlarmIntent = new Intent(context, UpdateWidgetService.class);
         setAlarmIntent.setAction(TaskyConstants.WIDGET_UPDATE_ACTION);
         setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TITLE, taskTitle);
         setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, isRepeatable);
         setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TIME, timeInMillis);
-        PendingIntent setAlarmPI = PendingIntent.getBroadcast(context, (int) System.currentTimeMillis(), setAlarmIntent, 0);
 
+        //TODO id?
+        PendingIntent setAlarmPI = PendingIntent.getService(
+                context,
+                (int) System.currentTimeMillis(),
+                setAlarmIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (SDK_INT < Build.VERSION_CODES.KITKAT) {
             alarmManager.set(RTC, timeInMillis, setAlarmPI);
         } else if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M) {
@@ -40,6 +46,10 @@ public class TaskyUtils {
         } else if (SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(RTC, timeInMillis, setAlarmPI);
         }
+    }
+
+    public static void setMidnightUpdater(Context context) {
+        setAlarm(context, System.currentTimeMillis() + INTERVAL_DAY, null, true);
     }
 
     public static void updateWidget(Context context) {

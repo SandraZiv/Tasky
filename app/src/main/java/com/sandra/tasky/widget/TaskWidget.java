@@ -20,31 +20,13 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.LocalTime;
 
-/**
- * Implementation of App Widget functionality.
- */
 public class TaskWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         JodaTimeAndroid.init(context);
 
-        //set repeating update of widget
-        Boolean firstRun = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
-                .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
-
-        if (firstRun) {
-            Toast.makeText(context, R.string.init_finished, Toast.LENGTH_SHORT).show();
-
-            LocalTime localTime = LocalTime.now();
-            long timeMidnight = 24 * 60 * 60 - localTime.getHourOfDay() * 60 * 60 - localTime.getMinuteOfHour() * 60 - localTime.getSecondOfMinute();
-            timeMidnight *= 1000;
-            TaskyUtils.setAlarm(context, System.currentTimeMillis() + timeMidnight, null, true);
-
-            SharedPreferences.Editor editor = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
-            editor.putBoolean(TaskyConstants.PREFS_FIRST_RUN, false);
-            editor.apply();
-        }
+       initMidnightUpdater(context);
 
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
@@ -83,5 +65,24 @@ public class TaskWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    private void initMidnightUpdater(Context context) {
+
+        Boolean firstRun = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
+                .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
+
+        if (firstRun) {
+            Toast.makeText(context, R.string.init_finished, Toast.LENGTH_SHORT).show();
+
+            LocalTime localTime = LocalTime.now();
+            long timeMidnight = 24 * 60 * 60 - localTime.getHourOfDay() * 60 * 60 - localTime.getMinuteOfHour() * 60 - localTime.getSecondOfMinute();
+            timeMidnight *= 1000;
+            TaskyUtils.setAlarm(context, System.currentTimeMillis() + timeMidnight, null, true);
+
+            SharedPreferences.Editor editor = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
+            editor.putBoolean(TaskyConstants.PREFS_FIRST_RUN, false);
+            editor.apply();
+        }
     }
 }
