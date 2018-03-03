@@ -17,10 +17,6 @@
 
     <android.support.v7.preference.PreferenceCategory android:title="@string/widget">
         <android.support.v7.preference.SwitchPreferenceCompat
-            android:defaultValue="@bool/pref_show_completed_default"
-            android:key="@string/pref_show_completed_key"
-            android:title="@string/show_completed" />
-        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="@bool/pref_show_expired_default"
             android:key="@string/pref_show_expired_key"
             android:title="@string/show_expired" />

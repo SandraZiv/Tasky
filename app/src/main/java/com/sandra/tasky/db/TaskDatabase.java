@@ -209,7 +209,7 @@ public class TaskDatabase {
     }
 
     //used only in widget
-    public List<SimpleTask> getTasksInWidget(boolean showCompleted, boolean showExpired, String timeSpan) {
+    public List<SimpleTask> getTasksInWidget(boolean showExpired, String timeSpan) {
         List<SimpleTask> list = new LinkedList<>();
         String where = " where (" + TASK_DATE_COLUMN + " is null or ";
         if (timeSpan.equals(context.getString(R.string.pref_time_span_default))) {
@@ -225,7 +225,7 @@ public class TaskDatabase {
                 where += "date(" + TASK_DATE_COLUMN + ")" + " between date('now') and date('now', '" + timeSpan + "'))";
             }
         }
-        where += (showCompleted ? "" : " and " + TASK_COMPLETED_COLUMN + " = " + FALSE);
+        where += " and " + TASK_COMPLETED_COLUMN + " = " + FALSE;
         where += " and " + TASK_SHOW_IN_WIDGET_COLUMN + "=" + TRUE;
 
         String sqlQuery = "select * from " + TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS + where + " order by " + TASK_DATE_COLUMN;

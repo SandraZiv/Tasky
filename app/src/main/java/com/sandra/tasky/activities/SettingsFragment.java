@@ -168,9 +168,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         editor.clear();
         editor.apply();
 
-        SwitchPreferenceCompat showCompleted = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_show_completed_key));
-        showCompleted.setChecked(getResources().getBoolean(R.bool.pref_show_completed_default));
-
         SwitchPreferenceCompat showExpired = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_show_expired_key));
         showExpired.setChecked(getResources().getBoolean(R.bool.pref_show_expired_default));
 

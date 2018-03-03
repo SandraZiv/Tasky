@@ -15,15 +15,6 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/tw_widget_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:text="@string/status"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="12sp" />
-
-    <TextView
         android:id="@+id/tw_widget_due_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

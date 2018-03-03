@@ -33,7 +33,6 @@
     <string name="show_task">Show task</string>
     <string name="show_in_widget">Show in widget</string>
     <string name="settings">Settings</string>
-    <string name="show_completed">Show completed tasks</string>
     <string name="show_when">Show tasks</string>
     <string name="show_when_summary">Time span is relative regarding current date</string>
     <string name="select_time_span">Select time span</string>
@@ -73,7 +72,6 @@
     <string name="pref_show_notifications_key" translatable="false">pref_show_notifications</string>
     <string name="pref_vibrate_key" translatable="false">pref_vibrate</string>
     <string name="pref_sound_key" translatable="false">pref_sound</string>
-    <string name="pref_show_completed_key" translatable="false">pref_show_completed</string>
     <string name="pref_show_expired_key" translatable="false">pref_show_expired</string>
     <string name="pref_time_span_key" translatable="false">pref_time_span</string>
     <string name="pref_restart_scheduler_key" translatable="false">pref_restart_scheduler</string>
