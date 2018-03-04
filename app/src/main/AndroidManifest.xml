@@ -14,6 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!--activities-->
+
         <activity
             android:name=".activities.HomeScreenActivity"
             android:launchMode="singleTop"
@@ -56,6 +58,8 @@
                 android:value=".activities.HomeScreenActivity" />
         </activity>
 
+        <!--receivers-->
+
         <receiver android:name=".widget.TaskWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -65,13 +69,7 @@
                 android:resource="@xml/task_widget_info" />
         </receiver>
 
-        <!--<receiver-->
-            <!--android:name=".receiver.UpdateWidgetReceiver"-->
-            <!--android:permission="android.permission.WAKE_LOCK">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.sandra.tasky.widget.UPDATE_WIDGET" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!--services-->
 
         <service
             android:name=".widget.TaskWidgetService"
