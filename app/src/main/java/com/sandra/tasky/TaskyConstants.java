@@ -20,8 +20,6 @@ public class TaskyConstants {
     public static final String ALARM_EXTRA_REPEATABLE = "ALARM_EXTRA_REPEATABLE";
     public static final String ALARM_EXTRA_TIME = "ALARM_EXTRA_TIME";
 
-    public static final long INTERVAL_DAY = 24 * 60 * 60 * 1000;
-
     public static final int EMPTY_ID = -1;
     public static final String TASK_BUNDLE_KEY = "com.sandra.tasky.task";
 

@@ -24,11 +24,6 @@ public class CategoriesAdapter extends BaseAdapter {
         this.categories = new LinkedList<>();
     }
 
-    public CategoriesAdapter(Context context, List<TaskCategory> categories) {
-        this.context = context;
-        this.categories = categories;
-    }
-
     @Override
     public int getCount() {
         return categories.size();

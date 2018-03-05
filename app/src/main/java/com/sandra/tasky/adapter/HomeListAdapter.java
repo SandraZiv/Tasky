@@ -51,7 +51,7 @@ public class HomeListAdapter extends BaseAdapter {
         //in case note or due date is empty
         else if (task.getNote().isEmpty() || task.getDueDate() == null) {
             listView = LayoutInflater.from(context).inflate(R.layout.list_text_home_screen, parent, false);
-            TextView text = (TextView) listView.findViewById(R.id.tw_text);
+            TextView text = listView.findViewById(R.id.tw_text);
 
             if (!task.getNote().isEmpty()) {
                 text.setText(cutText(task.getNote(), TaskyConstants.MAX_TEXT_LENGTH));
@@ -64,18 +64,18 @@ public class HomeListAdapter extends BaseAdapter {
         else {
             listView = LayoutInflater.from(context).inflate(R.layout.list_all_home_screen, parent, false);
 
-            TextView note = (TextView) listView.findViewById(R.id.tw_note);
+            TextView note = listView.findViewById(R.id.tw_note);
             note.setText(cutText(task.getNote(), TaskyConstants.MAX_TEXT_LENGTH));
 
-            TextView dueDate = (TextView) listView.findViewById(R.id.tw_due_date);
+            TextView dueDate = listView.findViewById(R.id.tw_due_date);
             dueDate.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
         }
 
         //setup for any case, there must always be title and checkbox
-        TextView title = (TextView) listView.findViewById(R.id.tw_title);
+        TextView title = listView.findViewById(R.id.tw_title);
         title.setText(cutText(task.getTitle(), TaskyConstants.MAX_TITLE_LENGTH));
 
-        final CheckBox checkBox = (CheckBox) listView.findViewById(R.id.check_box);
+        final CheckBox checkBox = listView.findViewById(R.id.check_box);
         checkBox.setChecked(task.isCompleted());
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
