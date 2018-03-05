@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -74,20 +73,20 @@ public class HomeScreenActivity extends AppCompatActivity
 
         JodaTimeAndroid.init(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
 
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fabAddTask = (FloatingActionButton) findViewById(R.id.fab_add_task);
+        fabAddTask = findViewById(R.id.fab_add_task);
         fabAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +130,7 @@ public class HomeScreenActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.home_screen_menu, menu);
 
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.home_menu_search));
+        SearchView searchView = (SearchView) menu.findItem(R.id.home_menu_search).getActionView();
 
         SearchManager manager = (SearchManager) getSystemService(SEARCH_SERVICE);
         ComponentName componentName = getComponentName();
@@ -151,7 +150,7 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         });
 
-        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.home_menu_search), new MenuItemCompat.OnActionExpandListener() {
+        menu.findItem(R.id.home_menu_search).setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 hideItems(menu);
@@ -299,7 +298,7 @@ public class HomeScreenActivity extends AppCompatActivity
         homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
         homeListAdapter.registerDataSetObserver(observer);
 
-        ListView listView = (ListView) findViewById(R.id.home_list);
+        ListView listView = findViewById(R.id.home_list);
         listView.setAdapter(homeListAdapter);
 
         listView.setEmptyView(findViewById(R.id.home_empty_view));
@@ -353,6 +352,7 @@ public class HomeScreenActivity extends AppCompatActivity
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 new getDataAsyncTask().execute();
+                invalidateOptionsMenu();
             }
         }
 
@@ -470,9 +470,15 @@ public class HomeScreenActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Integer retValue) {
             updateCategoriesList();
-            updateListView(null);
 
+            MenuItem item = navigationView.getMenu().findItem(selectedCategoryId);
+            //check if item has been deleted
+            if (item == null) {
+                selectedCategoryId = (int) TaskyConstants.ALL_CATEGORY_ID;
+            }
             setActionBar(navigationView.getMenu().findItem(selectedCategoryId).getTitle());
+
+            updateListView(null);
         }
     }
 
