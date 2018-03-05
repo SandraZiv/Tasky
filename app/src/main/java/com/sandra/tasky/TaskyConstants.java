@@ -23,7 +23,7 @@ public class TaskyConstants {
     public static final int EMPTY_ID = -1;
     public static final String TASK_BUNDLE_KEY = "com.sandra.tasky.task";
 
-    public static final int MAX_TITLE_LENGTH = 35;
+    public static final int MAX_TITLE_LENGTH = 70;
     public static final int MAX_TEXT_LENGTH = 100;
 
     public static final long ALL_CATEGORY_ID = -1L;

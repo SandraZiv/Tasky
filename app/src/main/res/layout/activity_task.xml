@@ -22,7 +22,7 @@
             android:inputType="text"
             android:textColor="@android:color/black"
             android:textSize="24sp"
-            android:maxLength="50"/>
+            android:maxLength="80"/>
 
         <CheckBox
             android:id="@+id/cb_task"
