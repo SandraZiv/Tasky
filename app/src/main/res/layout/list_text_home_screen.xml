@@ -7,7 +7,7 @@
     android:descendantFocusability="blocksDescendants">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="0.70">
@@ -26,7 +26,6 @@
             android:id="@+id/tw_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Some text"
             android:layout_marginBottom="10dp"/>
 
 

@@ -14,13 +14,12 @@
 
         <EditText
             android:id="@+id/et_title"
-            style="@android:style/Widget.AutoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:ems="10"
             android:hint="@string/title"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:maxLength="50"/>
@@ -35,7 +34,6 @@
 
         <EditText
             android:id="@+id/et_note"
-            style="@android:style/Widget.AutoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -64,6 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:orientation="horizontal">
 
             <TextView
@@ -91,6 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
