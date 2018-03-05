@@ -168,6 +168,15 @@ public class SettingsFragment extends PreferenceFragmentCompat
         editor.clear();
         editor.apply();
 
+        SwitchPreferenceCompat showNotifications = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_show_notifications_key));
+        showNotifications.setChecked(getResources().getBoolean(R.bool.pref_show_notifications_default));
+
+        CheckBoxPreference vibrate = (CheckBoxPreference) findPreference(getString(R.string.pref_vibrate_key));
+        vibrate.setChecked(getResources().getBoolean(R.bool.pref_vibrate_default));
+
+        CheckBoxPreference sound = (CheckBoxPreference) findPreference(getString(R.string.pref_sound_key));
+        sound.setChecked(getResources().getBoolean(R.bool.pref_sound_default));
+
         SwitchPreferenceCompat showExpired = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_show_expired_key));
         showExpired.setChecked(getResources().getBoolean(R.bool.pref_show_expired_default));
 
