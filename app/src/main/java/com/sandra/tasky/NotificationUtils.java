@@ -2,6 +2,7 @@ package com.sandra.tasky;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -48,7 +49,15 @@ public class NotificationUtils {
     public static void taskReminder(Context context, SimpleTask task) {
         NotificationManager manager = ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    TASK_REMINDER_CHANNEL_ID,
+                    context.getString(R.string.notifications),
+                    NotificationManager.IMPORTANCE_HIGH);
+            manager.createNotificationChannel(mChannel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, TASK_REMINDER_CHANNEL_ID);
 
         builder.setContentTitle(task.getTitle())
                 .setContentText(task.isTimePresent() ? task.parseDateTime() : task.parseDate())
@@ -59,7 +68,10 @@ public class NotificationUtils {
 
         setNotificationDefaults(context, builder);
 
-        builder.setPriority(PRIORITY_HIGH);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            builder.setPriority(PRIORITY_HIGH);
+        }
 
         //If there is notification with the same id and it has not yet been canceled
         //it will be replaced by the updated information.

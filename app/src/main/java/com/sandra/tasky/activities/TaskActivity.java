@@ -403,7 +403,7 @@ public class TaskActivity extends AppCompatActivity {
                     && (isDateChanged || isTaskVisibilityInWidgetChanged)
                     && task.isTimePresent()
                     && isInFuture(task)) {
-                TaskyUtils.setAlarm(this, task.getDueDate().getMillis(), task.getTitle(), false);
+                TaskyUtils.setAlarm(this, task.getDueDate().getMillis() + 60 * 1000, task.getTitle(), false);
             }
 
             if (task.getDueDate() != null && isInFuture(task)) {
