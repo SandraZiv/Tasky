@@ -119,7 +119,7 @@ public class CategoriesActivity extends AppCompatActivity {
         protected void onPostExecute(List<TaskCategory> categories) {
             adapter.setCategories(categories);
 
-            ListView listView = (ListView) findViewById(R.id.lv_categories);
+            ListView listView = findViewById(R.id.lv_categories);
             listView.setAdapter(adapter);
 
             listView.setEmptyView(findViewById(R.id.tv_no_categories));

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -99,25 +98,25 @@ public class TaskActivity extends AppCompatActivity {
         //open db
         new getDataAsyncTask().execute();
 
-        title = (EditText) findViewById(R.id.et_title);
+        title = findViewById(R.id.et_title);
         if (!isTaskNew) {
             title.setText(task.getTitle());
             title.setSelection(task.getTitle().length());
         }
 
-        completed = (CheckBox) findViewById(R.id.cb_task);
+        completed = findViewById(R.id.cb_task);
         completed.setChecked(task.isCompleted());
 
-        note = (EditText) findViewById(R.id.et_note);
+        note = findViewById(R.id.et_note);
         if (!isTaskNew) {
             note.setText(task.getNote());
         }
 
-        twDate = (TextView) findViewById(R.id.task_tw_date);
-        imageCancelDate = (ImageButton) findViewById(R.id.img_btn_clear_date);
+        twDate = findViewById(R.id.task_tw_date);
+        imageCancelDate = findViewById(R.id.img_btn_clear_date);
 
-        twTime = (TextView) findViewById(R.id.task_tw_time);
-        imageCancelTime = (ImageButton) findViewById(R.id.img_btn_clear_time);
+        twTime = findViewById(R.id.task_tw_time);
+        imageCancelTime = findViewById(R.id.img_btn_clear_time);
 
         dateTime = new DateTime();
         if ((!isTaskNew || savedInstanceState != null) && task.getDueDate() != null) {
@@ -295,7 +294,7 @@ public class TaskActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
                 item.setActionView(new View(getApplicationContext()));
-                MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+                item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         return false;
