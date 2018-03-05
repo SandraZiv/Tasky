@@ -46,7 +46,7 @@
     <string name="tasky_reminder">Tasky reminder</string>
     <string name="scheduler_to_be_init">Scheduler to be initialized</string>
     <string name="scheduler_running">Scheduler running</string>
-    <string name="init_finished">Initialization finished</string>
+    <string name="widget_init">Widget initialized</string>
     <string name="last_update">Last update:</string>
     <string name="reminder">Reminder:</string>
     <string name="task_deleted">Task deleted</string>
