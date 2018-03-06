@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sandra.tasky.R;
-import com.sandra.tasky.TaskyUtils;
+import com.sandra.tasky.utils.TaskyUtils;
 import com.sandra.tasky.adapter.CategoriesAdapter;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.TaskCategory;

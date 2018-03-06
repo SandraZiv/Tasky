@@ -29,7 +29,7 @@ import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
-import com.sandra.tasky.TaskyUtils;
+import com.sandra.tasky.utils.TaskyUtils;
 import com.sandra.tasky.adapter.HomeListAdapter;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;

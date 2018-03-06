@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
-import com.sandra.tasky.TaskyUtils;
+import com.sandra.tasky.utils.TaskyUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

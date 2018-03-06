@@ -24,10 +24,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.sandra.tasky.NotificationUtils;
+import com.sandra.tasky.utils.NotificationUtils;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
-import com.sandra.tasky.TaskyUtils;
+import com.sandra.tasky.utils.TaskyUtils;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.entity.TaskCategory;

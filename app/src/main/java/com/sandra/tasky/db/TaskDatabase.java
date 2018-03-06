@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.sandra.tasky.NotificationUtils;
+import com.sandra.tasky.utils.NotificationUtils;
 import com.sandra.tasky.R;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.entity.TaskCategory;

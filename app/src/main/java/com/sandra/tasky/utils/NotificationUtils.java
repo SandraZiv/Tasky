@@ -1,4 +1,4 @@
-package com.sandra.tasky;
+package com.sandra.tasky.utils;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -15,6 +15,8 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
+import com.sandra.tasky.R;
+import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.activities.TaskActivity;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.service.NotificationService;
