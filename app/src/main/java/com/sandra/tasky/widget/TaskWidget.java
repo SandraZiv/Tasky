@@ -12,21 +12,15 @@ import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
-import com.sandra.tasky.TaskyUtils;
 import com.sandra.tasky.activities.HomeScreenActivity;
 import com.sandra.tasky.activities.TaskActivity;
-
-import net.danlew.android.joda.JodaTimeAndroid;
-
-import org.joda.time.LocalTime;
+import com.sandra.tasky.utils.TaskyUtils;
 
 public class TaskWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        JodaTimeAndroid.init(context);
-
-       initMidnightUpdater(context);
+        initMidnightUpdater(context);
 
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
@@ -75,10 +69,7 @@ public class TaskWidget extends AppWidgetProvider {
         if (firstRun) {
             Toast.makeText(context, R.string.widget_init, Toast.LENGTH_SHORT).show();
 
-            LocalTime localTime = LocalTime.now();
-            long timeMidnight = 24 * 60 * 60 - localTime.getHourOfDay() * 60 * 60 - localTime.getMinuteOfHour() * 60 - localTime.getSecondOfMinute();
-            timeMidnight *= 1000;
-            TaskyUtils.setAlarm(context, System.currentTimeMillis() + timeMidnight, null, true);
+            TaskyUtils.setMidnightUpdater(context);
 
             SharedPreferences.Editor editor = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
             editor.putBoolean(TaskyConstants.PREFS_FIRST_RUN, false);

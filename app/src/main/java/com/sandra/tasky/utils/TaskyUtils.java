@@ -1,4 +1,4 @@
-package com.sandra.tasky;
+package com.sandra.tasky.utils;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -9,8 +9,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.widget.Toast;
 
+import com.sandra.tasky.R;
+import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.service.UpdateWidgetService;
 import com.sandra.tasky.widget.TaskWidget;
+
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.LocalTime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,7 +24,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static android.app.AlarmManager.INTERVAL_DAY;
 import static android.app.AlarmManager.RTC;
 import static android.os.Build.VERSION.SDK_INT;
 
@@ -49,7 +54,7 @@ public class TaskyUtils {
     }
 
     public static void setMidnightUpdater(Context context) {
-        setAlarm(context, System.currentTimeMillis() + INTERVAL_DAY, null, true);
+        setAlarm(context, System.currentTimeMillis() + TaskyUtils.untilMidnight(context), null, true);
     }
 
     public static void updateWidget(Context context) {
@@ -85,5 +90,18 @@ public class TaskyUtils {
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         ObjectInputStream is = new ObjectInputStream(in);
         return is.readObject();
+    }
+
+    private static long untilMidnight(Context context) {
+        JodaTimeAndroid.init(context);
+
+        LocalTime localTime = LocalTime.now();
+        long timeMidnight = 24 * 60 * 60
+                - localTime.getHourOfDay() * 60 * 60
+                - localTime.getMinuteOfHour() * 60
+                - localTime.getSecondOfMinute();
+        timeMidnight *= 1000;
+
+        return timeMidnight;
     }
 }
