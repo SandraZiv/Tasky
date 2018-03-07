@@ -48,7 +48,7 @@ public class NotificationUtils {
                 .cancel(TASK_REMINDER_NOTIFICATION_ID + id);
     }
 
-    public static void taskReminder(Context context, SimpleTask task) {
+    public static void showTaskReminder(Context context, SimpleTask task) {
         NotificationManager manager = ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

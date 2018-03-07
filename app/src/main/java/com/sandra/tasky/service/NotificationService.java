@@ -32,7 +32,7 @@ public class NotificationService extends IntentService {
                 JodaTimeAndroid.init(this);
                 SimpleTask task = (SimpleTask) TaskyUtils.deserialize(intent.getByteArrayExtra(TaskyConstants.NOTIFICATION_TASK_BUNDLE_KEY));
                 if (checkTask(task)) {
-                    NotificationUtils.taskReminder(this, task);
+                    NotificationUtils.showTaskReminder(this, task);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
