@@ -6,13 +6,17 @@
         android:id="@+id/task_cancel"
         android:title="@string/cancel"
         android:icon="@drawable/ic_task__cancel"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/task_confirm"
         android:title="@string/save"
         android:icon="@drawable/ic_task_confirmed"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/task_repeat"
+        android:title="@string/repeat"/>
 
     <item
         android:id="@+id/task_category"

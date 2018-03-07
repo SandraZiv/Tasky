@@ -121,6 +121,7 @@
     <string name="reserved_title">Reserved category title</string>
 
     <string name="notifications">Notifications</string>
+    <string name="repeat">Repeat task</string>
 
 
 </resources>

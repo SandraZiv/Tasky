@@ -7,14 +7,17 @@
         android:id="@+id/task_delete"
         android:title="@string/delete"
         android:icon="@drawable/ic_task_delete"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/task_save"
         android:title="@string/save"
         android:icon="@drawable/ic_task_save"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/task_repeat"
+        android:title="@string/repeat"/>
 
     <item
         android:id="@+id/task_category"

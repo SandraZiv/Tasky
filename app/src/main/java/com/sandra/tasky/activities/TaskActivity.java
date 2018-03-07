@@ -339,6 +339,9 @@ public class TaskActivity extends AppCompatActivity {
                 }
                 onBackPressed();
                 break;
+            case R.id.task_repeat:
+                openRepeatAlert();
+                break;
             case R.id.task_category:
                 openCategoryAlert();
                 break;
@@ -421,6 +424,32 @@ public class TaskActivity extends AppCompatActivity {
 
     private boolean isInFuture(SimpleTask task) {
         return (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis();
+    }
+
+    private void openRepeatAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
+
+        builder.setTitle("Repeat task");
+
+        String[] repeatingOption = {"Once", "Every day", "Every week", "Every month", "Every year"};
+
+        int preselected = 0;
+
+        builder.setSingleChoiceItems(repeatingOption, preselected, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private void openCategoryAlert() {

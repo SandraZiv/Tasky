@@ -100,5 +100,6 @@
     <string name="show_notifications">Prikaži obavijesti</string>
     <string name="sound">Zvuk</string>
     <string name="vibrate">Vibracija</string>
+    <string name="repeat">Ponovi zadatak</string>
 
 </resources>
