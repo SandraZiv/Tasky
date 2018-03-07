@@ -12,11 +12,13 @@ public class TaskyConstants {
         return TASK_BUNDLE_KEY.hashCode() + task.getId();
     }
 
-    public static final String WIDGET_UPDATE_ACTION = "com.sandra.tasky.widget.UPDATE_WIDGET";
+    public static final String WIDGET_TASK_UPDATE_ACTION = "com.sandra.tasky.widget.WIDGET_TASK_UPDATE_ACTION";
+    public static final String WIDGET_MIDNIGHT_UPDATE_ACTION = "com.sandra.tasky.widget.WIDGET_MIDNIGHT_UPDATE_ACTION";
+
     public static final String WIDGET_FIRST_RUN = "first_run_of_widget_1.19";
     public static final String PREFS_FIRST_RUN = "prefs_first_run_of_widget_1.19";
     public static final String PREFS_LAST_UPDATE = "prefs_last_update";
-    public static final String ALARM_EXTRA_TITLE = "ALARM_EXTRA_TITLE";
+    public static final String ALARM_EXTRA_TASK = "ALARM_EXTRA_TASK";
     public static final String ALARM_EXTRA_REPEATABLE = "ALARM_EXTRA_REPEATABLE";
     public static final String ALARM_EXTRA_TIME = "ALARM_EXTRA_TIME";
 

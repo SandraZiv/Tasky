@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.utils.TaskyUtils;
 
 import java.text.SimpleDateFormat;
@@ -26,10 +27,27 @@ public class UpdateWidgetService extends IntentService {
 
         createLogEntry();
 
-        //set alarm for next midnight
-        if (intent != null && intent.getExtras() != null && intent.getExtras().getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
+        if (intent == null || intent.getExtras() == null) {
+            return;
+        }
+
+        String action = intent.getAction();
+        if (TaskyConstants.WIDGET_TASK_UPDATE_ACTION.equals(action)) {
+            //check if alarm is repeating
+            if(intent.getExtras().getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
+                try {
+                    SimpleTask task = (SimpleTask) TaskyUtils.deserialize(intent.getByteArrayExtra(TaskyConstants.ALARM_EXTRA_TASK));
+                    TaskyUtils.rescheduleTask(this, task);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else if (TaskyConstants.WIDGET_MIDNIGHT_UPDATE_ACTION.equals(action)) {
+            //set alarm for next midnight
             TaskyUtils.setMidnightUpdater(this);
         }
+
     }
 
     private void createLogEntry() {
