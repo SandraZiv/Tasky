@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.sandra.tasky.TaskyConstants;
+
 import static com.sandra.tasky.db.DatabaseConstants.*;
 
 class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
@@ -11,7 +13,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "task_database.db";
     static final String DATABASE_TABLE_TASKS = "taskTable";
     static final String DATABASE_TABLE_CATEGORIES = "categoriesTable";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     private static final String CREATE_TABLE_TASKS = "create table " + DATABASE_TABLE_TASKS + " ( "
             + TASKS_KEY_ID + " integer primary key autoincrement,"
@@ -21,6 +23,7 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
             + TASK_DATE_COLUMN + " timestamp,"
             + TASK_TIME_PRESENT_COLUMN + " smallint check (" + TASK_TIME_PRESENT_COLUMN + " in (0,1)),"
             + TASK_SHOW_IN_WIDGET_COLUMN + " smallint default " + TRUE + ","
+            + TASK_REPEAT_COLUMN + " smallint default " + TaskyConstants.REPEAT_ONCE + ","
             + TASK_CATEGORY_FK + " integer,"
             + "foreign key (" + TASK_CATEGORY_FK + ") references " + DATABASE_TABLE_CATEGORIES + "(" + CATEGORIES_KEY_ID + ")"
             + "on delete set null"
@@ -53,17 +56,16 @@ class TaskDatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists " + DATABASE_TABLE_CATEGORIES);
-        db.execSQL(CREATE_TABLE_CATEGORIES);
+//        db.execSQL("drop table if exists " + DATABASE_TABLE_CATEGORIES);
+//        db.execSQL(CREATE_TABLE_CATEGORIES);
 
         db.execSQL("alter table " + DATABASE_TABLE_TASKS + " rename to old");
         db.execSQL(CREATE_TABLE_TASKS);
         String columns = TASKS_KEY_ID + "," + TASK_TITLE_COLUMN + "," + TASK_COMPLETED_COLUMN + ","
                 + TASK_NOTE_COLUMN + "," + TASK_DATE_COLUMN + "," + TASK_TIME_PRESENT_COLUMN + ","
-                + TASK_SHOW_IN_WIDGET_COLUMN;
+                + TASK_SHOW_IN_WIDGET_COLUMN + "," + TASK_CATEGORY_FK;
         db.execSQL("insert into " + DATABASE_TABLE_TASKS + "(" + columns + ")"
                 + " select " + columns + " from old");
         db.execSQL("drop table old");
-
     }
 }

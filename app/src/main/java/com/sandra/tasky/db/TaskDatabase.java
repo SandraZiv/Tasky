@@ -32,6 +32,7 @@ import static com.sandra.tasky.db.DatabaseConstants.TASK_CATEGORY_FK;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_COMPLETED_COLUMN;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_DATE_COLUMN;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_NOTE_COLUMN;
+import static com.sandra.tasky.db.DatabaseConstants.TASK_REPEAT_COLUMN;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_SHOW_IN_WIDGET_COLUMN;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_TIME_PRESENT_COLUMN;
 import static com.sandra.tasky.db.DatabaseConstants.TASK_TITLE_COLUMN;
@@ -71,6 +72,7 @@ public class TaskDatabase {
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         newValues.put(TASK_TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
         newValues.put(TASK_SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
+        newValues.put(TASK_REPEAT_COLUMN, task.getRepeat());
         newValues.put(TASK_CATEGORY_FK, task.getCategory() == null ? null : task.getCategory().getId());
 
         return (int) dbWritable.insert(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, newValues);
@@ -92,6 +94,7 @@ public class TaskDatabase {
                 (task.getDueDate() == null) ? null : new Timestamp(task.getDueDate().getMillis()).toString());
         updateValues.put(TASK_TIME_PRESENT_COLUMN, (task.isTimePresent() ? TRUE : FALSE));
         updateValues.put(TASK_SHOW_IN_WIDGET_COLUMN, (task.isShowInWidget() ? TRUE : FALSE));
+        updateValues.put(TASK_REPEAT_COLUMN, task.getRepeat());
         updateValues.put(TASK_CATEGORY_FK, task.getCategory() == null ? null : task.getCategory().getId());
 
         String where = TASKS_KEY_ID + " = " + task.getId();
@@ -117,15 +120,21 @@ public class TaskDatabase {
             boolean completed = (cursor.getInt(2) == TRUE);
             String note = cursor.getString(3);
             DateTime date;
-            if (cursor.getString(4) != null)
+            if (cursor.getString(4) != null) {
                 date = getDateFromString(cursor.getString(4));
-            else
+            } else {
                 date = null;
+            }
+
             boolean timePresent = (cursor.getInt(5) == TRUE);
             boolean showInWidget = (cursor.getInt(6) == TRUE);
 
-            long categoryId = cursor.getInt(7);
-            task = new SimpleTask(id, title, note, date, completed, timePresent, showInWidget, getCategoryById(categoryId));
+            int repeat = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.TASK_REPEAT_COLUMN));
+
+            long categoryId = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.TASK_CATEGORY_FK));
+
+            task = new SimpleTask(id, title, note, date, completed, timePresent, showInWidget,
+                    repeat, getCategoryById(categoryId));
         }
 
         cursor.close();
@@ -145,15 +154,20 @@ public class TaskDatabase {
                 boolean completed = (cursor.getInt(2) == TRUE);
                 String note = cursor.getString(3);
                 DateTime date;
-                if (cursor.getString(4) != null)
+                if (cursor.getString(4) != null) {
                     date = getDateFromString(cursor.getString(4));
-                else
+                } else {
                     date = null;
+                }
                 boolean timePresent = (cursor.getInt(5) == TRUE);
                 boolean showInWidget = (cursor.getInt(6) == TRUE);
 
-                long categoryId = cursor.getInt(7);
-                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget, getCategoryById(categoryId)));
+                int repeat = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.TASK_REPEAT_COLUMN));
+
+                long categoryId = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.TASK_CATEGORY_FK));
+
+                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget,
+                        repeat, getCategoryById(categoryId)));
 
             } while (cursor.moveToNext());
         }
@@ -244,8 +258,12 @@ public class TaskDatabase {
                     date = null;
                 boolean timePresent = (cursor.getInt(5) == TRUE);
                 boolean showInWidget = (cursor.getInt(6) == TRUE);
-                long categoryId = cursor.getInt(7);
-                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget, getCategoryById(categoryId)));
+                int repeat = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.TASK_REPEAT_COLUMN));
+
+                long categoryId = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.TASK_CATEGORY_FK));
+
+                list.add(new SimpleTask(id, title, note, date, completed, timePresent, showInWidget,
+                        repeat, getCategoryById(categoryId)));
 
             } while (cursor.moveToNext());
         }
