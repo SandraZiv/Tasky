@@ -433,11 +433,10 @@ public class TaskActivity extends AppCompatActivity {
 
         String[] repeatingOption = {"Once", "Every day", "Every week", "Every month", "Every year"};
 
-        int preselected = 0;
-
-        builder.setSingleChoiceItems(repeatingOption, preselected, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(repeatingOption, task.getRepeat(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                task.setRepeat(which);
                 dialog.dismiss();
             }
         });

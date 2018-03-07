@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static android.app.AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 import static android.app.AlarmManager.RTC;
 import static android.os.Build.VERSION.SDK_INT;
 
@@ -48,10 +47,24 @@ public class TaskyUtils {
         try {
             Intent setAlarmIntent = new Intent(context, UpdateWidgetService.class);
             setAlarmIntent.setAction(TaskyConstants.WIDGET_TASK_UPDATE_ACTION);
-            setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, true);
-            setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TASK, serialize(task));
-            //TODO ad if for repeat and then set offset
-            setAlarm(context, setAlarmIntent, task.getDueDate().getMillis() + TIME_OFFSET);
+
+            boolean isRepeatable = task.getRepeat() != TaskyConstants.REPEAT_ONCE;
+
+            setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, isRepeatable);
+
+            long taskTimeMillis;
+
+            if (isRepeatable) {
+                setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TASK, serialize(task));
+                taskTimeMillis = task.getDueDate().getMillis();
+            } else {
+                //offset is set so it can write expired
+                //TODO refactor
+                taskTimeMillis = task.getDueDate().getMillis() + TIME_OFFSET;
+            }
+
+            setAlarm(context, setAlarmIntent, taskTimeMillis);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,13 +72,14 @@ public class TaskyUtils {
 
     public static void rescheduleTask(Context context, SimpleTask task) {
         Log.d("TIM", "reschedule");
+
         try {
             //set alarm
             Intent setAlarmIntent = new Intent(context, UpdateWidgetService.class);
             setAlarmIntent.setAction(TaskyConstants.WIDGET_TASK_UPDATE_ACTION);
             setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, true);
 
-            long newTimeMillis = task.getDueDate().getMillis() + INTERVAL_FIFTEEN_MINUTES;
+            long newTimeMillis = calculateNewTaskTime(task);
             task.setDueDate(new DateTime(newTimeMillis));
             setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TASK, serialize(task));
 
@@ -125,6 +139,22 @@ public class TaskyUtils {
 
         return timeMidnight;
     }
+
+    private static long calculateNewTaskTime(SimpleTask task) {
+        switch (task.getRepeat()) {
+            case TaskyConstants.REPEAT_DAY:
+                return task.getDueDate().plusDays(1).getMillis();
+            case TaskyConstants.REPEAT_WEEK:
+                return task.getDueDate().plusWeeks(1).getMillis();
+            case TaskyConstants.REPEAT_MONTH:
+                return task.getDueDate().plusMonths(1).getMillis();
+            case TaskyConstants.REPEAT_YEAR:
+                return task.getDueDate().plusYears(1).getMillis();
+            default:
+                return task.getDueDate().getMillis();
+        }
+    }
+
 
     public static Toast addToast(Toast toast, Context context, String msg, boolean isShort) {
         if (toast != null) {
