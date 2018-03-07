@@ -41,4 +41,10 @@ public class TaskyConstants {
     public static final int SORT_COMPLETED = 2;
     public static final int SORT_DEFAULT = SORT_DUE_DATE;
 
+    public static final int REPEAT_ONCE = 0;
+    public static final int REPEAT_DAY = 1;
+    public static final int REPEAT_WEEK = 2;
+    public static final int REPEAT_MONTH = 3;
+    public static final int REPEAT_YEAR = 4;
+
 }
