@@ -112,6 +112,10 @@ public class SimpleTask implements Serializable {
         this.showInWidget = showInWidget;
     }
 
+    public boolean isRepeating() {
+        return repeat != TaskyConstants.REPEAT_ONCE;
+    }
+
     public int getRepeat() {
         return repeat;
     }
@@ -128,22 +132,43 @@ public class SimpleTask implements Serializable {
         this.category = category;
     }
 
+
+    public boolean fullTaskEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleTask task = (SimpleTask) o;
+
+        if (id != task.id) return false;
+        if (completed != task.completed) return false;
+        if (timePresent != task.timePresent) return false;
+        if (showInWidget != task.showInWidget) return false;
+        if (repeat != task.repeat) return false;
+        if (title != null ? !title.equals(task.title) : task.title != null) return false;
+        if (note != null ? !note.equals(task.note) : task.note != null) return false;
+        if (dueDate != null ? !dueDate.equals(task.dueDate) : task.dueDate != null) return false;
+        return category != null ? category.equals(task.category) : task.category == null;
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SimpleTask that = (SimpleTask) o;
+        SimpleTask task = (SimpleTask) o;
 
-        if (id != that.id) return false;
-        return title.equals(that.title);
+        return id == task.id;
 
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + title.hashCode();
-        return result;
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return title + " " + (dueDate != null ? parseDateTime() : " ");
     }
 }
