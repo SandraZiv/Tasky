@@ -24,13 +24,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.sandra.tasky.utils.NotificationUtils;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
-import com.sandra.tasky.utils.TaskyUtils;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.entity.TaskCategory;
+import com.sandra.tasky.utils.NotificationUtils;
+import com.sandra.tasky.utils.TaskyUtils;
 import com.sandra.tasky.widget.TaskWidget;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -401,14 +401,8 @@ public class TaskActivity extends AppCompatActivity {
                 database.updateTask(task);
             }
 
-            if (task.isShowInWidget()
-                    && (isDateChanged || isTaskVisibilityInWidgetChanged)
-                    && task.isTimePresent()
-                    && isInFuture(task)) {
-                TaskyUtils.initTaskAlarm(TaskActivity.this, task);
-            }
-
             if (task.getDueDate() != null && isInFuture(task)) {
+                TaskyUtils.initTaskAlarm(TaskActivity.this, task);
                 NotificationUtils.setNotificationReminder(this, task);
             }
         }
@@ -423,17 +417,26 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private boolean isInFuture(SimpleTask task) {
-        return (task.getDueDate().getMillis() + 60 * 1000) > System.currentTimeMillis();
+        DateTime current = DateTime.now();
+        current = current.withSecondOfMinute(0).withMillisOfSecond(0);
+        //task is already cleared in setupDateTimeForDB()
+
+        return task.getDueDate().getMillis() > current.getMillis();
     }
 
     private void openRepeatAlert() {
+        if (twDate.getText().toString().equals(getString(R.string.select_date))) {
+            mToast = TaskyUtils.addToast(mToast, TaskActivity.this, R.string.date_must_be_selected, true);
+            return;
+        }
+
+        //TODO reset when date is reset or keep
+
         AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
 
-        builder.setTitle("Repeat task");
+        builder.setTitle(R.string.repeat);
 
-        String[] repeatingOption = {"Once", "Every day", "Every week", "Every month", "Every year"};
-
-        builder.setSingleChoiceItems(repeatingOption, task.getRepeat(), new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(R.array.repeating_options, task.getRepeat(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 task.setRepeat(which);
