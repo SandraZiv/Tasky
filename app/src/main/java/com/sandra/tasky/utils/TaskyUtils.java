@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.util.Log;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.sandra.tasky.R;
@@ -43,18 +43,17 @@ public class TaskyUtils {
     }
 
     public static void initTaskAlarm(Context context, SimpleTask task) {
-        Log.d("TIM", "init");
         try {
             Intent setAlarmIntent = new Intent(context, UpdateWidgetService.class);
             setAlarmIntent.setAction(TaskyConstants.WIDGET_TASK_UPDATE_ACTION);
 
-            boolean isRepeatable = task.getRepeat() != TaskyConstants.REPEAT_ONCE;
+            boolean isRepeating = task.isRepeating();
 
-            setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, isRepeatable);
+            setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, isRepeating);
 
             long taskTimeMillis;
 
-            if (isRepeatable) {
+            if (isRepeating) {
                 setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TASK, serialize(task));
                 taskTimeMillis = task.getDueDate().getMillis();
             } else {
@@ -63,7 +62,7 @@ public class TaskyUtils {
                 taskTimeMillis = task.getDueDate().getMillis() + TIME_OFFSET;
             }
 
-            setAlarm(context, setAlarmIntent, taskTimeMillis);
+            setAlarm(context, setAlarmIntent, taskTimeMillis, TaskyConstants.WIDGET_PI_REQUEST_CODE(task));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,8 +70,6 @@ public class TaskyUtils {
     }
 
     public static void rescheduleTask(Context context, SimpleTask task) {
-        Log.d("TIM", "reschedule");
-
         try {
             //set alarm
             Intent setAlarmIntent = new Intent(context, UpdateWidgetService.class);
@@ -83,11 +80,17 @@ public class TaskyUtils {
             task.setDueDate(new DateTime(newTimeMillis));
             setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TASK, serialize(task));
 
-            setAlarm(context, setAlarmIntent, newTimeMillis + TIME_OFFSET);
+            setAlarm(context, setAlarmIntent, newTimeMillis, TaskyConstants.WIDGET_PI_REQUEST_CODE(task));
 
-            //update task and set notification
+            //update task and set notification (if it is enabled)
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
+                    context.getString(R.string.pref_show_notifications_key),
+                    context.getResources().getBoolean(R.bool.pref_show_notifications_default))) {
+
+                NotificationUtils.setNotificationReminder(context, task);
+            }
+
             //update widget is done in postExecute()
-            NotificationUtils.setNotificationReminder(context, task);
             new rescheduleTaskAsync().execute(context, task);
 
         } catch (Exception e) {
@@ -101,19 +104,18 @@ public class TaskyUtils {
 
         long newTimeMillis = System.currentTimeMillis() + TaskyUtils.untilMidnight(context);
 
-        setAlarm(context, setAlarmIntent, newTimeMillis);
+        setAlarm(context, setAlarmIntent, newTimeMillis, (int) System.currentTimeMillis());
     }
 
-    private static void setAlarm(Context context, Intent setAlarmIntent, long timeInMillis) {
+    private static void setAlarm(Context context, Intent setAlarmIntent, long timeInMillis, int pendingIntentId) {
 
         setAlarmIntent.setAction(TaskyConstants.WIDGET_TASK_UPDATE_ACTION);
 
         setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TIME, timeInMillis);
 
-        //TODO id?
         PendingIntent setAlarmPI = PendingIntent.getService(
                 context,
-                (int) System.currentTimeMillis(),
+                pendingIntentId,
                 setAlarmIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -198,7 +200,6 @@ public class TaskyUtils {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            Log.d("TIM", "updateWidget");
             updateWidget(context);
         }
     }
