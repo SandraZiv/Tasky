@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.utils.TaskyUtils;
 
@@ -37,7 +38,9 @@ public class UpdateWidgetService extends IntentService {
             if(intent.getExtras().getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
                 try {
                     SimpleTask task = (SimpleTask) TaskyUtils.deserialize(intent.getByteArrayExtra(TaskyConstants.ALARM_EXTRA_TASK));
-                    TaskyUtils.rescheduleTask(this, task);
+                    if (checkTask(task)) {
+                        TaskyUtils.rescheduleTask(this, task);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -55,4 +58,12 @@ public class UpdateWidgetService extends IntentService {
         editor.putString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.last_update) + " " + new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(new Date()));
         editor.apply();
     }
+    
+    //maybe unnecessary
+    private boolean checkTask(SimpleTask task) {
+        TaskDatabase db = new TaskDatabase(this);
+        SimpleTask other = db.getTaskById(task.getId());
+        return task.fullTaskEquals(other);
+    }
+
 }
