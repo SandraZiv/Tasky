@@ -18,6 +18,7 @@ import android.support.v4.app.NotificationCompat;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.activities.TaskActivity;
+import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.service.NotificationService;
 
@@ -133,7 +134,14 @@ public class NotificationUtils {
 
     private static PendingIntent openTaskActivity(Context context, SimpleTask task) {
         Intent openTaskActivityIntent = new Intent(context, TaskActivity.class);
-        openTaskActivityIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, task);
+
+        if (task.isRepeating()) {
+            //load new task since time has changed
+            openTaskActivityIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, getRescheduledTask(context, task));
+        } else {
+            openTaskActivityIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, task);
+        }
+
 
         return PendingIntent.getActivity(
                 context,
@@ -145,6 +153,19 @@ public class NotificationUtils {
     private static Bitmap largeIcon(Context context) {
         Resources res = context.getResources();
         return BitmapFactory.decodeResource(res, R.mipmap.ic_launcher);
+    }
+
+    private static SimpleTask getRescheduledTask(Context context, SimpleTask old) {
+        TaskDatabase database = new TaskDatabase(context);
+
+        SimpleTask newTask;
+        while (true) {
+            newTask = database.getTaskById(old.getId());
+            if (!old.getDueDate().equals(newTask.getDueDate())) {
+                break;
+            }
+        }
+        return newTask;
     }
 
 }
