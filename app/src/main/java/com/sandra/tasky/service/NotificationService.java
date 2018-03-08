@@ -31,7 +31,7 @@ public class NotificationService extends IntentService {
                 //TODO two tasks at the same time?
                 JodaTimeAndroid.init(this);
                 SimpleTask task = (SimpleTask) TaskyUtils.deserialize(intent.getByteArrayExtra(TaskyConstants.NOTIFICATION_TASK_BUNDLE_KEY));
-                if (checkTask(task)) {
+                if (checkTask(task) && !task.isCompleted()) {
                     NotificationUtils.showTaskReminder(this, task);
                 }
             } catch (Exception e) {
