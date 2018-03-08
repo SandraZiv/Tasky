@@ -102,4 +102,13 @@
     <string name="vibrate">Vibracija</string>
     <string name="repeat">Ponovi zadatak</string>
 
+    <string-array name="repeating_options">
+        <item>Jendom</item>
+        <item>Svaki dan</item>
+        <item>Svaki tjedan</item>
+        <item>Svaki mjesec</item>
+        <item>Svake godine</item>
+    </string-array>
+    <string name="date_must_be_selected">Morate odabrati datum</string>
+
 </resources>

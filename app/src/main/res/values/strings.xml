@@ -122,6 +122,15 @@
 
     <string name="notifications">Notifications</string>
     <string name="repeat">Repeat task</string>
+    <string name="date_must_be_selected">Date must be selected</string>
+
+    <string-array name="repeating_options">
+        <item>Once</item>
+        <item>Every day</item>
+        <item>Every week</item>
+        <item>Every month</item>
+        <item>Every year</item>
+    </string-array>
 
 
 </resources>
