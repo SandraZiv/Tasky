@@ -5,13 +5,10 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.sandra.tasky.R;
-import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.activities.HomeScreenActivity;
 import com.sandra.tasky.activities.TaskActivity;
 import com.sandra.tasky.utils.TaskyUtils;
@@ -20,7 +17,8 @@ public class TaskWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        initMidnightUpdater(context);
+        TaskyUtils.setMidnightUpdater(context);
+
 
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
@@ -61,19 +59,4 @@ public class TaskWidget extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    private void initMidnightUpdater(Context context) {
-
-        Boolean firstRun = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
-                .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
-
-        if (firstRun) {
-            Toast.makeText(context, R.string.widget_init, Toast.LENGTH_SHORT).show();
-
-            TaskyUtils.setMidnightUpdater(context);
-
-            SharedPreferences.Editor editor = context.getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
-            editor.putBoolean(TaskyConstants.PREFS_FIRST_RUN, false);
-            editor.apply();
-        }
-    }
 }

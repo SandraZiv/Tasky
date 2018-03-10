@@ -104,7 +104,7 @@ public class TaskyUtils {
 
         long newTimeMillis = System.currentTimeMillis() + TaskyUtils.untilMidnight(context);
 
-        setAlarm(context, setAlarmIntent, newTimeMillis, (int) System.currentTimeMillis());
+        setAlarm(context, setAlarmIntent, newTimeMillis, TaskyConstants.MIDNIGHT_UPDATER_PI_REQUEST_CODE);
     }
 
     private static void setAlarm(Context context, Intent setAlarmIntent, long timeInMillis, int pendingIntentId) {

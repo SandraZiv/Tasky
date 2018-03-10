@@ -39,16 +39,13 @@
     <string name="widget" translatable="false">Widget</string>
     <string name="no_tasks_here">No tasks here!</string>
     <string name="show_expired">Show expired tasks</string>
-    <string name="scheduler_restarted">Scheduler restarted, please restart widget</string>
-    <string name="please_restart_widget_to_complete">Please restart widget to complete action</string>
+
+    <!--widget strings-->
     <string name="restart_scheduler_title">Restart update scheduler</string>
-    <string name="reminder_set">Reminder set</string>
-    <string name="tasky_reminder">Tasky reminder</string>
-    <string name="scheduler_to_be_init">Scheduler to be initialized</string>
     <string name="scheduler_running">Scheduler running</string>
-    <string name="widget_init">Widget initialized</string>
+    <string name="scheduler_restarted">Scheduler restarted</string>
     <string name="last_update">Last update:</string>
-    <string name="reminder">Reminder:</string>
+
     <string name="task_deleted">Task deleted</string>
     <string name="in_advance">in advance</string>
 

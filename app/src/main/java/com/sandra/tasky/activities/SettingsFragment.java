@@ -17,9 +17,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.sandra.tasky.utils.NotificationUtils;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.utils.NotificationUtils;
 import com.sandra.tasky.utils.TaskyUtils;
 
 
@@ -31,74 +31,35 @@ public class SettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences);
-
         setHasOptionsMenu(true);
 
+        //init listener
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
+        //setting preferences
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
 
-        //set vibrate and sound enabled
         enableVibrateAndSound(sharedPreferences, getString(R.string.pref_show_notifications_key));
+        setWidgetUpdater();
+        setTimeSpan(sharedPreferences);
+        setGooglePlayPreference();
+        setAppVersion();
 
-        final boolean isFirstRun = getActivity()
-                .getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
-                .getBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
+    }
 
-        Preference preference = findPreference(getString(R.string.pref_restart_scheduler_key));
-        final String lastUpdate = getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
-                .getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
-        preference.setSummary(isFirstRun ? getString(R.string.scheduler_to_be_init) : lastUpdate);
-        preference.setEnabled(!isFirstRun);
-        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (!isFirstRun) {
-                    SharedPreferences.Editor editor = getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
-                    editor.putBoolean(TaskyConstants.PREFS_FIRST_RUN, true);
-                    editor.putString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
-                    editor.apply();
-                    preference.setSummary(getString(R.string.scheduler_restarted));
-                    preference.setEnabled(false);
-                    mToast = TaskyUtils.addToast(mToast, getActivity(), R.string.scheduler_restarted, true);
-                } else {
-                    preference.setSummary(lastUpdate);
-                    //this is actually never called
-                    mToast = TaskyUtils.addToast(mToast, getActivity(), R.string.please_restart_widget_to_complete, false);
-                }
-                return false;
-            }
-        });
+    private void enableVibrateAndSound(SharedPreferences sharedPreferences, String notificationPrefKey) {
+        CheckBoxPreference vibrate = (CheckBoxPreference) findPreference(getString(R.string.pref_vibrate_key));
+        CheckBoxPreference sound = (CheckBoxPreference) findPreference(getString(R.string.pref_sound_key));
 
+        boolean enabled = sharedPreferences.getBoolean(notificationPrefKey, getResources().getBoolean(R.bool.pref_show_notifications_default));
+        vibrate.setEnabled(enabled);
+        sound.setEnabled(enabled);
+    }
+
+    private void setTimeSpan(SharedPreferences sharedPreferences) {
         Preference p = findPreference(getString(R.string.pref_time_span_key));
         String prefValue = sharedPreferences.getString(p.getKey(), "");
         setPreferenceSummary(p, prefValue);
-
-        //open in google play
-        Preference pGooglePlay = findPreference(getString(R.string.pref_view_in_google_play_key));
-        pGooglePlay.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                final String appPackageName = getActivity().getApplicationContext().getPackageName();
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.google_play_market) + appPackageName)));
-                } catch (ActivityNotFoundException e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.google_play_url) + appPackageName)));
-                }
-                return true;
-            }
-        });
-
-
-        //set version
-        Preference pVersion = findPreference(getString(R.string.pref_version_key));
-        try {
-            pVersion.setSummary(getActivity().getApplicationContext().getPackageManager().getPackageInfo
-                    (getActivity().getApplicationContext().getPackageName(), 0).versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private void setPreferenceSummary(Preference preference, String value) {
@@ -116,13 +77,54 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
     }
 
-    private void enableVibrateAndSound(SharedPreferences sharedPreferences, String notificationPrefKey) {
-        CheckBoxPreference vibrate = (CheckBoxPreference) findPreference(getString(R.string.pref_vibrate_key));
-        CheckBoxPreference sound = (CheckBoxPreference) findPreference(getString(R.string.pref_sound_key));
+    private void setWidgetUpdater() {
+        Preference preference = findPreference(getString(R.string.pref_restart_scheduler_key));
 
-        boolean enabled = sharedPreferences.getBoolean(notificationPrefKey, getResources().getBoolean(R.bool.pref_show_notifications_default));
-        vibrate.setEnabled(enabled);
-        sound.setEnabled(enabled);
+        final String lastUpdate = getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE)
+                .getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
+
+        preference.setSummary(lastUpdate);
+
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                preference.setSummary(getString(R.string.scheduler_restarted));
+                mToast = TaskyUtils.addToast(mToast, getActivity(), R.string.scheduler_restarted, true);
+                TaskyUtils.setMidnightUpdater(getContext());
+
+                SharedPreferences.Editor editor = getActivity().getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
+                editor.putString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
+                editor.apply();
+
+                return true;
+            }
+        });
+    }
+
+    private void setGooglePlayPreference() {
+        Preference pGooglePlay = findPreference(getString(R.string.pref_view_in_google_play_key));
+        pGooglePlay.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final String appPackageName = getActivity().getApplicationContext().getPackageName();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.google_play_market) + appPackageName)));
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.google_play_url) + appPackageName)));
+                }
+                return true;
+            }
+        });
+    }
+
+    private void setAppVersion() {
+        Preference pVersion = findPreference(getString(R.string.pref_version_key));
+        try {
+            pVersion.setSummary(getActivity().getApplicationContext().getPackageManager().getPackageInfo
+                    (getActivity().getApplicationContext().getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void cancelNotifications(SharedPreferences sharedPreferences, String key) {
