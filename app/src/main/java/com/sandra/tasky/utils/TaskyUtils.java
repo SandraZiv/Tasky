@@ -142,6 +142,10 @@ public class TaskyUtils {
         return timeMidnight;
     }
 
+    public static DateTime moveToNextRepeat(SimpleTask task) {
+        return new DateTime(calculateNewTaskTime(task));
+    }
+
     private static long calculateNewTaskTime(SimpleTask task) {
         switch (task.getRepeat()) {
             case TaskyConstants.REPEAT_DAY:

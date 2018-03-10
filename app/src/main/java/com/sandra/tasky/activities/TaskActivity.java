@@ -387,7 +387,14 @@ public class TaskActivity extends AppCompatActivity {
                     }
                     //doesn't matter for task precision
                     dateTime = setupDateTimeForDB(dateTime);
+
                     task.setDueDate(dateTime);
+
+                    //tweak for repeating
+                    while (!isInFuture(task) && task.isRepeating()) {
+                        task.setDueDate(TaskyUtils.moveToNextRepeat(task));
+                    }
+
                 } else {
                     //there is no date thus no time
                     task.setDueDate(null);
