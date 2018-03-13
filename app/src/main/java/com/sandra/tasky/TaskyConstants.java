@@ -21,8 +21,12 @@ public class TaskyConstants {
     public static final String WIDGET_MIDNIGHT_UPDATE_ACTION = "com.sandra.tasky.widget.WIDGET_MIDNIGHT_UPDATE_ACTION";
     public static final int MIDNIGHT_UPDATER_PI_REQUEST_CODE = 18310;
 
-    public static final String WIDGET_FIRST_RUN = "first_run_of_widget_1.19";
+    public static final String WIDGET_PREF = "first_run_of_widget_1.19";
     public static final String PREFS_LAST_UPDATE = "prefs_last_update";
+    public static final String PREFS_IS_WIDGET_ENABLED = "PREFS_IS_WIDGET_ENABLED";
+    public static final boolean WIDGET_ENABLED = true;
+    public static final boolean WIDGET_DISABLED = false;
+    public static final boolean WIDGET_DEFAULT = WIDGET_DISABLED;
 
     public static final String ALARM_EXTRA_TASK = "com.sandra.tasky.ALARM_EXTRA_TASK";
     public static final String ALARM_EXTRA_REPEATABLE = "ALARM_EXTRA_REPEATABLE";

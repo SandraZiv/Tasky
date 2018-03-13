@@ -5,10 +5,12 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.sandra.tasky.R;
+import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.activities.HomeScreenActivity;
 import com.sandra.tasky.activities.TaskActivity;
 import com.sandra.tasky.utils.TaskyUtils;
@@ -52,11 +54,19 @@ public class TaskWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
+        updatePreference(context, TaskyConstants.WIDGET_ENABLED);
+
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+        updatePreference(context, TaskyConstants.WIDGET_DISABLED);
+    }
+
+    private void updatePreference(Context context, boolean enabled) {
+        SharedPreferences preferences = context.getSharedPreferences(TaskyConstants.WIDGET_PREF, Context.MODE_PRIVATE);
+        preferences.edit().putBoolean(TaskyConstants.PREFS_IS_WIDGET_ENABLED, enabled).apply();
     }
 
 }

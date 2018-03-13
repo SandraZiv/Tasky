@@ -1,7 +1,6 @@
 package com.sandra.tasky.service;
 
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
@@ -35,7 +34,7 @@ public class UpdateWidgetService extends IntentService {
         String action = intent.getAction();
         if (TaskyConstants.WIDGET_TASK_UPDATE_ACTION.equals(action)) {
             //check if alarm is repeating
-            if(intent.getExtras().getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
+            if (intent.getExtras().getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
                 try {
                     SimpleTask task = (SimpleTask) TaskyUtils.deserialize(intent.getByteArrayExtra(TaskyConstants.ALARM_EXTRA_TASK));
                     if (checkTask(task)) {
@@ -54,11 +53,16 @@ public class UpdateWidgetService extends IntentService {
     }
 
     private void createLogEntry() {
-        SharedPreferences.Editor editor = getSharedPreferences(TaskyConstants.WIDGET_FIRST_RUN, Context.MODE_PRIVATE).edit();
-        editor.putString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.last_update) + " " + new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(new Date()));
-        editor.apply();
+        SharedPreferences preferences = getSharedPreferences(TaskyConstants.WIDGET_PREF, MODE_PRIVATE);
+
+        if (preferences.getBoolean(TaskyConstants.PREFS_IS_WIDGET_ENABLED, TaskyConstants.WIDGET_DEFAULT)) {
+            preferences.edit()
+                    .putString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.last_update) + " " + new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(new Date()))
+                    .apply();
+        }
+
     }
-    
+
     //maybe unnecessary
     private boolean checkTask(SimpleTask task) {
         TaskDatabase db = new TaskDatabase(this);
