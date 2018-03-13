@@ -390,15 +390,17 @@ public class TaskActivity extends AppCompatActivity {
 
                     task.setDueDate(dateTime);
 
-                    //tweak for repeating
-                    while (!isInFuture(task) && task.isRepeating()) {
-                        task.setDueDate(TaskyUtils.moveToNextRepeat(task));
-                    }
-
                 } else {
                     //there is no date thus no time
                     task.setDueDate(null);
                     task.setTimePresent(false);
+                }
+            }
+
+            //tweak date for repeating
+            if (!twDate.getText().equals(getString(R.string.select_date))) {
+                while (!isInFuture(task) && task.isRepeating()) {
+                    task.setDueDate(TaskyUtils.moveToNextRepeat(task));
                 }
             }
 
@@ -447,7 +449,6 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 task.setRepeat(which);
-                isDateChanged = true;
                 dialog.dismiss();
             }
         });
