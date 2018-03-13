@@ -66,7 +66,13 @@ public class TaskWidget extends AppWidgetProvider {
 
     private void updatePreference(Context context, boolean enabled) {
         SharedPreferences preferences = context.getSharedPreferences(TaskyConstants.WIDGET_PREF, Context.MODE_PRIVATE);
-        preferences.edit().putBoolean(TaskyConstants.PREFS_IS_WIDGET_ENABLED, enabled).apply();
+
+        String msg = context.getString(enabled ? R.string.scheduler_running : R.string.widget_not_set);
+
+        preferences.edit()
+                .putBoolean(TaskyConstants.PREFS_IS_WIDGET_ENABLED, enabled)
+                .putString(TaskyConstants.PREFS_LAST_UPDATE, msg)
+                .apply();
     }
 
 }

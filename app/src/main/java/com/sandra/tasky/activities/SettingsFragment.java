@@ -80,18 +80,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private void setWidgetUpdater() {
         Preference preference = findPreference(getString(R.string.pref_restart_scheduler_key));
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TaskyConstants.WIDGET_PREF, Context.MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TaskyConstants.WIDGET_PREF, Context.MODE_PRIVATE);
+
+        preference.setSummary(sharedPreferences.getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running)));
 
         if (!sharedPreferences.getBoolean(TaskyConstants.PREFS_IS_WIDGET_ENABLED, TaskyConstants.WIDGET_DEFAULT)) {
-            preference.setSummary("Widget is not set");
             preference.setEnabled(false);
             return;
         }
-
-
-        final String lastUpdate = sharedPreferences.getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
-
-        preference.setSummary(lastUpdate);
 
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -100,7 +96,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 mToast = TaskyUtils.addToast(mToast, getActivity(), R.string.scheduler_restarted, true);
                 TaskyUtils.setMidnightUpdater(getContext());
 
-                SharedPreferences.Editor editor = getActivity().getSharedPreferences(TaskyConstants.WIDGET_PREF, Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));
                 editor.apply();
 
