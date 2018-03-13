@@ -120,6 +120,7 @@
     <string name="notifications">Notifications</string>
     <string name="repeat">Repeat task</string>
     <string name="date_must_be_selected">Date must be selected</string>
+    <string name="widget_not_set">Widget is not set</string>
 
     <string-array name="repeating_options">
         <item>Once</item>
