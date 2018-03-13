@@ -81,13 +81,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
         Preference preference = findPreference(getString(R.string.pref_restart_scheduler_key));
 
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TaskyConstants.WIDGET_PREF, Context.MODE_PRIVATE);
-
-        preference.setSummary(sharedPreferences.getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running)));
-
+        
         if (!sharedPreferences.getBoolean(TaskyConstants.PREFS_IS_WIDGET_ENABLED, TaskyConstants.WIDGET_DEFAULT)) {
+            preference.setSummary(getString(R.string.widget_not_set));
             preference.setEnabled(false);
             return;
         }
+
+        preference.setSummary(sharedPreferences.getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running)));
 
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
