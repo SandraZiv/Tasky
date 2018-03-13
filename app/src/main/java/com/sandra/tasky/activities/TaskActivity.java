@@ -447,6 +447,7 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 task.setRepeat(which);
+                isDateChanged = true;
                 dialog.dismiss();
             }
         });
