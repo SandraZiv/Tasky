@@ -1,4 +1,5 @@
 # Tasky
 Simple application that lets you manage your daily tasks.
 
-http://bit.ly/TaskyApp
+View on [Google Play](http://bit.ly/TaskyApp)
+
