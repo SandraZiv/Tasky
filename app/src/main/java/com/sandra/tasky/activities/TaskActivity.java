@@ -400,7 +400,8 @@ public class TaskActivity extends AppCompatActivity {
             }
 
             //tweak date for repeating
-            if (!twDate.getText().equals(getString(R.string.select_date))) {
+            //add completed ? completed tasks should not be tweaked
+            if (!twDate.getText().equals(getString(R.string.select_date)) && !task.isCompleted()) {
                 while (!TimeUtils.isInFuture(task) && task.isRepeating()) {
                     task.setDueDate(TimeUtils.moveToNextRepeat(task));
                 }
