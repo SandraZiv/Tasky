@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.utils.AlarmUtils;
 import com.sandra.tasky.utils.NotificationUtils;
 import com.sandra.tasky.utils.TaskyUtils;
 
@@ -95,7 +96,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             public boolean onPreferenceClick(Preference preference) {
                 preference.setSummary(getString(R.string.scheduler_restarted));
                 mToast = TaskyUtils.addToast(mToast, getActivity(), R.string.scheduler_restarted, true);
-                TaskyUtils.setMidnightUpdater(getContext());
+                AlarmUtils.setMidnightUpdater(getContext());
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running));

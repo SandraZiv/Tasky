@@ -13,14 +13,13 @@ import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.activities.HomeScreenActivity;
 import com.sandra.tasky.activities.TaskActivity;
-import com.sandra.tasky.utils.TaskyUtils;
+import com.sandra.tasky.utils.AlarmUtils;
 
 public class TaskWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        TaskyUtils.setMidnightUpdater(context);
-
+        AlarmUtils.setMidnightUpdater(context);
 
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {

@@ -9,6 +9,7 @@ import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
+import com.sandra.tasky.utils.AlarmUtils;
 import com.sandra.tasky.utils.TaskyUtils;
 
 import java.text.SimpleDateFormat;
@@ -38,7 +39,7 @@ public class UpdateWidgetService extends IntentService {
                 try {
                     SimpleTask task = (SimpleTask) TaskyUtils.deserialize(intent.getByteArrayExtra(TaskyConstants.ALARM_EXTRA_TASK));
                     if (checkTask(task)) {
-                        TaskyUtils.rescheduleTask(this, task);
+                        AlarmUtils.rescheduleTask(this, task);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -47,7 +48,7 @@ public class UpdateWidgetService extends IntentService {
 
         } else if (TaskyConstants.WIDGET_MIDNIGHT_UPDATE_ACTION.equals(action)) {
             //set alarm for next midnight
-            TaskyUtils.setMidnightUpdater(this);
+            AlarmUtils.setMidnightUpdater(this);
         }
 
     }
