@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sandra.tasky">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -69,17 +68,31 @@
                 android:resource="@xml/task_widget_info" />
         </receiver>
 
+        <receiver
+            android:name=".receiver.RebootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <!--services-->
 
         <service
             android:name=".widget.TaskWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <service android:name=".service.NotificationService"
-            android:exported="false"/>
+        <service
+            android:name=".service.NotificationService"
+            android:exported="false" />
 
-        <service android:name=".service.UpdateWidgetService"
-            android:exported="false"/>
+        <service
+            android:name=".service.UpdateWidgetService"
+            android:exported="false" />
+
+        <service
+            android:name=".service.RebootService"
+            android:exported="false" />
 
     </application>
 
