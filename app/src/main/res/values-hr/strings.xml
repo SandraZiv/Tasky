@@ -31,7 +31,7 @@
     <string name="new_task">Novi zadatak</string>
     <string name="save">Pohrani</string>
     <string name="show_task">Prikaži zadatak</string>
-    <string name="show_in_widget">Prikaz zadatka</string>
+    <string name="show_in_widget">Prikaži u widgetu</string>
     <string name="settings">Postavke</string>
     <string name="select_time_span">Odaberite vremenski raspon</string>
     <string name="show_when">Prikaži zadatke</string>
@@ -97,7 +97,7 @@
     <string name="repeat">Ponovi zadatak</string>
 
     <string-array name="repeating_options">
-        <item>Jendom</item>
+        <item>Jednom</item>
         <item>Svaki dan</item>
         <item>Svaki tjedan</item>
         <item>Svaki mjesec</item>
