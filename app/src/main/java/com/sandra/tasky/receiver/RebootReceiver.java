@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.service.RebootService;
@@ -22,7 +23,11 @@ public class RebootReceiver extends BroadcastReceiver {
             }
 
             //wake widget alarms and notifications
-            context.startService(new Intent(context, RebootService.class));
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                context.startService(new Intent(context, RebootService.class));
+            } else {
+                context.startForegroundService(new Intent(context, RebootService.class));
+            }
         }
     }
 }

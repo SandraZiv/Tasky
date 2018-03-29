@@ -150,7 +150,7 @@ public class NotificationUtils {
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private static Bitmap largeIcon(Context context) {
+    public static Bitmap largeIcon(Context context) {
         Resources res = context.getResources();
         return BitmapFactory.decodeResource(res, R.mipmap.ic_launcher);
     }
