@@ -71,7 +71,7 @@ public class RebootService extends IntentService {
 
         NotificationChannel mChannel = new NotificationChannel(
                 CHANNEL_ID,
-                "Reboot Service",
+                getString(R.string.reboot_service),
                 NotificationManager.IMPORTANCE_NONE
         );
         manager.createNotificationChannel(mChannel);
@@ -79,7 +79,7 @@ public class RebootService extends IntentService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
         builder.setContentTitle(context.getString(R.string.app_name))
-                .setContentText("Preparing tasks...")
+                .setContentText(getString(R.string.checking_tasks))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(NotificationUtils.largeIcon(context))
                 .setAutoCancel(true);

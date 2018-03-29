@@ -105,5 +105,7 @@
     </string-array>
     <string name="date_must_be_selected">Morate odabrati datum</string>
     <string name="widget_not_set">Widget nije postavljen</string>
+    <string name="checking_tasks">Provjera zadataka...</string>
+    <string name="reboot_service">Ponovno paljenje</string>
 
 </resources>
