@@ -24,6 +24,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sandra.tasky.R;
@@ -66,6 +69,9 @@ public class HomeScreenActivity extends AppCompatActivity
     private TasksDataObserver observer;
     private HomeListAdapter homeListAdapter;
 
+    private View tasksFragmentView;
+    private View calendarFragmentView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,9 +101,11 @@ public class HomeScreenActivity extends AppCompatActivity
         });
 
         //open db
-        new getDataAsyncTask().execute();
+//        new getDataAsyncTask().execute();
 
         handleIntent(getIntent());
+
+        setUpFragment();
     }
 
     @Override
@@ -283,7 +291,6 @@ public class HomeScreenActivity extends AppCompatActivity
         builder.show();
     }
 
-
     private void createNewTask() {
         Intent newTaskIntent = new Intent(this, TaskActivity.class);
         newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId);
@@ -298,8 +305,8 @@ public class HomeScreenActivity extends AppCompatActivity
         homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
         homeListAdapter.registerDataSetObserver(observer);
 
-        /*
-        ListView listView = findViewById(R.id.home_list);
+        ListView listView = tasksFragmentView.findViewById(R.id.home_list);
+
         listView.setAdapter(homeListAdapter);
 
         listView.setEmptyView(findViewById(R.id.home_empty_view));
@@ -337,10 +344,9 @@ public class HomeScreenActivity extends AppCompatActivity
                 return true;
             }
         });
-*/
-        TaskyUtils.updateWidget(this);
 
-        setUpFragment();
+
+        TaskyUtils.updateWidget(this);
     }
 
     private void setUpFragment() {
@@ -350,6 +356,13 @@ public class HomeScreenActivity extends AppCompatActivity
         ((TabLayout) findViewById(R.id.tab_layout)).setupWithViewPager(viewPager);
     }
 
+    public void initTasksList(View view) {
+        tasksFragmentView = view;
+    }
+
+    public void initCalendarList(View view) {
+        calendarFragmentView = view;
+    }
 
     private void setActionBar(CharSequence title) {
         ActionBar actionBar = getSupportActionBar();

@@ -22,16 +22,15 @@ class TasksFragment : Fragment() {
 
     private fun createTasks(inflater: LayoutInflater?, container: ViewGroup?): View? {
         val view = inflater?.inflate(R.layout.fragment_tasks, container, false)
-
+        (activity as HomeScreenActivity).initTasksList(view)
         return view
     }
 
     private fun createCalendar(inflater: LayoutInflater?, container: ViewGroup?): View? {
         val view = inflater?.inflate(R.layout.fragment_calendar, container, false)
-
+        (activity as HomeScreenActivity).initCalendarList(view)
         return view
     }
-
 
     companion object {
         fun createFragment(position: Int): TasksFragment {
