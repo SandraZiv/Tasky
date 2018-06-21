@@ -123,6 +123,8 @@
     <string name="widget_not_set">Widget is not set</string>
     <string name="checking_tasks">Checking tasks…</string>
     <string name="reboot_service">Reboot Service</string>
+    <string name="calendar">Calendar</string>
+    <string name="tasks">Tasks</string>
 
     <string-array name="repeating_options">
         <item>Once</item>

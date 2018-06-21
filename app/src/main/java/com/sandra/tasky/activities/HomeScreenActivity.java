@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,18 +24,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
-import com.sandra.tasky.utils.TaskyUtils;
 import com.sandra.tasky.adapter.HomeListAdapter;
+import com.sandra.tasky.adapter.SwipeAdapter;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.entity.TaskCategory;
+import com.sandra.tasky.utils.TaskyUtils;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -298,6 +298,7 @@ public class HomeScreenActivity extends AppCompatActivity
         homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
         homeListAdapter.registerDataSetObserver(observer);
 
+        /*
         ListView listView = findViewById(R.id.home_list);
         listView.setAdapter(homeListAdapter);
 
@@ -336,9 +337,19 @@ public class HomeScreenActivity extends AppCompatActivity
                 return true;
             }
         });
-
+*/
         TaskyUtils.updateWidget(this);
+
+        setUpFragment();
     }
+
+    private void setUpFragment() {
+        SwipeAdapter adapter = new SwipeAdapter(getSupportFragmentManager(), this);
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(adapter);
+        ((TabLayout) findViewById(R.id.tab_layout)).setupWithViewPager(viewPager);
+    }
+
 
     private void setActionBar(CharSequence title) {
         ActionBar actionBar = getSupportActionBar();
