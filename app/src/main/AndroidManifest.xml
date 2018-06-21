@@ -13,23 +13,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--activities-->
+        <!-- activities -->
 
         <activity
             android:name=".activities.HomeScreenActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/search" />
         </activity>
-
         <activity
             android:name=".activities.TaskActivity"
             android:parentActivityName=".activities.HomeScreenActivity"
@@ -38,7 +34,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HomeScreenActivity" />
         </activity>
-
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/settings"
@@ -47,7 +42,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HomeScreenActivity" />
         </activity>
-
         <activity
             android:name=".activities.CategoriesActivity"
             android:label="@string/manage_categories"
@@ -57,7 +51,7 @@
                 android:value=".activities.HomeScreenActivity" />
         </activity>
 
-        <!--receivers-->
+        <!-- receivers -->
 
         <receiver android:name=".widget.TaskWidget">
             <intent-filter>
@@ -67,7 +61,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/task_widget_info" />
         </receiver>
-
         <receiver
             android:name=".receiver.RebootReceiver"
             android:enabled="true">
@@ -76,24 +69,29 @@
             </intent-filter>
         </receiver>
 
-        <!--services-->
+        <!-- services -->
 
         <service
             android:name=".widget.TaskWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
         <service
             android:name=".service.NotificationService"
             android:exported="false" />
-
         <service
             android:name=".service.UpdateWidgetService"
             android:exported="false" />
-
         <service
             android:name=".service.RebootService"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.SplashScreenActivity"
+            android:theme="@style/SplashScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
