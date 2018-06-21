@@ -9,8 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:datePicker="true"
-        app:headerColor="@color/colorPrimaryDark"
-        app:headerLabelColor="@color/colorAccent"
+        app:forwardButtonSrc="@drawable/ic_next"
+        app:headerColor="@android:color/white"
+        app:headerLabelColor="@color/colorPrimaryDark"
+        app:previousButtonSrc="@drawable/ic_prev"
         app:selectionColor="@color/colorAccent" />
 
 </LinearLayout>

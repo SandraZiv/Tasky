@@ -29,6 +29,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.applandeo.materialcalendarview.CalendarView;
+import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.adapter.HomeListAdapter;
@@ -40,6 +42,7 @@ import com.sandra.tasky.utils.TaskyUtils;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -111,7 +114,6 @@ public class HomeScreenActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
         handleIntent(intent);
     }
 
@@ -362,6 +364,12 @@ public class HomeScreenActivity extends AppCompatActivity
 
     public void initCalendarList(View view) {
         calendarFragmentView = view;
+        CalendarView calendarView = view.findViewById(R.id.calendar_view);
+        try {
+            calendarView.setDate(Calendar.getInstance());
+        } catch (OutOfDateRangeException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setActionBar(CharSequence title) {
