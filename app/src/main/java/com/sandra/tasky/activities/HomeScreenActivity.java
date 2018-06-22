@@ -35,6 +35,7 @@ import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
+import com.sandra.tasky.adapter.CalendarEventAdapter;
 import com.sandra.tasky.adapter.HomeListAdapter;
 import com.sandra.tasky.adapter.SwipeAdapter;
 import com.sandra.tasky.db.TaskDatabase;
@@ -362,7 +363,7 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         }
         CalendarView calendarView = calendarFragmentView.findViewById(R.id.calendar_view);
-        calendarView.setEvents(events);
+        calendarView.setEvents(events); //TODO make undone prioriy
 
         TaskyUtils.updateWidget(this);
     }
@@ -397,17 +398,19 @@ public class HomeScreenActivity extends AppCompatActivity
         DateTime day = new DateTime(eventDay.getCalendar().getTimeInMillis());
         String dayFormatted = DateTimeFormat.fullDate().print(day);
 
-        builder.setTitle(dayFormatted);
+        builder.setTitle(
+                dayFormatted.substring(0, 1).toUpperCase()
+                        + dayFormatted.substring(1)
+        );
 
-        ArrayAdapter<String> selectedDayTasksAdapter = new ArrayAdapter<>(HomeScreenActivity.this, android.R.layout.simple_list_item_1);
         final List<SimpleTask> selectedDayTasks = new ArrayList<>();
         for (SimpleTask task : current) {
             if (TimeUtils.dateEqual(day, task.getDueDate())) {
-                selectedDayTasksAdapter.add(task.getTitle());
                 selectedDayTasks.add(task);
             }
         }
 
+        CalendarEventAdapter selectedDayTasksAdapter = new CalendarEventAdapter(HomeScreenActivity.this, selectedDayTasks);
         builder.setAdapter(selectedDayTasksAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
