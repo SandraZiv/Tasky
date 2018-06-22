@@ -8,7 +8,6 @@
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:datePicker="true"
         app:forwardButtonSrc="@drawable/ic_next"
         app:headerColor="@android:color/white"
         app:headerLabelColor="@color/colorPrimaryDark"

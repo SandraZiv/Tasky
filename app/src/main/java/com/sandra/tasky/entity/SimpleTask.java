@@ -1,11 +1,14 @@
 package com.sandra.tasky.entity;
 
+import com.applandeo.materialcalendarview.EventDay;
+import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 
 public class SimpleTask implements Serializable {
@@ -132,6 +135,11 @@ public class SimpleTask implements Serializable {
         this.category = category;
     }
 
+    public EventDay asEventDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dueDate.getMillis());
+        return new EventDay(calendar, completed ? R.drawable.calendar_event_checked : R.drawable.calendar_event_todo);
+    }
 
     public boolean fullTaskEquals(Object o) {
         if (this == o) return true;
