@@ -110,6 +110,15 @@
 
     <string name="calendar">Kalendar</string>
     <string name="tasks">Zadaci</string>
+
+    <!--calendar-->
+    <string name="material_calendar_monday">P</string>
+    <string name="material_calendar_tuesday">U</string>
+    <string name="material_calendar_wednesday">S</string>
+    <string name="material_calendar_thursday">Č</string>
+    <string name="material_calendar_friday">P</string>
+    <string name="material_calendar_saturday">S</string>
+    <string name="material_calendar_sunday">N</string>
     <array name="material_calendar_months_array">
         <item>Siječanj</item>
         <item>Veljača</item>
