@@ -34,6 +34,7 @@ public class TaskyConstants {
 
     public static final int EMPTY_ID = -1;
     public static final String TASK_BUNDLE_KEY = "com.sandra.tasky.task";
+    public static final String TASK_TIME_KEY = "com.sandra.tasky.TASK_TIME_KEY";
 
     public static final int MAX_TITLE_LENGTH = 70;
     public static final int MAX_TEXT_LENGTH = 100;

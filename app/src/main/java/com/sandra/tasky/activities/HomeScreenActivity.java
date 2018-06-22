@@ -309,6 +309,13 @@ public class HomeScreenActivity extends AppCompatActivity
         startActivityForResult(newTaskIntent, REQUEST_CODE);
     }
 
+    private void createNewTask(DateTime dateTime) {
+        Intent newTaskIntent = new Intent(this, TaskActivity.class);
+        newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId);
+        newTaskIntent.putExtra(TaskyConstants.TASK_TIME_KEY, dateTime);
+        startActivityForResult(newTaskIntent, REQUEST_CODE);
+    }
+
     private void updateListView(String query) {
         final List<SimpleTask> list = sortAndFilterTasks(query);
 
@@ -410,7 +417,7 @@ public class HomeScreenActivity extends AppCompatActivity
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
 
-        DateTime day = new DateTime(eventDay.getCalendar().getTimeInMillis());
+        final DateTime day = new DateTime(eventDay.getCalendar().getTimeInMillis());
         String dayFormatted = DateTimeFormat.fullDate().print(day);
 
         builder.setTitle(dayFormatted.substring(0, 1).toUpperCase() + dayFormatted.substring(1));
@@ -422,25 +429,39 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         }
 
-        calendarEventAdapter = new CalendarEventAdapter(HomeScreenActivity.this, selectedDayTasks);
-        calendarEventAdapter.registerDataSetObserver(observer);
-        builder.setAdapter(calendarEventAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                openTaskActivity(selectedDayTasks.get(which));
-                dialog.dismiss();
-            }
-        });
+        if (!selectedDayTasks.isEmpty()) {
+            calendarEventAdapter = new CalendarEventAdapter(HomeScreenActivity.this, selectedDayTasks);
+            calendarEventAdapter.registerDataSetObserver(observer);
+            builder.setAdapter(calendarEventAdapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    openTaskActivity(selectedDayTasks.get(which));
+                    dialog.dismiss();
+                }
+            });
+        } else {
+            ArrayAdapter<String> addNewOption = new ArrayAdapter<>(HomeScreenActivity.this, android.R.layout.simple_list_item_1);
+            addNewOption.add(getString(R.string.add_task));
 
-
-        builder.show();
+            builder.setAdapter(addNewOption, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    createNewTask(day);
+                    dialog.cancel();
+                }
+            });
+        }
 
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                calendarEventAdapter.unregisterDataSetObserver(observer);
+                if (calendarEventAdapter != null) {
+                    calendarEventAdapter.unregisterDataSetObserver(observer);
+                }
             }
         });
+
+        builder.show();
     }
 
     private void setActionBar(CharSequence title) {

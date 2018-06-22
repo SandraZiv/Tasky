@@ -133,5 +133,6 @@
         <item>Studeni</item>
         <item>Prosinac</item>
     </array>
+    <string name="add_task">Dodaj zadatak</string>
 
 </resources>

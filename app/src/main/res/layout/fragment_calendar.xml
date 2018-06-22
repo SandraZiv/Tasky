@@ -12,6 +12,7 @@
         app:headerColor="@android:color/white"
         app:headerLabelColor="@color/colorPrimaryDark"
         app:previousButtonSrc="@drawable/ic_prev"
-        app:selectionColor="@color/colorAccent" />
+        app:selectionColor="@color/colorAccent"
+        app:todayLabelColor="@color/colorPrimaryDark" />
 
 </LinearLayout>

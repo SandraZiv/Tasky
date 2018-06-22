@@ -141,5 +141,6 @@
     <string name="material_calendar_saturday">S</string>
     <string name="material_calendar_sunday">S</string>
 
+    <string name="add_task">Add task</string>
 
 </resources>

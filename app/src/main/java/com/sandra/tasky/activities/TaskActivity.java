@@ -128,6 +128,15 @@ public class TaskActivity extends AppCompatActivity {
                         .withMinuteOfHour(new DateTime().getMinuteOfHour());
             }
         }
+        //if it is opened from calendar
+        else if (isTaskNew && getIntent().getExtras() != null
+                && getIntent().getExtras().containsKey(TaskyConstants.TASK_TIME_KEY)) {
+            dateTime = (DateTime) getIntent().getExtras().get(TaskyConstants.TASK_TIME_KEY);
+            dateTime = dateTime
+                    .withHourOfDay(new DateTime().getHourOfDay())
+                    .withMinuteOfHour(new DateTime().getMinuteOfHour());
+            task.setDueDate(dateTime);
+        }
 
         //date section
         //text view date
@@ -155,7 +164,7 @@ public class TaskActivity extends AppCompatActivity {
                         int min = isTimePresent ? dateTime.getMinuteOfHour() : new DateTime().getMinuteOfHour();
                         dateTime = dateTime.withYear(year).withMonthOfYear(month).withDayOfMonth(dayOfMonth).
                                 withHourOfDay(hour).withMinuteOfHour(min);
-                        twDate.setText(DateTimeFormat.mediumDate().print(dateTime));
+                        twDate.setText(DateTimeFormat.fullDate().print(dateTime));
                         isDateChanged = true;
                         isTimeEditable = true;
                         imageCancelTime.setEnabled(true);
@@ -200,7 +209,9 @@ public class TaskActivity extends AppCompatActivity {
 
         //time section
         //text view
-        if (task.getDueDate() != null && task.isTimePresent()) twTime.setText(task.parseTime());
+        if (task.getDueDate() != null && task.isTimePresent()) {
+            twTime.setText(task.parseTime());
+        }
         twTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
