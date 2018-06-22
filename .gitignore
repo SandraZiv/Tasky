@@ -208,4 +208,6 @@ gradlew
 gradlew.bat
 settings.gradle
 
+app/release
+
 # End of https://www.gitignore.io/api/intellij,androidstudio
