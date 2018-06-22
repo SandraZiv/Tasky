@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
+import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.adapter.HomeListAdapter;
@@ -40,8 +41,12 @@ import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.entity.TaskCategory;
 import com.sandra.tasky.utils.TaskyUtils;
+import com.sandra.tasky.utils.TimeUtils;
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,7 +57,7 @@ import java.util.List;
 import java.util.Map;
 
 public class HomeScreenActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnDayClickListener {
 
     private static final int REQUEST_CODE = 1;
 
@@ -63,7 +68,8 @@ public class HomeScreenActivity extends AppCompatActivity
 
     private FloatingActionButton fabAddTask;
 
-    private List<SimpleTask> tasks;
+    private List<SimpleTask> tasks; //all tasks from db that later get filtered etc
+    private List<SimpleTask> current; //task currently visible depending on query, category etc
     private List<TaskCategory> categories;
     private Map<Long, Integer> categoriesCount;
 
@@ -304,6 +310,8 @@ public class HomeScreenActivity extends AppCompatActivity
     private void updateListView(String query) {
         final List<SimpleTask> list = sortAndFilterTasks(query);
 
+        current = new ArrayList<>(list);
+
         observer = new TasksDataObserver();
 
         homeListAdapter = new HomeListAdapter(HomeScreenActivity.this, list);
@@ -318,10 +326,7 @@ public class HomeScreenActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent openTaskIntent = new Intent(HomeScreenActivity.this, TaskActivity.class);
-                openTaskIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, list.get(position));
-                openTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId);
-                startActivityForResult(openTaskIntent, REQUEST_CODE);
+                openTaskActivity(list.get(position));
             }
         });
 
@@ -376,6 +381,7 @@ public class HomeScreenActivity extends AppCompatActivity
     public void initCalendarList(View view) {
         calendarFragmentView = view;
         CalendarView calendarView = view.findViewById(R.id.calendar_view);
+        calendarView.setOnDayClickListener(this);
         try {
             calendarView.setDate(Calendar.getInstance());
         } catch (OutOfDateRangeException e) {
@@ -383,11 +389,48 @@ public class HomeScreenActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onDayClick(EventDay eventDay) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
+
+        DateTime day = new DateTime(eventDay.getCalendar().getTimeInMillis());
+        String dayFormatted = DateTimeFormat.fullDate().print(day);
+
+        builder.setTitle(dayFormatted);
+
+        ArrayAdapter<String> selectedDayTasksAdapter = new ArrayAdapter<>(HomeScreenActivity.this, android.R.layout.simple_list_item_1);
+        final List<SimpleTask> selectedDayTasks = new ArrayList<>();
+        for (SimpleTask task : current) {
+            if (TimeUtils.dateEqual(day, task.getDueDate())) {
+                selectedDayTasksAdapter.add(task.getTitle());
+                selectedDayTasks.add(task);
+            }
+        }
+
+        builder.setAdapter(selectedDayTasksAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                openTaskActivity(selectedDayTasks.get(which));
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
     private void setActionBar(CharSequence title) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(title);
         }
+    }
+
+    private void openTaskActivity(SimpleTask task) {
+        Intent openTaskIntent = new Intent(HomeScreenActivity.this, TaskActivity.class);
+        openTaskIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, task);
+        openTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId);
+        startActivityForResult(openTaskIntent, REQUEST_CODE);
     }
 
     @Override

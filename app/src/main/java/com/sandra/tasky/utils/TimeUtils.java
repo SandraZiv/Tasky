@@ -52,4 +52,11 @@ public class TimeUtils {
                 return task.getDueDate().getMillis();
         }
     }
+
+    //validate only date not time
+    public static boolean dateEqual(DateTime first, DateTime second) {
+        return first.getYear() == second.getYear()
+                && first.getMonthOfYear() == second.getMonthOfYear()
+                && first.getDayOfMonth() == second.getDayOfMonth();
+    }
 }

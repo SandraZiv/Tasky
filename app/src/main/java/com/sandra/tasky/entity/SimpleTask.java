@@ -138,6 +138,7 @@ public class SimpleTask implements Serializable {
     public EventDay asEventDay() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(dueDate.getMillis());
+        //TODO repating task
         return new EventDay(calendar, completed ? R.drawable.calendar_event_checked : R.drawable.calendar_event_todo);
     }
 
