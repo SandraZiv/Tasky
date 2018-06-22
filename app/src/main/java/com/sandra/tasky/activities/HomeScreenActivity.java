@@ -80,6 +80,7 @@ public class HomeScreenActivity extends AppCompatActivity
 
     private TasksDataObserver observer;
     private HomeListAdapter homeListAdapter;
+    private CalendarEventAdapter calendarEventAdapter;
 
     private View tasksFragmentView;
     private View calendarFragmentView;
@@ -356,7 +357,6 @@ public class HomeScreenActivity extends AppCompatActivity
         });
 
 
-
         List<SimpleTask> sortByCompleted = new ArrayList<>(list);
         Collections.sort(sortByCompleted, new Comparator<SimpleTask>() {
             @Override
@@ -425,12 +425,20 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         }
 
-        CalendarEventAdapter selectedDayTasksAdapter = new CalendarEventAdapter(HomeScreenActivity.this, selectedDayTasks);
-        builder.setAdapter(selectedDayTasksAdapter, new DialogInterface.OnClickListener() {
+        calendarEventAdapter = new CalendarEventAdapter(HomeScreenActivity.this, selectedDayTasks);
+        calendarEventAdapter.registerDataSetObserver(observer);
+        builder.setAdapter(calendarEventAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 openTaskActivity(selectedDayTasks.get(which));
-                dialog.cancel();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                calendarEventAdapter.unregisterDataSetObserver(observer);
             }
         });
 

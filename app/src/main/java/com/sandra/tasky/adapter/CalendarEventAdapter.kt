@@ -23,7 +23,7 @@ class CalendarEventAdapter(val context: Context, val list: List<SimpleTask>) : B
         view.event_check_box.isChecked = task.isCompleted
         view.event_check_box.setOnClickListener {
             task.isCompleted = it.event_check_box.isChecked
-            val db = TaskDatabase(context) //TODO
+            val db = TaskDatabase(context)
             db.updateTask(task)
             notifyDataSetChanged()
         }
