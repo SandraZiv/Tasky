@@ -413,14 +413,11 @@ public class HomeScreenActivity extends AppCompatActivity
         DateTime day = new DateTime(eventDay.getCalendar().getTimeInMillis());
         String dayFormatted = DateTimeFormat.fullDate().print(day);
 
-        builder.setTitle(
-                dayFormatted.substring(0, 1).toUpperCase()
-                        + dayFormatted.substring(1)
-        );
+        builder.setTitle(dayFormatted.substring(0, 1).toUpperCase() + dayFormatted.substring(1));
 
         final List<SimpleTask> selectedDayTasks = new ArrayList<>();
         for (SimpleTask task : current) {
-            if (TimeUtils.dateEqual(day, task.getDueDate())) {
+            if (task.getDueDate() != null && TimeUtils.dateEqual(day, task.getDueDate())) {
                 selectedDayTasks.add(task);
             }
         }
@@ -435,14 +432,15 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         });
 
+
+        builder.show();
+
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 calendarEventAdapter.unregisterDataSetObserver(observer);
             }
         });
-
-        builder.show();
     }
 
     private void setActionBar(CharSequence title) {
