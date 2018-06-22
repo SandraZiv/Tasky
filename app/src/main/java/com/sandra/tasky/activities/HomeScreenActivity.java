@@ -356,14 +356,29 @@ public class HomeScreenActivity extends AppCompatActivity
         });
 
 
+
+        List<SimpleTask> sortByCompleted = new ArrayList<>(list);
+        Collections.sort(sortByCompleted, new Comparator<SimpleTask>() {
+            @Override
+            public int compare(SimpleTask o1, SimpleTask o2) {
+                //first completed then other
+                if (o1.isCompleted() && o2.isCompleted()) {
+                    return 0;
+                }
+                return o1.isCompleted() ? 1 : -1;
+            }
+        });
+
+        //completed tasks go first, so that if there were more tasks on same day
+        //uncompleted icon will be shown
         List<EventDay> events = new ArrayList<>();
-        for (SimpleTask task : list) {
+        for (SimpleTask task : sortByCompleted) {
             if (task.getDueDate() != null) {
                 events.add(task.asEventDay());
             }
         }
         CalendarView calendarView = calendarFragmentView.findViewById(R.id.calendar_view);
-        calendarView.setEvents(events); //TODO make undone prioriy
+        calendarView.setEvents(events);
 
         TaskyUtils.updateWidget(this);
     }
