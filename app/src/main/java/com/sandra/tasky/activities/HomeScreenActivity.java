@@ -80,7 +80,6 @@ public class HomeScreenActivity extends AppCompatActivity
 
     private TasksDataObserver observer;
     private HomeListAdapter homeListAdapter;
-    private CalendarEventAdapter calendarEventAdapter;
 
     private View tasksFragmentView;
     private View calendarFragmentView;
@@ -430,7 +429,7 @@ public class HomeScreenActivity extends AppCompatActivity
         }
 
         if (!selectedDayTasks.isEmpty()) {
-            calendarEventAdapter = new CalendarEventAdapter(HomeScreenActivity.this, selectedDayTasks);
+            final CalendarEventAdapter calendarEventAdapter = new CalendarEventAdapter(HomeScreenActivity.this, selectedDayTasks);
             calendarEventAdapter.registerDataSetObserver(observer);
             builder.setAdapter(calendarEventAdapter, new DialogInterface.OnClickListener() {
                 @Override
@@ -439,27 +438,24 @@ public class HomeScreenActivity extends AppCompatActivity
                     dialog.dismiss();
                 }
             });
+
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    calendarEventAdapter.unregisterDataSetObserver(observer);
+                }
+            });
+
         } else {
             ArrayAdapter<String> addNewOption = new ArrayAdapter<>(HomeScreenActivity.this, android.R.layout.simple_list_item_1);
             addNewOption.add(getString(R.string.add_task));
-
             builder.setAdapter(addNewOption, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     createNewTask(day);
-                    dialog.cancel();
                 }
             });
         }
-
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (calendarEventAdapter != null) {
-                    calendarEventAdapter.unregisterDataSetObserver(observer);
-                }
-            }
-        });
 
         builder.show();
     }
