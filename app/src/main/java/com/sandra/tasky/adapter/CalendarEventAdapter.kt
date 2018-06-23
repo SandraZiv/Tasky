@@ -8,7 +8,7 @@ import android.widget.BaseAdapter
 import com.sandra.tasky.R
 import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
-import kotlinx.android.synthetic.main.item_calendar_event.view.*
+import kotlinx.android.synthetic.main.content_item_task.view.*
 
 class CalendarEventAdapter(val context: Context, val list: List<SimpleTask>) : BaseAdapter() {
 
@@ -18,26 +18,26 @@ class CalendarEventAdapter(val context: Context, val list: List<SimpleTask>) : B
                 .from(context)
                 .inflate(R.layout.item_calendar_event, parent, false)
 
-        view.tv_event_title.text = task.title
+        view.tv_title.text = task.title
 
-        view.event_check_box.isChecked = task.isCompleted
-        view.event_check_box.setOnClickListener {
-            task.isCompleted = it.event_check_box.isChecked
+        view.cb_completed.isChecked = task.isCompleted
+        view.cb_completed.setOnClickListener {
+            task.isCompleted = it.cb_completed.isChecked
             val db = TaskDatabase(context)
             db.updateTask(task)
             notifyDataSetChanged()
         }
 
         if (task.note.isEmpty()) {
-            view.tv_event_note.visibility = View.GONE
+            view.tv_note.visibility = View.GONE
         } else {
-            view.tv_event_note.text = task.note
+            view.tv_note.text = task.note
         }
 
         if (!task.isTimePresent) {
-            view.tv_event_due_date.visibility = View.GONE
+            view.tv_due_date.visibility = View.GONE
         } else {
-            view.tv_event_due_date.text = task.parseTime()
+            view.tv_due_date.text = task.parseTime()
         }
 
         return view

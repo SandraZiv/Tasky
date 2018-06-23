@@ -47,10 +47,10 @@ public class HomeListAdapter extends BaseAdapter {
 
         listView = LayoutInflater.from(context).inflate(R.layout.item_home_screen, parent, false);
 
-        TextView title = listView.findViewById(R.id.tw_title);
+        TextView title = listView.findViewById(R.id.tv_title);
         title.setText(cutText(task.getTitle(), TaskyConstants.MAX_TITLE_LENGTH));
 
-        final CheckBox checkBox = listView.findViewById(R.id.check_box);
+        final CheckBox checkBox = listView.findViewById(R.id.cb_completed);
         checkBox.setChecked(task.isCompleted());
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,14 +62,14 @@ public class HomeListAdapter extends BaseAdapter {
             }
         });
 
-        TextView note = listView.findViewById(R.id.tw_note);
+        TextView note = listView.findViewById(R.id.tv_note);
         if (!task.getNote().isEmpty()) {
             note.setText(cutText(task.getNote(), TaskyConstants.MAX_TEXT_LENGTH));
         } else {
             note.setVisibility(View.GONE);
         }
 
-        TextView dueDate = listView.findViewById(R.id.tw_due_date);
+        TextView dueDate = listView.findViewById(R.id.tv_due_date);
         if (task.getDueDate() != null) {
             if (TimeUtils.isExpired(task)) {
                 dueDate.setText(R.string.expired);
