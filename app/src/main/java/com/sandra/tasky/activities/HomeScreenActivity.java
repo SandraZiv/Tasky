@@ -452,19 +452,20 @@ public class HomeScreenActivity extends AppCompatActivity
 
         } else {
             builder.setMessage(R.string.no_tasks_here);
-            builder.setPositiveButton(R.string.add_task, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    createNewTask(day);
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
         }
+
+        builder.setPositiveButton(R.string.add_task, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                createNewTask(day);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
 
         builder.show();
     }
