@@ -21,6 +21,13 @@ public class TimeUtils {
         return task.getDueDate().getMillis() > current.getMillis();
     }
 
+    public static boolean isExpired(SimpleTask task) {
+        DateTime current = DateTime.now();
+        current = current.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+
+        return task.getDueDate().getMillis() < current.getMillis();
+    }
+
     public static long untilMidnight(Context context) {
         JodaTimeAndroid.init(context);
 

@@ -71,7 +71,7 @@ public class HomeListAdapter extends BaseAdapter {
 
         TextView dueDate = listView.findViewById(R.id.tw_due_date);
         if (task.getDueDate() != null) {
-            if (!TimeUtils.isInFuture(task)) {
+            if (TimeUtils.isExpired(task)) {
                 dueDate.setText(R.string.expired);
             } else {
                 dueDate.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
