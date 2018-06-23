@@ -12,6 +12,7 @@ import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
+import com.sandra.tasky.utils.ExtensionsKt;
 import com.sandra.tasky.utils.TimeUtils;
 
 import java.util.List;
@@ -72,7 +73,7 @@ public class HomeListAdapter extends BaseAdapter {
         TextView dueDate = listView.findViewById(R.id.tv_due_date);
         if (task.getDueDate() != null) {
             if (TimeUtils.isExpired(task)) {
-                dueDate.setText(R.string.expired);
+                dueDate.setText(ExtensionsKt.capitalizeLetter(context.getString(R.string.expired)));
             } else {
                 dueDate.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
             }

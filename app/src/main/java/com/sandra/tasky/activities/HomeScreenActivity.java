@@ -41,6 +41,7 @@ import com.sandra.tasky.adapter.SwipeAdapter;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
 import com.sandra.tasky.entity.TaskCategory;
+import com.sandra.tasky.utils.ExtensionsKt;
 import com.sandra.tasky.utils.TaskyUtils;
 import com.sandra.tasky.utils.TimeUtils;
 
@@ -419,7 +420,7 @@ public class HomeScreenActivity extends AppCompatActivity
         final DateTime day = new DateTime(eventDay.getCalendar().getTimeInMillis());
         String dayFormatted = DateTimeFormat.fullDate().print(day);
 
-        builder.setTitle(dayFormatted.substring(0, 1).toUpperCase() + dayFormatted.substring(1));
+        builder.setTitle(ExtensionsKt.capitalizeLetter(dayFormatted));
 
         final List<SimpleTask> selectedDayTasks = new ArrayList<>();
         for (SimpleTask task : current) {

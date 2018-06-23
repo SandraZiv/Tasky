@@ -14,7 +14,7 @@
     <string name="empty_title">Naslov ne smije biti prazan</string>
     <string name="empty_title_confirmed">Unesite naslov da biste spremili zadatak</string>
     <string name="error">Greška</string>
-    <string name="expired">Istekao</string>
+    <string name="expired">istekao</string>
     <string name="in">za</string>
     <string name="no_due_date">Nema roka</string>
     <string name="note">Bilješka</string>
