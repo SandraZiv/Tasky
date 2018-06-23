@@ -451,12 +451,17 @@ public class HomeScreenActivity extends AppCompatActivity
             });
 
         } else {
-            ArrayAdapter<String> addNewOption = new ArrayAdapter<>(HomeScreenActivity.this, android.R.layout.simple_list_item_1);
-            addNewOption.add(getString(R.string.add_task));
-            builder.setAdapter(addNewOption, new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.no_tasks_here);
+            builder.setPositiveButton(R.string.add_task, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     createNewTask(day);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
                 }
             });
         }
