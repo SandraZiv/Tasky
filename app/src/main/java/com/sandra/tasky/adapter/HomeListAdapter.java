@@ -12,6 +12,7 @@ import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
 import com.sandra.tasky.db.TaskDatabase;
 import com.sandra.tasky.entity.SimpleTask;
+import com.sandra.tasky.utils.TimeUtils;
 
 import java.util.List;
 
@@ -44,34 +45,8 @@ public class HomeListAdapter extends BaseAdapter {
         View listView;
         final SimpleTask task = taskList.get(position);
 
-        //in case there is only title present
-        if (task.getNote().isEmpty() && task.getDueDate() == null) {
-            listView = LayoutInflater.from(context).inflate(R.layout.list_title_home_screen, parent, false);
-        }
-        //in case note or due date is empty
-        else if (task.getNote().isEmpty() || task.getDueDate() == null) {
-            listView = LayoutInflater.from(context).inflate(R.layout.list_text_home_screen, parent, false);
-            TextView text = listView.findViewById(R.id.tw_text);
+        listView = LayoutInflater.from(context).inflate(R.layout.item_home_screen, parent, false);
 
-            if (!task.getNote().isEmpty()) {
-                text.setText(cutText(task.getNote(), TaskyConstants.MAX_TEXT_LENGTH));
-            } else {
-                text.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
-            }
-
-        }
-        //in case everything is present
-        else {
-            listView = LayoutInflater.from(context).inflate(R.layout.list_all_home_screen, parent, false);
-
-            TextView note = listView.findViewById(R.id.tw_note);
-            note.setText(cutText(task.getNote(), TaskyConstants.MAX_TEXT_LENGTH));
-
-            TextView dueDate = listView.findViewById(R.id.tw_due_date);
-            dueDate.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
-        }
-
-        //setup for any case, there must always be title and checkbox
         TextView title = listView.findViewById(R.id.tw_title);
         title.setText(cutText(task.getTitle(), TaskyConstants.MAX_TITLE_LENGTH));
 
@@ -86,6 +61,24 @@ public class HomeListAdapter extends BaseAdapter {
                 notifyDataSetChanged();
             }
         });
+
+        TextView note = listView.findViewById(R.id.tw_note);
+        if (!task.getNote().isEmpty()) {
+            note.setText(cutText(task.getNote(), TaskyConstants.MAX_TEXT_LENGTH));
+        } else {
+            note.setVisibility(View.GONE);
+        }
+
+        TextView dueDate = listView.findViewById(R.id.tw_due_date);
+        if (task.getDueDate() != null) {
+            if (!TimeUtils.isInFuture(task)) {
+                dueDate.setText(R.string.expired);
+            } else {
+                dueDate.setText(task.isTimePresent() ? task.parseDateTime() : task.parseDate());
+            }
+        } else {
+            dueDate.setVisibility(View.GONE);
+        }
 
         return listView;
     }
