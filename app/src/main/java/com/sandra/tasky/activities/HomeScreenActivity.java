@@ -442,7 +442,11 @@ public class HomeScreenActivity extends AppCompatActivity
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    calendarEventAdapter.unregisterDataSetObserver(observer);
+                    try {
+                        calendarEventAdapter.unregisterDataSetObserver(observer);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
