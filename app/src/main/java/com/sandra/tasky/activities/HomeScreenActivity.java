@@ -113,12 +113,10 @@ public class HomeScreenActivity extends AppCompatActivity
             }
         });
 
-        //open db
-//        new getDataAsyncTask().execute();
-
         handleIntent(getIntent());
 
-        setUpFragment();
+        //added due to bug fix 28.6
+//        setUpFragment();
     }
 
     @Override
@@ -127,10 +125,16 @@ public class HomeScreenActivity extends AppCompatActivity
         handleIntent(intent);
     }
 
+    //onCreate -> onStart -> onResume
     @Override
     protected void onResume() {
         super.onResume();
-        new getDataAsyncTask().execute();
+        try {
+            setUpFragment();
+            new getDataAsyncTask().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
