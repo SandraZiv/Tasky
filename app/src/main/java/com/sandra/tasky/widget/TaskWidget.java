@@ -11,7 +11,7 @@ import android.widget.RemoteViews;
 
 import com.sandra.tasky.R;
 import com.sandra.tasky.TaskyConstants;
-import com.sandra.tasky.activities.HomeScreenActivity;
+import com.sandra.tasky.activities.SplashScreenActivity;
 import com.sandra.tasky.activities.TaskActivity;
 import com.sandra.tasky.utils.AlarmUtils;
 
@@ -36,7 +36,8 @@ public class TaskWidget extends AppWidgetProvider {
             widget.setOnClickPendingIntent(R.id.widget_btn_add_task, newTaskPI);
 
             //open home screen from widget
-            Intent openHomeScreenIntent = new Intent(context, HomeScreenActivity.class);
+            //home screen is opened after splash screen is shown
+            Intent openHomeScreenIntent = new Intent(context, SplashScreenActivity.class);
             PendingIntent openHomeScreenPI = PendingIntent.getActivity(context, 0, openHomeScreenIntent, 0);
             widget.setOnClickPendingIntent(R.id.widget_tasky, openHomeScreenPI);
 
