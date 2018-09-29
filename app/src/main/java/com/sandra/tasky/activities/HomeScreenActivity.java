@@ -129,12 +129,14 @@ public class HomeScreenActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            setUpFragment();
-            new getDataAsyncTask().execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        setUpFragment();
+        //old
+//        try {
+//            setUpFragment();
+//            new getDataAsyncTask().execute();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -403,6 +405,12 @@ public class HomeScreenActivity extends AppCompatActivity
 
     public void initTasksList(View view) {
         tasksFragmentView = view;
+        //deleted in old file
+        try {
+            new getDataAsyncTask().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void initCalendarList(View view) {
