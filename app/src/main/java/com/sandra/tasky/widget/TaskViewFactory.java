@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -59,23 +60,35 @@ public class TaskViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews row;
-        row = new RemoteViews(context.getPackageName(), R.layout.widget_item);
-        row.setTextViewText(R.id.tw__widget_title, list.get(position).getTitle());
-        if (list.get(position).getDueDate() != null)
-            row.setTextViewText(R.id.tw_widget_due_date, getDateText(list.get(position)));
-        else
-            row.setTextViewText(R.id.tw_widget_due_date, context.getString(R.string.no_due_date));
+        RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.widget_item);
+        SimpleTask task = list.get(position);
+        row.setTextViewText(R.id.tw__widget_title, task.getTitle());
+        if (task.getDueDate() != null) {
+            setDueDateVisible(row);
+            row.setTextViewText(R.id.tw_widget_due_date, getDateText(task));
+        } else {
+            setDueDateGone(row);
+        }
 
         //open task detail in TaskActivity
         Intent fillIntent = new Intent();
-        fillIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, list.get(position));
+        fillIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, task);
         row.setOnClickFillInIntent(R.id.widget_layout_parent, fillIntent);
 //        row.setOnClickFillInIntent(R.id.tw__widget_title, fillIntent);
 //        row.setOnClickFillInIntent(R.id.tw_widget_status, fillIntent);
 //        row.setOnClickFillInIntent(R.id.tw_widget_due_date, fillIntent);
 
         return row;
+    }
+
+    private void setDueDateVisible(RemoteViews row) {
+        row.setViewVisibility(R.id.tw_widget_due_date, View.VISIBLE);
+        row.setViewVisibility(R.id.widget_space, View.GONE);
+    }
+
+    private void setDueDateGone(RemoteViews row) {
+        row.setViewVisibility(R.id.tw_widget_due_date, View.GONE);
+        row.setViewVisibility(R.id.widget_space, View.VISIBLE);
     }
 
     private String getDateText(SimpleTask task) {

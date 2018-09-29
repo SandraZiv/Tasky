@@ -15,6 +15,12 @@
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/widget_space"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/tw_widget_due_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
