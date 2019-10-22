@@ -197,16 +197,8 @@ cmake-build-debug/
 
 #Remove by myself 
 .idea/
-app/.gitignore
-app/build.gradle
-app/proguard-rules.pro
 app/src/androidTest/
 app/src/test/
-gradle.properties
-gradle/
-gradlew
-gradlew.bat
-settings.gradle
 
 app/release
 
