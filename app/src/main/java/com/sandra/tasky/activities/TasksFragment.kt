@@ -13,7 +13,7 @@ const val PAGES = 2
 
 class TasksFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val page = arguments?.getInt(PAGE_NUMBER)
 
         return if (page == PAGE_FIRST) createTasks(inflater, container)
