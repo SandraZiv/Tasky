@@ -1,3 +1,23 @@
 package com.sandra.tasky.utils
 
-fun capitalizeLetter(text: String) = text.capitalize()
+import android.content.Context
+import android.content.Intent
+import android.view.View
+
+fun Context.startActivity(clazz: Class<*>) = startActivity(Intent(this, clazz))
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    visibility = View.GONE
+}
+
+fun View.showIf(condition: Boolean) {
+    if (condition) {
+        show()
+    } else {
+        hide()
+    }
+}

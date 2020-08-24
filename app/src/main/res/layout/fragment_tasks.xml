@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
     android:orientation="vertical"
-    tools:context="com.sandra.tasky.activities.HomeScreenActivity">
+    tools:context="com.sandra.tasky.activities.home.HomeScreenActivity">
 
     <ListView
-        android:id="@+id/home_list"
+        android:id="@+id/lvHome"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="60dp"
@@ -18,7 +18,7 @@
         android:layout_margin="10dp" />
 
     <LinearLayout
-        android:id="@+id/home_empty_view"
+        android:id="@+id/emptyViewHome"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"

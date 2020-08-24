@@ -6,9 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.sandra.tasky.R
-import com.sandra.tasky.db.TaskDatabase
+import com.sandra.tasky.db.AppDatabase
 import com.sandra.tasky.entity.SimpleTask
-import kotlinx.android.synthetic.main.content_item_task.view.*
+import com.sandra.tasky.utils.hide
+import kotlinx.android.synthetic.main.item_task.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CalendarEventAdapter(val context: Context, val list: List<SimpleTask>) : BaseAdapter() {
 
@@ -16,28 +21,32 @@ class CalendarEventAdapter(val context: Context, val list: List<SimpleTask>) : B
         val task = getItem(position)
         val view = LayoutInflater
                 .from(context)
-                .inflate(R.layout.item_calendar_event, parent, false)
+                .inflate(R.layout.item_task, parent, false)
 
-        view.tv_title.text = task.title
+        view.tvTitle.text = task.title
 
-        view.cb_completed.isChecked = task.isCompleted
-        view.cb_completed.setOnClickListener {
-            task.isCompleted = it.cb_completed.isChecked
-            val db = TaskDatabase(context)
-            db.updateTask(task)
-            notifyDataSetChanged()
+        view.cbCompleted.isChecked = task.isCompleted
+        view.cbCompleted.setOnClickListener {
+            task.isCompleted = it.cbCompleted.isChecked
+            // todo
+            CoroutineScope(Dispatchers.IO).launch {
+                AppDatabase.buildDatabase(context).taskDao().update(task)
+                withContext(Dispatchers.Main) {
+                    notifyDataSetChanged()
+                }
+            }
         }
 
         if (task.note.isEmpty()) {
-            view.tv_note.visibility = View.GONE
+            view.tvNote.hide()
         } else {
-            view.tv_note.text = task.note
+            view.tvNote.text = task.note
         }
 
         if (!task.isTimePresent) {
-            view.tv_due_date.visibility = View.GONE
+            view.tvDueDate.hide()
         } else {
-            view.tv_due_date.text = task.parseTime()
+            view.tvDueDate.text = task.parseTime()
         }
 
         return view

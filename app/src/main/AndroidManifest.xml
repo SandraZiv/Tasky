@@ -14,9 +14,8 @@
         android:theme="@style/AppTheme">
 
         <!-- activities -->
-
         <activity
-            android:name=".activities.HomeScreenActivity"
+            android:name=".activities.home.HomeScreenActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -28,31 +27,38 @@
         </activity>
         <activity
             android:name=".activities.TaskActivity"
-            android:parentActivityName=".activities.HomeScreenActivity"
+            android:parentActivityName=".activities.home.HomeScreenActivity"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.HomeScreenActivity" />
+                android:value=".activities.home.HomeScreenActivity" />
         </activity>
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".settings.SettingsActivity"
             android:label="@string/settings"
-            android:parentActivityName=".activities.HomeScreenActivity">
+            android:parentActivityName=".activities.home.HomeScreenActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.HomeScreenActivity" />
+                android:value=".activities.home.HomeScreenActivity" />
         </activity>
         <activity
-            android:name=".activities.CategoriesActivity"
+            android:name=".activities.categories.CategoriesActivity"
             android:label="@string/manage_categories"
-            android:parentActivityName=".activities.HomeScreenActivity">
+            android:parentActivityName=".activities.home.HomeScreenActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.HomeScreenActivity" />
+                android:value=".activities.home.HomeScreenActivity" />
+        </activity>
+        <activity
+            android:name=".activities.SplashScreenActivity"
+            android:theme="@style/SplashScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- receivers -->
-
         <receiver android:name=".widget.TaskWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -70,7 +76,6 @@
         </receiver>
 
         <!-- services -->
-
         <service
             android:name=".widget.TaskWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
@@ -84,14 +89,6 @@
             android:name=".service.RebootService"
             android:exported="false" />
 
-        <activity
-            android:name=".activities.SplashScreenActivity"
-            android:theme="@style/SplashScreenTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

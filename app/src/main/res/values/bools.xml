@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--preference default values-->
     <bool name="pref_show_notifications_default">true</bool>
     <bool name="pref_vibrate_default">true</bool>

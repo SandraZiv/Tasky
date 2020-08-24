@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <android.support.v7.preference.PreferenceCategory android:title="@string/notifications">
-        <android.support.v7.preference.SwitchPreferenceCompat
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.preference.PreferenceCategory android:title="@string/notifications">
+        <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="@bool/pref_show_notifications_default"
             android:key="@string/pref_show_notifications_key"
             android:title="@string/show_notifications" />
-        <android.support.v7.preference.CheckBoxPreference
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="@bool/pref_vibrate_default"
             android:key="@string/pref_vibrate_key"
             android:title="@string/vibrate" />
-    <android.support.v7.preference.CheckBoxPreference
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="@bool/pref_sound_default"
             android:key="@string/pref_sound_key"
             android:title="@string/sound" />
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory android:title="@string/widget">
-        <android.support.v7.preference.SwitchPreferenceCompat
+    <androidx.preference.PreferenceCategory android:title="@string/widget">
+        <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="@bool/pref_show_expired_default"
             android:key="@string/pref_show_expired_key"
             android:title="@string/show_expired" />
@@ -27,19 +28,19 @@
             android:entryValues="@array/time_span_values"
             android:key="@string/pref_time_span_key"
             android:title="@string/show_when" />
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="@string/pref_restart_scheduler_key"
             android:title="@string/restart_scheduler_title" />
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory android:title="@string/about">
-        <android.support.v7.preference.Preference
+    <androidx.preference.PreferenceCategory android:title="@string/about">
+        <androidx.preference.Preference
             android:key="@string/pref_view_in_google_play_key"
             android:title="@string/pref_view_in_google_play_title" />
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="@string/pref_version_key"
             android:summary="@string/pref_version_summary"
             android:title="@string/pref_version_title" />
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

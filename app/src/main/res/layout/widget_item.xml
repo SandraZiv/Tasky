@@ -6,7 +6,7 @@
     android:id="@+id/widget_layout_parent">
 
     <TextView
-        android:id="@+id/tw__widget_title"
+        android:id="@+id/tvWidgetTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -15,13 +15,13 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/widget_space"
+        android:id="@+id/widgetSpace"
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/tw_widget_due_date"
+        android:id="@+id/tvWidgetDueDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
