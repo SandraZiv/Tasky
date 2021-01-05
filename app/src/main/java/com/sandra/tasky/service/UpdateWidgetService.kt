@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.utils.AlarmUtils
 import com.sandra.tasky.utils.TaskyUtils
@@ -49,7 +49,7 @@ class UpdateWidgetService : IntentService("UpdateWidgetService") {
 
     //maybe unnecessary
     private fun checkTask(task: SimpleTask): Boolean {
-        val other = AppDatabase.buildDatabase(this).taskDao().getById(task.id)
+        val other = TaskDatabase(this).getTaskById(task.id)
         return task.fullTaskEquals(other)
     }
 }

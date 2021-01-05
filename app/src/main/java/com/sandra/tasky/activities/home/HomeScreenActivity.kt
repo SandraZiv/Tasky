@@ -27,7 +27,7 @@ import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.activities.categories.CategoriesActivity
 import com.sandra.tasky.activities.TaskActivity
 import com.sandra.tasky.adapter.CalendarEventAdapter
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.entity.TaskCategory
 import com.sandra.tasky.settings.SettingsActivity
@@ -57,7 +57,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private var categories: List<TaskCategory> = emptyList()
     private var categoriesCount: Map<Int, Int> = emptyMap()  // todo kolko ima koje vrste taskova
-    private var selectedCategoryId = TaskCategory.ALL_CATEGORY_ID.toInt()
+    private var selectedCategoryId = TaskCategory.ALL_CATEGORY_ID
 
     private var observer: TasksDataObserver? = null
 
@@ -440,9 +440,9 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private fun loadData() {
         CoroutineScope(Dispatchers.IO).launch {
-            val database = AppDatabase.buildDatabase(this@HomeScreenActivity)
-            tasks = database.taskDao().getAll()
-            categories = database.categoriesDao().getAll()
+            val database = TaskDatabase(this@HomeScreenActivity)
+            tasks = database.allTasks
+            categories = database.allCategories
 
             withContext(Dispatchers.Main) {
                 updateCategoriesList()

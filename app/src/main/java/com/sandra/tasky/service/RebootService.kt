@@ -11,7 +11,7 @@ import android.os.Build.VERSION
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.sandra.tasky.R
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.utils.AlarmUtils
 import com.sandra.tasky.utils.NotificationUtils
 import com.sandra.tasky.utils.TimeUtils
@@ -33,7 +33,7 @@ class RebootService : IntentService("RebootService") {
     }
 
     override fun onHandleIntent(intent: Intent?) {
-        val tasks = AppDatabase.buildDatabase(this).taskDao().getAll()
+        val tasks = TaskDatabase(this).allTasks
         for (task in tasks) {
             //tweak date for repeating
             if (task.dueDate != null && !task.isCompleted) {

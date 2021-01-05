@@ -9,7 +9,7 @@ import android.os.Build.VERSION
 import android.preference.PreferenceManager
 import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.service.UpdateWidgetService
 import kotlinx.coroutines.CoroutineScope
@@ -61,7 +61,7 @@ object AlarmUtils {
             }
 
             CoroutineScope(Dispatchers.IO).launch {
-                AppDatabase.buildDatabase(context).taskDao().update(task)
+                TaskDatabase(context).updateTask(task)
                 withContext(Dispatchers.Main) {
                     TaskyUtils.updateWidget(context)
                 }

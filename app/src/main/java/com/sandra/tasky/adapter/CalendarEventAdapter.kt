@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.sandra.tasky.R
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.utils.hide
 import kotlinx.android.synthetic.main.item_task.view.*
@@ -30,7 +30,7 @@ class CalendarEventAdapter(val context: Context, val list: List<SimpleTask>) : B
             task.isCompleted = it.cbCompleted.isChecked
             // todo
             CoroutineScope(Dispatchers.IO).launch {
-                AppDatabase.buildDatabase(context).taskDao().update(task)
+                TaskDatabase(context).updateTask(task)
                 withContext(Dispatchers.Main) {
                     notifyDataSetChanged()
                 }

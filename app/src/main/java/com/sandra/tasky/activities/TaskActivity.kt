@@ -19,7 +19,7 @@ import android.view.View
 import com.sandra.tasky.R
 import com.sandra.tasky.RepeatType
 import com.sandra.tasky.TaskyConstants
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.entity.TaskCategory
 import com.sandra.tasky.utils.*
@@ -50,7 +50,7 @@ class TaskActivity : AppCompatActivity() {
     // index for above arrays calculated on given categories and selectedCategoryId from intent extras
     private var selectedCategoryIndex = 0
 
-    private lateinit var appDatabase: AppDatabase
+    private lateinit var appDatabase: TaskDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +58,7 @@ class TaskActivity : AppCompatActivity() {
 
         JodaTimeAndroid.init(this)
 
-        appDatabase = AppDatabase.buildDatabase(this)
+        appDatabase = TaskDatabase(this)
 
         if (savedInstanceState != null) {
             isTaskNew = savedInstanceState.getBoolean(IS_TASK_NEW)
@@ -242,7 +242,7 @@ class TaskActivity : AppCompatActivity() {
             android.R.id.home -> onBackPressed()
             R.id.task_cancel -> setupForOnBackPressed()
             R.id.task_delete -> {
-                dbAction { appDatabase.taskDao().delete(task) }
+                dbAction { appDatabase.deleteTask(this, task) }
                 setupForOnBackPressed()
             }
             R.id.task_save -> {
@@ -320,9 +320,9 @@ class TaskActivity : AppCompatActivity() {
             if (isTaskNew) {
 //                task.id = database!!.addTask(task)
                 // todo we need task id?
-                dbAction { appDatabase.taskDao().insertAll(task) }
+                dbAction { appDatabase.addTask(task) }
             } else {
-                dbAction { appDatabase.taskDao().update(task) }
+                dbAction { appDatabase.updateTask(task) }
             }
             if (task.dueDate != null && task.isInFuture) {
                 AlarmUtils.initTaskAlarm(this@TaskActivity, task)
@@ -371,7 +371,7 @@ class TaskActivity : AppCompatActivity() {
 
     private fun setCategoriesPicker() {
         categories.add(
-                TaskCategory(getString(if (categories.size == 0) R.string.all else R.string.others))
+                TaskCategory(title = getString(if (categories.size == 0) R.string.all else R.string.others))
         )
         setSelectedCategory()
         categoriesTitle = emptyArray()
@@ -386,13 +386,13 @@ class TaskActivity : AppCompatActivity() {
         if (isTaskNew && selectedCategoryIndex != categories.size - 1) {
             val categoryId = categoriesId[selectedCategoryIndex]
             val categoryTitle = categoriesTitle[selectedCategoryIndex]
-            task.category = TaskCategory(categoryTitle, categoryId)
+            task.category = TaskCategory(categoryId, categoryTitle)
         }
     }
 
     private fun setSelectedCategory() {
         //to handle opening new task activity from widget
-        val selectedCategoryId = if (intent.extras == null) TaskCategory.OTHERS_CATEGORY_ID.toInt() else intent.extras.getInt(TaskyConstants.SELECTED_CATEGORY_KEY)
+        val selectedCategoryId = if (intent.extras == null) TaskCategory.OTHERS_CATEGORY_ID else intent.extras.getInt(TaskyConstants.SELECTED_CATEGORY_KEY)
         //init
         selectedCategoryIndex = categories.size - 1
         for (i in categories.indices) {
@@ -406,7 +406,7 @@ class TaskActivity : AppCompatActivity() {
     // DB related
     private fun getCategoriesFromDb() {
         CoroutineScope(Dispatchers.IO).launch {
-            categories.addAll(appDatabase.categoriesDao().getAll())
+            categories.addAll(appDatabase.allCategories)
             withContext(Dispatchers.Main) {
                 setCategoriesPicker()
             }

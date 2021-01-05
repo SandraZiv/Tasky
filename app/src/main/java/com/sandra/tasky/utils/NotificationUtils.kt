@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.activities.TaskActivity
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.service.NotificationService
 import kotlinx.coroutines.CoroutineScope
@@ -116,10 +116,10 @@ object NotificationUtils {
         if (task!!.isRepeating) {
             //load new task since time has changed
             CoroutineScope(Dispatchers.IO).launch {
-                val database = AppDatabase.buildDatabase(context)
+                val database = TaskDatabase(context)
                 var newTask: SimpleTask
                 while (true) {
-                    newTask = database.taskDao().getById(task.id)
+                    newTask = database.getTaskById(task.id)
                     if (task.dueDate != newTask.dueDate) {
                         break  // todo why???
                     }

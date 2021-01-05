@@ -5,13 +5,10 @@ import android.content.Intent
 import android.preference.PreferenceManager
 import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.utils.NotificationUtils
 import com.sandra.tasky.utils.TaskyUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import net.danlew.android.joda.JodaTimeAndroid
 
 class NotificationService : IntentService("NotificationService") {
@@ -33,7 +30,7 @@ class NotificationService : IntentService("NotificationService") {
     }
 
     private fun checkTask(task: SimpleTask): Boolean {
-        val other = AppDatabase.buildDatabase(this@NotificationService).taskDao().getById(task.id)
+        val other = TaskDatabase(this@NotificationService).getTaskById(task.id)
         return task.dueDate == other.dueDate
     }
 }

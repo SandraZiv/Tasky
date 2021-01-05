@@ -10,7 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import com.sandra.tasky.R
-import com.sandra.tasky.db.AppDatabase
+import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.TaskCategory
 import com.sandra.tasky.utils.ToastWrapper
 import kotlinx.android.synthetic.main.activity_categories.*
@@ -22,20 +22,20 @@ import kotlinx.coroutines.withContext
 class CategoriesActivity : AppCompatActivity() {
 
     private lateinit var adapter: CategoriesAdapter
-    private lateinit var database: AppDatabase
+    private lateinit var database: TaskDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categories)
 
-        database = AppDatabase.buildDatabase(this)
+        database = TaskDatabase(this)
 
         lvCategories.emptyView = tvNoCategories
 
         adapter = CategoriesAdapter(this, object : CategoriesAdapter.OnDeleteClickListener {
             override fun onClick(category: TaskCategory) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    database.categoriesDao().delete(category)
+                    database.deleteCategory(category)
                 }
             }
         })
@@ -81,7 +81,7 @@ class CategoriesActivity : AppCompatActivity() {
                     // todo handle unique constraint
                     // save new category
                     CoroutineScope(Dispatchers.IO).launch {
-                        database.categoriesDao().insertAll(TaskCategory(inputTitle))
+                        database.addCategory(TaskCategory(title = inputTitle))
                         getAllCategoriesFromDb()
 //                        ToastWrapper.showShort(this@CategoriesActivity, R.string.category_exists)
                     }
@@ -96,7 +96,7 @@ class CategoriesActivity : AppCompatActivity() {
 
     private fun getAllCategoriesFromDb() {
         CoroutineScope(Dispatchers.IO).launch {
-            val allCategories = database.categoriesDao().getAll()
+            val allCategories = database.allCategories
             withContext(Dispatchers.Main) {
                 adapter.setCategories(allCategories as MutableList<TaskCategory>)
             }

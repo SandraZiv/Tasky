@@ -1,6 +1,5 @@
 package com.sandra.tasky.entity
 
-import androidx.room.*
 import com.applandeo.materialcalendarview.EventDay
 import com.sandra.tasky.R
 import com.sandra.tasky.RepeatType
@@ -10,23 +9,18 @@ import org.joda.time.format.DateTimeFormat
 import java.io.Serializable
 import java.util.*
 
-@Entity(
-        tableName = "taskTable",
-        foreignKeys = [ForeignKey(entity = TaskCategory::class, parentColumns = ["ID"], childColumns = ["TASK_CATEGORY_FK"], onDelete = ForeignKey.SET_NULL)] // this was before todo set default -2?
-)
 class SimpleTask(
         // The max value for an int is 2,147,483, 647 which is over 2 billions
-        @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "ID") var id: Int = EMPTY_ID,
-        @ColumnInfo(name = "TASK_TITLE_COLUMN") var title: String = "",
-        @ColumnInfo(name = "TASK_NOTE_COLUMN") var note: String = "",
-        @ColumnInfo(name = "TASK_DATE_COLUMN") var dueDate: DateTime? = null, // todo?
-        @ColumnInfo(name = "TASK_COMPLETED_COLUMN") var isCompleted: Boolean = false,
-        @ColumnInfo(name = "TASK_TIME_PRESENT_COLUMN") var isTimePresent: Boolean = false,
-        @ColumnInfo(name = "SHOW_IN_WIDGET_COLUMN") var shouldShowInWidget: Boolean = true,
-        @ColumnInfo(name = "TASK_REPEAT_COLUMN") var repeat: RepeatType = RepeatType.REPEAT_ONCE, // todo how is this done in db
+        var id: Int = EMPTY_ID,
+        var title: String = "",
+        var note: String = "",
+        var dueDate: DateTime? = null, // todo?
+        var isCompleted: Boolean = false,
+        var isTimePresent: Boolean = false,
+        var shouldShowInWidget: Boolean = true,
+        var repeat: RepeatType = RepeatType.REPEAT_ONCE, // todo how is this done in db - TypeConverter
         // todo this should be just LONG?
-        @ColumnInfo(name = "TASK_CATEGORY_FK") var categoryId: Int? = null,
-        @Ignore var category: TaskCategory? = null
+        var category: TaskCategory? = null
 ) : Serializable {
 
     fun parseDateTime(): String {
