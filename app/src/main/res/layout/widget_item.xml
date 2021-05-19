@@ -9,24 +9,24 @@
         android:id="@+id/tvWidgetTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/widgetItemMargin"
         android:text="@string/title"
         android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:textSize="@dimen/textSmall" />
 
     <TextView
         android:id="@+id/widgetSpace"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
+        android:layout_height="@dimen/widgetItemTitleHeight"
         android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tvWidgetDueDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/widgetItemMargin"
         android:text="@string/due_date"
         android:textColor="@android:color/darker_gray"
-        android:textSize="12sp" />
+        android:textSize="@dimen/textExtraSmall" />
 
 </LinearLayout>

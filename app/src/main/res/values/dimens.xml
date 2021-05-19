@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="paddingSmall">8dp</dimen>
+    <dimen name="paddingMedium">12dp</dimen>
+    <dimen name="paddingStandard">16dp</dimen>
+    <dimen name="paddingStandardLarge">20dp</dimen>
+    <dimen name="paddingLarge">24dp</dimen>
+    <dimen name="paddingDouble">32dp</dimen>
 
-    <!--
-Refer to App Widget Documentation for margin information
-http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
-    -->
-    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="textExtraSmall">12sp</dimen>
+    <dimen name="textSmall">14sp</dimen>
+    <dimen name="textNormal">18sp</dimen>
+    <dimen name="textLarge">20sp</dimen>
+    <dimen name="textExtraLarge">24sp</dimen>
 
+    <dimen name="widgetMargin">8dp</dimen>
+    <dimen name="widgetItemMargin">4dp</dimen>
+    <dimen name="widgetItemTitleHeight">4dp</dimen>
 </resources>

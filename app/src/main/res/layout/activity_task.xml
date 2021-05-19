@@ -9,19 +9,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/paddingSmall"
         android:orientation="vertical">
 
         <EditText
             android:id="@+id/etTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/paddingSmall"
             android:ems="10"
             android:hint="@string/title"
             android:inputType="text"
             android:textColor="@android:color/black"
-            android:textSize="24sp"
+            android:textSize="@dimen/textLarge"
             android:maxLength="80"
             android:importantForAutofill="no" />
 
@@ -29,61 +29,56 @@
             android:id="@+id/cbTask"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/paddingSmall"
             android:text="@string/completed"
-            android:textSize="18sp" />
+            android:textSize="@dimen/textNormal" />
 
         <EditText
             android:id="@+id/etNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/paddingSmall"
             android:ems="10"
             android:hint="@string/note"
             android:inputType="textMultiLine"
             android:lines="3"
             android:minLines="1"
             android:scrollbars="vertical"
-            android:textSize="18sp"
+            android:textSize="@dimen/textNormal"
             android:importantForAutofill="no" />
 
         <EditText
             android:id="@+id/etDueDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/paddingSmall"
             android:clickable="false"
             android:ems="10"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:longClickable="false"
             android:text="@string/due_date"
-            android:textSize="20sp"
+            android:textSize="@dimen/textLarge"
             android:importantForAutofill="no" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_margin="@dimen/paddingSmall"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvTaskDate"
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="7.5"
-                android:maxWidth="90dp"
-                android:minWidth="90dp"
+                style="@style/selectTaskDateTime"
+                android:layout_weight="8"
                 android:text="@string/select_date"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:textColor="@android:color/black"/>
 
             <ImageButton
                 android:id="@+id/btnClearDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2.5"
+                android:layout_weight="2"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/button_close"/>
         </LinearLayout>
@@ -91,28 +86,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_margin="@dimen/paddingSmall"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvTaskTime"
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="7.5"
-                android:maxWidth="90dp"
-                android:minWidth="90dp"
+                style="@style/selectTaskDateTime"
+                android:layout_weight="8"
                 android:text="@string/select_time"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="18sp" />
+                android:textColor="@android:color/darker_gray"/>
 
             <ImageButton
                 android:id="@+id/btnClearTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2.5"
+                android:layout_weight="2"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/button_close"/>
 

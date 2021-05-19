@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tasky</string>
+    <string name="app_name" translatable="false">Tasky</string>
     <string name="select_date">Select date</string>
     <string name="select_time">Select time</string>
     <string name="error">Error</string>
@@ -142,5 +142,4 @@
     <string name="material_calendar_sunday">S</string>
 
     <string name="add_task">Add task</string>
-
 </resources>

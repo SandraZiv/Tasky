@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tasky</string>
     <string name="all_num">Sve (%d)</string>
     <string name="at">u</string>
     <string name="cancel">Odustani</string>
@@ -134,5 +133,4 @@
         <item>Prosinac</item>
     </array>
     <string name="add_task">Dodaj zadatak</string>
-
 </resources>

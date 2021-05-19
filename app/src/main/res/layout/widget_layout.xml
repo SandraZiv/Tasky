@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/task_widget_shape"
-    android:padding="@dimen/widget_margin">
+    android:padding="@dimen/widgetMargin">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,11 +16,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="5dp"
+            android:layout_marginLeft="@dimen/paddingSmall"
+            android:paddingTop="@dimen/paddingSmall"
             android:layout_weight="0.5"
             android:text="@string/app_name"
-            android:textSize="18sp"
+            android:textSize="@dimen/textNormal"
             android:textStyle="bold"
             android:textColor="@android:color/white"/>
 
@@ -28,9 +28,9 @@
             android:id="@+id/btnWidgetAddTask"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginEnd="@dimen/paddingSmall"
+            android:layout_marginRight="@dimen/paddingSmall"
+            android:layout_marginTop="@dimen/paddingSmall"
             android:background="@drawable/ic_new"
             android:contentDescription="@string/new_task" />
 
@@ -42,9 +42,9 @@
         android:layout_height="match_parent"
         android:divider="#dadada"
         android:dividerHeight="1dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginTop="@dimen/paddingSmall"
+        android:layout_marginStart="@dimen/paddingSmall"
+        android:layout_marginEnd="@dimen/paddingSmall"
+        android:layout_marginBottom="@dimen/paddingSmall" />
 
 </LinearLayout>

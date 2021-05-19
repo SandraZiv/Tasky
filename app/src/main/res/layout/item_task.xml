@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
-    android:layout_margin="10dp">
+    android:layout_margin="@dimen/paddingSmall">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -16,24 +16,24 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="@dimen/paddingSmall"
+            android:layout_marginTop="@dimen/paddingSmall"
             android:text="@string/title"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="@dimen/textLarge" />
 
         <TextView
             android:id="@+id/tvNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/paddingSmall"
             android:text="@string/note" />
 
         <TextView
             android:id="@+id/tvDueDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/paddingSmall"
             android:text="@string/due_date" />
 
     </LinearLayout>
@@ -42,9 +42,6 @@
         android:id="@+id/cbCompleted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="5dp" />
+        android:layout_margin="@dimen/paddingSmall" />
 
 </LinearLayout>
