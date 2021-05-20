@@ -2,7 +2,7 @@ package com.sandra.tasky.service
 
 import android.app.IntentService
 import android.content.Intent
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.db.TaskDatabase

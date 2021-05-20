@@ -37,7 +37,7 @@ class HomeListAdapter(private val context: Context, private val taskList: List<S
         checkBox.isChecked = task.isCompleted
         checkBox.setOnClickListener {
             task.isCompleted = checkBox.isChecked
-            // todo
+
             CoroutineScope(Dispatchers.Main).launch {
                 DatabaseWrapper.updateTask(context, task)
                 notifyDataSetChanged()

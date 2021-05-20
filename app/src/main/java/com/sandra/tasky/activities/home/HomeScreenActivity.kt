@@ -67,7 +67,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_screen)
-        setSupportActionBar(toolbar) // todo how this toolbar is set
+        setSupportActionBar(toolbar)
 
         JodaTimeAndroid.init(this)
 
@@ -80,9 +80,6 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         fabAddTask.setOnClickListener { createNewTask() }
 
         handleIntent(intent)
-
-        //added due to bug fix 28.6
-//        setUpFragment();
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -93,13 +90,6 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     override fun onResume() {
         super.onResume()
         setUpFragment()
-        //old
-//        try {
-//            setUpFragment();
-//            new getDataAsyncTask().execute();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     override fun onPause() {
@@ -291,7 +281,6 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     fun initTasksList(view: View) {
-        // deleted in old file
         try {
             loadData()
         } catch (e: Exception) {

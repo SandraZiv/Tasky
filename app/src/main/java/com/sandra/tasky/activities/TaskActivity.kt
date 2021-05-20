@@ -316,11 +316,11 @@ class TaskActivity : AppCompatActivity() {
             }
 
             CoroutineScope(Dispatchers.Main).launch {
+                val context = this@TaskActivity
                 if (isTaskNew) {
-//                task.id = database!!.addTask(task) todo we need task id?
-                    DatabaseWrapper.addTask(this@TaskActivity, task)
+                    DatabaseWrapper.addTask(context, task)
                 } else {
-                    DatabaseWrapper.updateTask(this@TaskActivity, task)
+                    DatabaseWrapper.updateTask(context, task)
                 }
             }
 

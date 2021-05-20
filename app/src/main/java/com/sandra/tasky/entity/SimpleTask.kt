@@ -18,7 +18,7 @@ class SimpleTask(
         var isCompleted: Boolean = false,
         var isTimePresent: Boolean = false,
         var shouldShowInWidget: Boolean = true,
-        var repeat: RepeatType = RepeatType.REPEAT_ONCE, // todo how is this done in db - TypeConverter
+        var repeat: RepeatType = RepeatType.REPEAT_ONCE,
         // todo this should be just LONG?
         var category: TaskCategory? = null
 ) : Serializable {
