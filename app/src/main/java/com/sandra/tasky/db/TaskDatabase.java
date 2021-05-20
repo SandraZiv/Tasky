@@ -285,7 +285,7 @@ public class TaskDatabase {
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_CATEGORIES, where, null);
     }
 
-    public int deleteTask(Context context, SimpleTask task) {
+    public int deleteTask(SimpleTask task) {
         NotificationUtils.INSTANCE.cancelNotification(context, task);
 
         int id = task.getId();
@@ -293,12 +293,12 @@ public class TaskDatabase {
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, where, null);
     }
 
-    public int deleteAllTasks(Context context) {
+    public int deleteAllTasks() {
         NotificationUtils.INSTANCE.cancelAllNotifications(context);
         return dbWritable.delete(TaskDatabaseOpenHelper.DATABASE_TABLE_TASKS, null, null);
     }
 
-    public int deleteAllTasksInCategory(Context context, int[] tasksIds) {
+    public int deleteAllTasksInCategory(int[] tasksIds) {
         String where = "";
         for (int i = 0; i < tasksIds.length; i++) {
             if (i != 0) {
