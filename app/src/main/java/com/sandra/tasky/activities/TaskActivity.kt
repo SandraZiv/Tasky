@@ -63,9 +63,9 @@ class TaskActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             isTaskNew = savedInstanceState.getBoolean(IS_TASK_NEW)
             task = savedInstanceState[TaskyConstants.TASK_BUNDLE_KEY] as SimpleTask
-        } else if (intent.extras != null && intent.extras.containsKey(TaskyConstants.TASK_BUNDLE_KEY)) {
+        } else if (intent.extras != null && intent.extras!!.containsKey(TaskyConstants.TASK_BUNDLE_KEY)) {
             isTaskNew = false
-            task = intent.extras.getSerializable(TaskyConstants.TASK_BUNDLE_KEY) as SimpleTask
+            task = intent.extras!!.getSerializable(TaskyConstants.TASK_BUNDLE_KEY) as SimpleTask
         } else {
             task = SimpleTask()
         }
@@ -91,8 +91,8 @@ class TaskActivity : AppCompatActivity() {
                 dateTime = dateTime!!.withHourOfDay(DateTime().hourOfDay)
                         .withMinuteOfHour(DateTime().minuteOfHour)
             }
-        } else if (isTaskNew && intent.extras != null && intent.extras.containsKey(TaskyConstants.TASK_TIME_KEY)) {
-            dateTime = intent.extras[TaskyConstants.TASK_TIME_KEY] as DateTime
+        } else if (isTaskNew && intent.extras != null && intent.extras!!.containsKey(TaskyConstants.TASK_TIME_KEY)) {
+            dateTime = intent.extras!![TaskyConstants.TASK_TIME_KEY] as DateTime
             dateTime = dateTime!!
                     .withHourOfDay(DateTime().hourOfDay)
                     .withMinuteOfHour(DateTime().minuteOfHour)
@@ -392,7 +392,9 @@ class TaskActivity : AppCompatActivity() {
 
     private fun setSelectedCategory() {
         //to handle opening new task activity from widget
-        val selectedCategoryId = if (intent.extras == null) TaskCategory.OTHERS_CATEGORY_ID else intent.extras.getInt(TaskyConstants.SELECTED_CATEGORY_KEY)
+        val selectedCategoryId =
+            intent.extras?.apply { getInt(TaskyConstants.SELECTED_CATEGORY_KEY) }
+                ?: TaskCategory.OTHERS_CATEGORY_ID
         //init
         selectedCategoryIndex = categories.size - 1
         for (i in categories.indices) {

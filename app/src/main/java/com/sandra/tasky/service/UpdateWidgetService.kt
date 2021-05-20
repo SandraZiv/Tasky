@@ -22,7 +22,7 @@ class UpdateWidgetService : IntentService("UpdateWidgetService") {
         val action = intent.action
         if (TaskyConstants.WIDGET_TASK_UPDATE_ACTION == action) {
             //check if alarm is repeating
-            if (intent.extras.getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
+            if (intent.extras != null && intent.extras!!.getBoolean(TaskyConstants.ALARM_EXTRA_REPEATABLE)) {
                 try {
                     val task = TaskyUtils.deserialize(intent.getByteArrayExtra(TaskyConstants.ALARM_EXTRA_TASK)) as SimpleTask
                     if (checkTask(task)) {

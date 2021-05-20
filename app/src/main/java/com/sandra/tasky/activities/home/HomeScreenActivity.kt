@@ -173,7 +173,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private fun handleIntent(intent: Intent) {
         if (Intent.ACTION_SEARCH == intent.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
-            search(query)
+            query?.let { search(it) }
         }
     }
 
