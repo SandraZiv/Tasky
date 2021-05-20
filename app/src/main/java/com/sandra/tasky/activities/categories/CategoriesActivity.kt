@@ -10,37 +10,39 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import com.sandra.tasky.R
-import com.sandra.tasky.db.TaskDatabase
+import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.entity.TaskCategory
 import com.sandra.tasky.utils.ToastWrapper
 import kotlinx.android.synthetic.main.activity_categories.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CategoriesActivity : AppCompatActivity() {
 
     private lateinit var adapter: CategoriesAdapter
-    private lateinit var database: TaskDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categories)
 
-        database = TaskDatabase(this)
-
         lvCategories.emptyView = tvNoCategories
 
         adapter = CategoriesAdapter(this, object : CategoriesAdapter.OnDeleteClickListener {
             override fun onClick(category: TaskCategory) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    database.deleteCategory(category)
+                CoroutineScope(Dispatchers.Main).launch {
+                    DatabaseWrapper.deleteCategory(this@CategoriesActivity, category)
                 }
             }
         })
+
         lvCategories.adapter = adapter
-        getAllCategoriesFromDb()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val categories = DatabaseWrapper.getAllCategories(this@CategoriesActivity)
+            updateCategoriesList(categories)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -78,11 +80,12 @@ class CategoriesActivity : AppCompatActivity() {
                 } else if (inputTitle.equals(getString(R.string.all), ignoreCase = true) || inputTitle.equals(getString(R.string.others), ignoreCase = true)) {
                     ToastWrapper.showShort( this@CategoriesActivity, R.string.reserved_title)
                 } else {
-                    // todo handle unique constraint
-                    // save new category
-                    CoroutineScope(Dispatchers.IO).launch {
-                        database.addCategory(TaskCategory(title = inputTitle))
-                        getAllCategoriesFromDb()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        DatabaseWrapper.addCategory(this@CategoriesActivity, TaskCategory(title = inputTitle))
+                        val allCategories = DatabaseWrapper.getAllCategories(this@CategoriesActivity)
+                        updateCategoriesList(allCategories)
+
+                        // todo handle unique constraint
 //                        ToastWrapper.showShort(this@CategoriesActivity, R.string.category_exists)
                     }
                 }
@@ -94,12 +97,8 @@ class CategoriesActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAllCategoriesFromDb() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val allCategories = database.allCategories
-            withContext(Dispatchers.Main) {
-                adapter.setCategories(allCategories as MutableList<TaskCategory>)
-            }
-        }
+    private fun updateCategoriesList(categories: List<TaskCategory>) {
+        adapter.setCategories(categories as MutableList<TaskCategory>)
     }
+
 }

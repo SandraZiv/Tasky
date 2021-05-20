@@ -28,6 +28,7 @@ import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.activities.categories.CategoriesActivity
 import com.sandra.tasky.activities.TaskActivity
 import com.sandra.tasky.adapter.CalendarEventAdapter
+import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.entity.TaskCategory
@@ -182,7 +183,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             preferences.edit()
                     .putInt(TaskyConstants.PREF_SORT, which)
                     .apply()
-            updateListView(null)
+            updateListView()
             dialog.dismiss()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
@@ -199,17 +200,18 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         } else {
             builder.setMessage(resources.getQuantityString(R.plurals.delete_alert, filteredTasks.size, filteredTasks.size))
             builder.setPositiveButton(R.string.ok) { _, _ ->
-                if (selectedCategoryId == TaskCategory.ALL_CATEGORY_ID) {
-                    // todo async
-//                    database!!.deleteAllTasks(this@HomeScreenActivity)
-                } else {
-                    val ids = IntArray(filteredTasks.size)
-                    for (i in filteredTasks.indices) {
-                        ids[i] = filteredTasks[i].id
+                CoroutineScope(Dispatchers.Main).launch {
+                    if (selectedCategoryId == TaskCategory.ALL_CATEGORY_ID) {
+                        DatabaseWrapper.deleteAllTasks(this@HomeScreenActivity)
+                    } else {
+                        val ids = IntArray(filteredTasks.size)
+                        for (i in filteredTasks.indices) {
+                            ids[i] = filteredTasks[i].id
+                        }
+                        DatabaseWrapper.deleteAllTasksInCategory(this@HomeScreenActivity, ids)
                     }
-                    // todo async
-//                    database!!.deleteAllTasksInCategory(this@HomeScreenActivity, ids)
                 }
+
                 loadData()
             }
             builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
@@ -230,7 +232,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         resultLauncher.launch(newTaskIntent)
     }
 
-    private fun updateListView(query: String?) {
+    private fun updateListView(query: String? = null) {
         val list: List<SimpleTask> = sortAndFilterTasks(query)
         current = ArrayList(list)
         observer = TasksDataObserver()
@@ -357,7 +359,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private fun openCategory(categoryId: Int, categoryTitle: CharSequence) {
         setActionBar(categoryTitle)
         selectedCategoryId = categoryId
-        updateListView(null)
+        updateListView()
     }
 
     private fun updateCategoriesList() {
@@ -365,10 +367,9 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         navView.menu.add(R.id.menu_group_top, TaskCategory.ALL_CATEGORY_ID.toInt(), 1,
                 getString(R.string.all_num, tasks.size))
         var categorySize = 0
-        for (category in categories) {
-            navView.menu.add(R.id.menu_group_top, category.id, 2,
-                    category.title + " (" + categoriesCount[category.id] + ")")
-            categorySize += categoriesCount[category.id] ?: error("")
+        categories.forEach {
+            navView.menu.add(R.id.menu_group_top, it.id, 2, "${it.title} (${categoriesCount[it.id]})")
+            categorySize += categoriesCount[it.id] ?: 0
         }
 
         //add others if there is at least one category
@@ -430,28 +431,29 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     private fun loadData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val database = TaskDatabase(this@HomeScreenActivity)
-            tasks = database.allTasks
-            categories = database.allCategories
-
-            withContext(Dispatchers.Main) {
-                updateCategoriesList()
-                val item = navView.menu.findItem(selectedCategoryId)
-                //check if item has been deleted
-                if (item == null) {
-                    selectedCategoryId = TaskCategory.ALL_CATEGORY_ID.toInt()
-                }
-                setActionBar(navView.menu.findItem(selectedCategoryId).title)
-                updateListView(null)
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.IO) {
+                val database = TaskDatabase(this@HomeScreenActivity)
+                tasks = database.allTasks
+                categories = database.allCategories
             }
+
+            updateCategoriesList()
+            val item = navView.menu.findItem(selectedCategoryId)
+            //check if item has been deleted
+            if (item == null) {
+                selectedCategoryId = TaskCategory.ALL_CATEGORY_ID.toInt()
+            }
+            setActionBar(navView.menu.findItem(selectedCategoryId).title)
+            updateListView()
+
         }
     }
 
     private inner class TasksDataObserver : DataSetObserver() {
         override fun onChanged() {
             super.onChanged()
-            updateListView(null)
+            updateListView()
         }
     }
 
