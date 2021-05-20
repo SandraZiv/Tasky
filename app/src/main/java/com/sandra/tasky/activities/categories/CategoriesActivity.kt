@@ -75,7 +75,7 @@ class CategoriesActivity : AppCompatActivity() {
                 val inputTitle = etTitle.text.toString().trim { it <= ' ' }
                 if (inputTitle.isEmpty()) {
                     ToastWrapper.showShort(this@CategoriesActivity, R.string.please_enter_title)
-                } else if (inputTitle.toLowerCase() == getString(R.string.all).toLowerCase() || inputTitle.toLowerCase() == getString(R.string.others).toLowerCase()) {
+                } else if (inputTitle.equals(getString(R.string.all), ignoreCase = true) || inputTitle.equals(getString(R.string.others), ignoreCase = true)) {
                     ToastWrapper.showShort( this@CategoriesActivity, R.string.reserved_title)
                 } else {
                     // todo handle unique constraint

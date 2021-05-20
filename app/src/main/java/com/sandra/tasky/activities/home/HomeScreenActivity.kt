@@ -418,14 +418,18 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         }
 
         //sort
-        queryTasks.sortWith(Comparator { o1, o2 ->
-            when (getSharedPreferences(TaskyConstants.PREF_GENERAL, Context.MODE_PRIVATE).getInt(TaskyConstants.PREF_SORT, SortType.getDefault().value)) {
+        queryTasks.sortWith { o1, o2 ->
+            when (getSharedPreferences(TaskyConstants.PREF_GENERAL, Context.MODE_PRIVATE).getInt(
+                TaskyConstants.PREF_SORT,
+                SortType.getDefault().value
+            )) {
                 SortType.SORT_DUE_DATE.value -> 0
-                SortType.SORT_TITLE.value -> o1!!.title.toLowerCase().compareTo(o2!!.title.toLowerCase())
+                SortType.SORT_TITLE.value -> o1!!.title.toLowerCase()
+                    .compareTo(o2!!.title.toLowerCase())
                 SortType.SORT_COMPLETED.value -> if (o1!!.isCompleted) 1 else -1
                 else -> 0
             }
-        })
+        }
         return queryTasks
     }
 

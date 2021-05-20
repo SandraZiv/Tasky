@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
-import com.sandra.tasky.db.TaskDatabase
+import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.utils.hide
 import kotlinx.android.synthetic.main.item_task.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeListAdapter(private val context: Context, private val taskList: List<SimpleTask>) : BaseAdapter() {
 
@@ -39,11 +38,9 @@ class HomeListAdapter(private val context: Context, private val taskList: List<S
         checkBox.setOnClickListener {
             task.isCompleted = checkBox.isChecked
             // todo
-            CoroutineScope(Dispatchers.IO).launch {
-                TaskDatabase(context).updateTask(task)
-                withContext(Dispatchers.Main) {
-                    notifyDataSetChanged()
-                }
+            CoroutineScope(Dispatchers.Main).launch {
+                DatabaseWrapper.updateTask(context, task)
+                notifyDataSetChanged()
             }
         }
         if (task.note.isNotEmpty()) {

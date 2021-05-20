@@ -19,7 +19,7 @@ import android.view.View
 import com.sandra.tasky.R
 import com.sandra.tasky.RepeatType
 import com.sandra.tasky.TaskyConstants
-import com.sandra.tasky.db.TaskDatabase
+import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.entity.TaskCategory
 import com.sandra.tasky.utils.*
@@ -29,7 +29,6 @@ import kotlinx.android.synthetic.main.item_task.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -50,15 +49,11 @@ class TaskActivity : AppCompatActivity() {
     // index for above arrays calculated on given categories and selectedCategoryId from intent extras
     private var selectedCategoryIndex = 0
 
-    private lateinit var appDatabase: TaskDatabase
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task)
 
         JodaTimeAndroid.init(this)
-
-        appDatabase = TaskDatabase(this)
 
         if (savedInstanceState != null) {
             isTaskNew = savedInstanceState.getBoolean(IS_TASK_NEW)
@@ -119,7 +114,7 @@ class TaskActivity : AppCompatActivity() {
                 val min = if (isTimePresent) dateTime!!.minuteOfHour else DateTime().minuteOfHour
                 dateTime = dateTime!!
                         .withYear(selectedYear)
-                        .withMonthOfYear(selectedMonth + 1)  // beacuse in joda it starts from 0
+                        .withMonthOfYear(selectedMonth + 1)  // because in joda it starts from 0
                         .withDayOfMonth(selectedDayOfMonth)
                         .withHourOfDay(hour)
                         .withMinuteOfHour(min)
@@ -242,8 +237,10 @@ class TaskActivity : AppCompatActivity() {
             android.R.id.home -> onBackPressed()
             R.id.task_cancel -> setupForOnBackPressed()
             R.id.task_delete -> {
-                dbAction { appDatabase.deleteTask(this, task) }
-                setupForOnBackPressed()
+                CoroutineScope(Dispatchers.Main).launch {
+                    DatabaseWrapper.deleteTask(this@TaskActivity, task)
+                    setupForOnBackPressed()
+                }
             }
             R.id.task_save -> {
                 if (etTitle.text.toString().trim { it <= ' ' }.isEmpty()) {
@@ -317,13 +314,16 @@ class TaskActivity : AppCompatActivity() {
                     task.dueDate = TimeUtils.moveToNextRepeat(task)
                 }
             }
-            if (isTaskNew) {
-//                task.id = database!!.addTask(task)
-                // todo we need task id?
-                dbAction { appDatabase.addTask(task) }
-            } else {
-                dbAction { appDatabase.updateTask(task) }
+
+            CoroutineScope(Dispatchers.Main).launch {
+                if (isTaskNew) {
+//                task.id = database!!.addTask(task) todo we need task id?
+                    DatabaseWrapper.addTask(this@TaskActivity, task)
+                } else {
+                    DatabaseWrapper.updateTask(this@TaskActivity, task)
+                }
             }
+
             if (task.dueDate != null && task.isInFuture) {
                 AlarmUtils.initTaskAlarm(this@TaskActivity, task)
                 NotificationUtils.setNotificationReminder(this, task)
@@ -352,7 +352,7 @@ class TaskActivity : AppCompatActivity() {
             task.repeat = RepeatType.valueOf(which.toString())
             dialog.dismiss()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.cancel() }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
         builder.show()
     }
 
@@ -405,19 +405,10 @@ class TaskActivity : AppCompatActivity() {
         }
     }
 
-    // DB related
     private fun getCategoriesFromDb() {
-        CoroutineScope(Dispatchers.IO).launch {
-            categories.addAll(appDatabase.allCategories)
-            withContext(Dispatchers.Main) {
-                setCategoriesPicker()
-            }
-        }
-    }
-
-    private fun dbAction(action: () -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            action()
+        CoroutineScope(Dispatchers.Main).launch {
+            categories.addAll(DatabaseWrapper.getAllCategories(this@TaskActivity))
+            setCategoriesPicker()
         }
     }
 

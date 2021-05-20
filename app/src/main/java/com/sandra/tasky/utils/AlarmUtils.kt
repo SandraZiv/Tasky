@@ -6,16 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Build.VERSION
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
-import com.sandra.tasky.db.TaskDatabase
+import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.service.UpdateWidgetService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.joda.time.DateTime
 import java.io.IOException
 
@@ -27,8 +26,7 @@ object AlarmUtils {
             setAlarmIntent.action = TaskyConstants.WIDGET_TASK_UPDATE_ACTION
             val isRepeating = task.isRepeating
             setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_REPEATABLE, isRepeating)
-            val taskTimeMillis: Long
-            taskTimeMillis = if (isRepeating) {
+            val taskTimeMillis: Long = if (isRepeating) {
                 setAlarmIntent.putExtra(TaskyConstants.ALARM_EXTRA_TASK, TaskyUtils.serialize(task))
                 task.dueDate!!.millis
             } else {
@@ -60,11 +58,9 @@ object AlarmUtils {
                 NotificationUtils.setNotificationReminder(context, task)
             }
 
-            CoroutineScope(Dispatchers.IO).launch {
-                TaskDatabase(context).updateTask(task)
-                withContext(Dispatchers.Main) {
-                    TaskyUtils.updateWidget(context)
-                }
+            CoroutineScope(Dispatchers.Main).launch {
+                DatabaseWrapper.updateTask(context, task)
+                TaskyUtils.updateWidget(context)
             }
 
         } catch (e: Exception) {
