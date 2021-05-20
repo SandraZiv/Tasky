@@ -18,6 +18,7 @@ import android.view.View
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.AdapterView.OnItemLongClickListener
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
@@ -229,14 +230,14 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private fun createNewTask() {
         val newTaskIntent = Intent(this, TaskActivity::class.java)
         newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId)
-        startActivityForResult(newTaskIntent, REQUEST_CODE)
+        resultLauncher.launch(newTaskIntent)
     }
 
     private fun createNewTask(dateTime: DateTime) {
         val newTaskIntent = Intent(this, TaskActivity::class.java)
         newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId)
         newTaskIntent.putExtra(TaskyConstants.TASK_TIME_KEY, dateTime)
-        startActivityForResult(newTaskIntent, REQUEST_CODE)
+        resultLauncher.launch(newTaskIntent)
     }
 
     private fun updateListView(query: String?) {
@@ -348,26 +349,16 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     private fun openTaskActivity(task: SimpleTask) {
-        val openTaskIntent = Intent(this@HomeScreenActivity, TaskActivity::class.java)
+        val openTaskIntent = Intent(this, TaskActivity::class.java)
         openTaskIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, task)
         openTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId)
-        startActivityForResult(openTaskIntent, REQUEST_CODE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                loadData()
-                invalidateOptionsMenu()
-            }
-        }
+        resultLauncher.launch(openTaskIntent)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_manage -> startActivityForResult(Intent(this@HomeScreenActivity, CategoriesActivity::class.java), REQUEST_CODE)
-            R.id.nav_settings -> startActivity(Intent(this@HomeScreenActivity, SettingsActivity::class.java))
+            R.id.nav_manage -> resultLauncher.launch(Intent(this, CategoriesActivity::class.java))
+            R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
             else -> openCategory(item.itemId, item.title)
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -438,6 +429,13 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         return queryTasks
     }
 
+    private val resultLauncher =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            loadData()
+            invalidateOptionsMenu()
+        }
+    }
+
     private fun loadData() {
         CoroutineScope(Dispatchers.IO).launch {
             val database = TaskDatabase(this@HomeScreenActivity)
@@ -464,7 +462,4 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         }
     }
 
-    companion object {
-        private const val REQUEST_CODE = 1
-    }
 }
