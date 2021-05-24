@@ -133,4 +133,6 @@
         <item>Prosinac</item>
     </array>
     <string name="add_task">Dodaj zadatak</string>
+
+    <string name="clear_task_date">Očisti</string>
 </resources>

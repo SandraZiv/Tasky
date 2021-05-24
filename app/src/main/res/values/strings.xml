@@ -142,4 +142,7 @@
     <string name="material_calendar_sunday">S</string>
 
     <string name="add_task">Add task</string>
+
+    <!-- content description -->
+    <string name="clear_task_date">Clear</string>
 </resources>
