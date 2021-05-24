@@ -25,7 +25,6 @@ import com.sandra.tasky.entity.TaskCategory
 import com.sandra.tasky.utils.*
 import com.sandra.tasky.widget.TaskWidget
 import kotlinx.android.synthetic.main.activity_task.*
-import kotlinx.android.synthetic.main.item_task.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

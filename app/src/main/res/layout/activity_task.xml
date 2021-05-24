@@ -26,7 +26,7 @@
             android:importantForAutofill="no" />
 
         <CheckBox
-            android:id="@+id/cbTask"
+            android:id="@+id/cbCompleted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/paddingSmall"
