@@ -18,6 +18,7 @@ class CalendarEventAdapter(val context: Context, val list: List<SimpleTask>) : B
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = convertView?: LayoutInflater.from(context).inflate(R.layout.item_task, parent, false)
+        view.setPadding(24, 0, 24, 0)
 
         val task = getItem(position)
 
