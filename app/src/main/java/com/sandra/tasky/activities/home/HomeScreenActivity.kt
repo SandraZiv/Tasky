@@ -36,6 +36,7 @@ import com.sandra.tasky.settings.SettingsActivity
 import com.sandra.tasky.utils.TaskyUtils
 import com.sandra.tasky.utils.TimeUtils
 import com.sandra.tasky.utils.ToastWrapper
+import com.sandra.tasky.utils.capitalFirstLetter
 import kotlinx.android.synthetic.main.content_home_screen.*
 import kotlinx.android.synthetic.main.activity_home_screen.*
 import kotlinx.android.synthetic.main.fragment_calendar.*
@@ -282,7 +283,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         tabLayout.setupWithViewPager(viewPager)
     }
 
-    fun initTasksList(view: View) {
+    fun initTasksList() {
         try {
             loadData()
         } catch (e: Exception) {
@@ -303,7 +304,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val builder = AlertDialog.Builder(this@HomeScreenActivity)
         val day = DateTime(eventDay.calendar.timeInMillis)
         val dayFormatted = DateTimeFormat.fullDate().print(day)
-        builder.setTitle(dayFormatted.capitalize())
+        builder.setTitle(dayFormatted.capitalFirstLetter())
         val selectedDayTasks: MutableList<SimpleTask> = ArrayList()
         for (task in current) {
             if (task.dueDate != null && TimeUtils.dateEqual(day, task.dueDate)) {
@@ -399,7 +400,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         if (query != null) {
             queryTasks = LinkedList()
             for (task in filteredTasks) {
-                if (task.title.toLowerCase().contains(query.toLowerCase().trim { it <= ' ' })) {
+                if (task.title.lowercase().contains(query.lowercase().trim { it <= ' ' })) {
                     queryTasks.add(task)
                 }
             }
@@ -414,8 +415,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                 SortType.getDefault().value
             )) {
                 SortType.SORT_DUE_DATE.value -> 0
-                SortType.SORT_TITLE.value -> o1!!.title.toLowerCase()
-                    .compareTo(o2!!.title.toLowerCase())
+                SortType.SORT_TITLE.value -> o1!!.title.lowercase().compareTo(o2!!.title.lowercase())
                 SortType.SORT_COMPLETED.value -> if (o1!!.isCompleted) 1 else -1
                 else -> 0
             }

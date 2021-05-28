@@ -17,7 +17,7 @@ class TasksFragment : androidx.fragment.app.Fragment() {
 
     private fun createTasks(inflater: LayoutInflater, container: ViewGroup?): View {
         val view = inflater.inflate(R.layout.fragment_tasks, container, false)
-        (activity as HomeScreenActivity).initTasksList(view)
+        (activity as HomeScreenActivity).initTasksList()
         return view
     }
 

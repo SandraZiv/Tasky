@@ -9,6 +9,7 @@ import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.entity.SimpleTask
+import com.sandra.tasky.utils.capitalFirstLetter
 import com.sandra.tasky.utils.hide
 import kotlinx.android.synthetic.main.item_task.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +53,7 @@ class HomeListAdapter(private val context: Context, private val taskList: List<S
         }
         if (task.dueDate != null) {
             if (task.isExpired) {
-                itemView.tvDueDate.text = context.getString(R.string.expired).capitalize()
+                itemView.tvDueDate.text = context.getString(R.string.expired).capitalFirstLetter()
             } else {
                 itemView.tvDueDate.text = if (task.isTimePresent) task.parseDateTime() else task.parseDate()
             }
