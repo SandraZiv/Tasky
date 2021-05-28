@@ -29,9 +29,11 @@ class HomeListAdapter(private val context: Context, private val taskList: List<S
         return position.toLong()
     }
 
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val itemView = convertView?: LayoutInflater.from(context).inflate(R.layout.item_task, parent, false)
+
         val task = taskList[position]
-        val itemView = LayoutInflater.from(context).inflate(R.layout.item_task, parent, false)
+
         itemView.tvTitle.text = cutText(task.title, TaskyConstants.MAX_TITLE_LENGTH)
         val checkBox = itemView.cbCompleted
         checkBox.isChecked = task.isCompleted

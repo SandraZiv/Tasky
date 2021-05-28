@@ -17,8 +17,9 @@ import kotlinx.coroutines.launch
 class CalendarEventAdapter(val context: Context, val list: List<SimpleTask>) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view = convertView?: LayoutInflater.from(context).inflate(R.layout.item_task, parent, false)
+
         val task = getItem(position)
-        val view = LayoutInflater.from(context).inflate(R.layout.item_task, parent, false)
 
         view.tvTitle.text = task.title
 
