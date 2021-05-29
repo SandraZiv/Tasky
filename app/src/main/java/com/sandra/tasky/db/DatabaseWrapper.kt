@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 
 object DatabaseWrapper {
 
+    // Task methods
     suspend fun addTask(context: Context, task: SimpleTask) = withContext(Dispatchers.IO) {
         TaskDatabase(context).addTask(task)
     }
@@ -28,6 +29,8 @@ object DatabaseWrapper {
         TaskDatabase(context).deleteAllTasksInCategory(taskIds)
     }
 
+
+    // Category methods
     suspend fun addCategory(context: Context, category: TaskCategory) = withContext(Dispatchers.IO) {
         TaskDatabase(context).addCategory(category)
     }

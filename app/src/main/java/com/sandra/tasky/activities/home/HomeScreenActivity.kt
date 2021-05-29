@@ -211,9 +211,9 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                         }
                         DatabaseWrapper.deleteAllTasksInCategory(this@HomeScreenActivity, ids)
                     }
+                    loadData()
+                    updateUI()
                 }
-
-                loadData()
             }
             builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
         }
@@ -248,10 +248,12 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             val optionList = ArrayAdapter<String>(this@HomeScreenActivity, android.R.layout.simple_list_item_1)
             optionList.add(getString(R.string.delete))
             builder.setAdapter(optionList) { dialog, _ ->
-                ToastWrapper.showShort(this, R.string.task_deleted)
-                // todo async
-//                database!!.deleteTask(this@HomeScreenActivity, list[position])
-                loadData()
+                CoroutineScope(Dispatchers.Main).launch {
+                    DatabaseWrapper.deleteTask(this@HomeScreenActivity, list[position])
+                    ToastWrapper.showShort(this@HomeScreenActivity, R.string.task_deleted)
+                    loadData()
+                    updateUI()
+                }
                 dialog.cancel()
             }
             builder.show()
@@ -285,7 +287,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     fun initTasksList() {
         try {
-            loadData()
+            loadDataAndUpdateUI()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -365,7 +367,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private fun updateCategoriesList() {
         navView.menu.removeGroup(R.id.menu_group_top)
-        navView.menu.add(R.id.menu_group_top, TaskCategory.ALL_CATEGORY_ID.toInt(), 1,
+        navView.menu.add(R.id.menu_group_top, TaskCategory.ALL_CATEGORY_ID, 1,
                 getString(R.string.all_num, tasks.size))
         var categorySize = 0
         categories.forEach {
@@ -375,7 +377,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
         //add others if there is at least one category
         if (categories.isNotEmpty()) {
-            navView.menu.add(R.id.menu_group_top, TaskCategory.OTHERS_CATEGORY_ID.toInt(),
+            navView.menu.add(R.id.menu_group_top, TaskCategory.OTHERS_CATEGORY_ID,
                     categories.size + 1, getString(R.string.others_num, tasks.size - categorySize))
         }
     }
@@ -425,29 +427,33 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private val resultLauncher =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            loadData()
+            loadDataAndUpdateUI()
             invalidateOptionsMenu()
         }
     }
 
-    private fun loadData() {
+    private fun loadDataAndUpdateUI() {
         CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.IO) {
-                val database = TaskDatabase(this@HomeScreenActivity)
-                tasks = database.allTasks
-                categories = database.allCategories
-            }
-
-            updateCategoriesList()
-            val item = navView.menu.findItem(selectedCategoryId)
-            //check if item has been deleted
-            if (item == null) {
-                selectedCategoryId = TaskCategory.ALL_CATEGORY_ID.toInt()
-            }
-            setActionBar(navView.menu.findItem(selectedCategoryId).title)
-            updateListView()
-
+            loadData()
+            updateUI()
         }
+    }
+
+    private suspend fun loadData() = withContext(Dispatchers.IO) {
+        val database = TaskDatabase(this@HomeScreenActivity)
+        tasks = database.allTasks
+        categories = database.allCategories
+    }
+
+    private fun updateUI() {
+        updateCategoriesList()
+        val item = navView.menu.findItem(selectedCategoryId)
+        //check if item has been deleted
+        if (item == null) {
+            selectedCategoryId = TaskCategory.ALL_CATEGORY_ID
+        }
+        setActionBar(navView.menu.findItem(selectedCategoryId).title)
+        updateListView()
     }
 
     private inner class TasksDataObserver : DataSetObserver() {
