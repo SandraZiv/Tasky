@@ -53,10 +53,8 @@ import java.util.*
 
 class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnDayClickListener {
 
-    // all tasks from db that later get filtered etc
     private var tasks: List<SimpleTask> = emptyList()
-    // task currently visible depending on query, category etc
-    private var current: List<SimpleTask> = emptyList()
+    private var visibleTasks: List<SimpleTask> = emptyList()
 
     private var categories: List<TaskCategory> = emptyList()
     private var selectedCategoryId = MENU_ITEM_CATEGORY_ALL_TASKS_ID
@@ -108,7 +106,6 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         menuInflater.inflate(R.menu.home_screen_menu, menu)
         val searchView = menu.findItem(R.id.home_menu_search).actionView as SearchView
         val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val componentName = componentName
         searchView.setSearchableInfo(manager.getSearchableInfo(componentName))
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -131,6 +128,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                 return true
             }
         })
+
         return true
     }
 
@@ -231,7 +229,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private fun updateListView(query: String? = null) {
         val list: List<SimpleTask> = sortAndFilterTasks(query)
-        current = ArrayList(list)
+        visibleTasks = ArrayList(list)
         observer = TasksDataObserver()
         homeListAdapter = HomeListAdapter(this@HomeScreenActivity, list)
         homeListAdapter!!.registerDataSetObserver(observer)
@@ -304,7 +302,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val dayFormatted = DateTimeFormat.fullDate().print(day)
         builder.setTitle(dayFormatted.capitalFirstLetter())
         val selectedDayTasks: MutableList<SimpleTask> = ArrayList()
-        for (task in current) {
+        for (task in visibleTasks) {
             if (task.dueDate != null && TimeUtils.dateEqual(day, task.dueDate)) {
                 selectedDayTasks.add(task)
             }
