@@ -2,12 +2,9 @@ package com.sandra.tasky.activities
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
-import android.app.TimePickerDialog.OnTimeSetListener
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -43,10 +40,6 @@ class TaskActivity : AppCompatActivity() {
     private var isTaskVisibilityInWidgetChanged = false
 
     private var categories: MutableList<TaskCategory> = mutableListOf()
-    private var categoriesTitle: Array<String> = emptyArray()
-
-    // index for above arrays calculated on given categories and selectedCategoryId from intent extras
-    private var selectedCategoryIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,8 +78,8 @@ class TaskActivity : AppCompatActivity() {
                 dateTime = dateTime!!.withHourOfDay(DateTime().hourOfDay)
                         .withMinuteOfHour(DateTime().minuteOfHour)
             }
-        } else if (isTaskNew && intent.extras != null && intent.extras!!.containsKey(TaskyConstants.TASK_TIME_KEY)) {
-            dateTime = intent.extras!![TaskyConstants.TASK_TIME_KEY] as DateTime
+        } else if (isTaskNew && intent.extras != null && intent.extras!!.containsKey(EXTRAS_SELECTED_DATETIME_KEY)) {
+            dateTime = intent.extras!![EXTRAS_SELECTED_DATETIME_KEY] as DateTime
             dateTime = dateTime!!
                     .withHourOfDay(DateTime().hourOfDay)
                     .withMinuteOfHour(DateTime().minuteOfHour)
@@ -346,60 +339,41 @@ class TaskActivity : AppCompatActivity() {
     private fun openCategoryAlert() = AlertDialog.Builder(this@TaskActivity).apply {
         setTitle(R.string.select_category)
 
-        val preselected = if (task.category == null) selectedCategoryIndex else categories.indexOf(task.category!!)
-        setSingleChoiceItems(categoriesTitle, preselected) { dialog, which ->
-            task.category = categories[which]
+        val preselected = getSelectedCategory()
+        val categoriesTitle = categories.map { it.title }.toTypedArray()
+        setSingleChoiceItems(categoriesTitle, preselected) { dialog, selected ->
+            if (selected != getDefaultCategoryIndex()) {
+                task.category = categories[selected]
+            }
             dialog.dismiss()
         }
         setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
         show()
-
     }
 
-    private fun setCategoriesPicker() {
-        categories.add(
-                TaskCategory(title = getString(if (categories.size == 0) R.string.all else R.string.others))
-        )
-        setSelectedCategory()
-        categoriesTitle = emptyArray()
-        val categoriesId = IntArray(categories.size)
-        for (i in categories.indices) {
-            categoriesTitle[i] = categories[i].title
-            categoriesId[i] = categories[i].id
-        }
-
-        //set category others if task is new and category is different than others
-        //need in case user doesn't want to change category manually
-        if (isTaskNew && selectedCategoryIndex != categories.size - 1) {
-            val categoryId = categoriesId[selectedCategoryIndex]
-            val categoryTitle = categoriesTitle[selectedCategoryIndex]
-            task.category = TaskCategory(categoryId, categoryTitle)
+    private fun getSelectedCategory(): Int {
+        val selectedCategory = intent.getSerializableExtra(EXTRAS_SELECTED_CATEGORY_KEY)
+        return when {
+            task.category != null -> categories.indexOf(task.category)
+            selectedCategory != null -> categories.indexOf(selectedCategory)
+            else -> getDefaultCategoryIndex()
         }
     }
 
-    private fun setSelectedCategory() {
-        //to handle opening new task activity from widget
-        val selectedCategoryId =
-            intent.extras?.apply { getInt(TaskyConstants.SELECTED_CATEGORY_KEY) }
-                ?: TaskCategory.OTHERS_CATEGORY_ID
-        //init
-        selectedCategoryIndex = categories.size - 1
-        for (i in categories.indices) {
-            if (categories[i].id == selectedCategoryId) {
-                selectedCategoryIndex = i
-                break
-            }
-        }
-    }
+    private fun getDefaultCategoryIndex() = categories.size - 1
 
     private fun getCategoriesFromDb() {
         CoroutineScope(Dispatchers.Main).launch {
             categories.addAll(DatabaseWrapper.getAllCategories(this@TaskActivity))
-            setCategoriesPicker()
+            categories.add(TaskCategory.createDefaultCategory(this@TaskActivity, categories.isNotEmpty()))
         }
     }
 
     companion object {
-        const val IS_TASK_NEW = "isTaskNew"
+        const val EXTRAS_TASK_KEY = "EXTRAS_TASK_KEY"
+        const val EXTRAS_SELECTED_CATEGORY_KEY = "EXTRAS_SELECTED_CATEGORY_KEY"
+        const val EXTRAS_SELECTED_DATETIME_KEY = "EXTRAS_SELECTED_DATETIME_KEY"
+
+        private const val IS_TASK_NEW = "isTaskNew"
     }
 }

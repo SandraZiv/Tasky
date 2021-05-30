@@ -60,7 +60,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private var categories: List<TaskCategory> = emptyList()
     private var categoriesCount: Map<Int, Int> = emptyMap()  // todo kolko ima koje vrste taskova
-    private var selectedCategoryId = TaskCategory.ALL_CATEGORY_ID
+    private var selectedCategoryId = MENU_ITEM_CATEGORY_ALL_TASKS_ID
 
     private var observer: TasksDataObserver? = null
 
@@ -202,7 +202,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             builder.setMessage(resources.getQuantityString(R.plurals.delete_alert, filteredTasks.size, filteredTasks.size))
             builder.setPositiveButton(R.string.ok) { _, _ ->
                 CoroutineScope(Dispatchers.Main).launch {
-                    if (selectedCategoryId == TaskCategory.ALL_CATEGORY_ID) {
+                    if (selectedCategoryId == MENU_ITEM_CATEGORY_ALL_TASKS_ID) {
                         DatabaseWrapper.deleteAllTasks(this@HomeScreenActivity)
                     } else {
                         val ids = IntArray(filteredTasks.size)
@@ -220,16 +220,13 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         builder.show()
     }
 
-    private fun createNewTask() {
+    private fun createNewTask(dateTime: DateTime? = null) {
         val newTaskIntent = Intent(this, TaskActivity::class.java)
-        newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId)
-        resultLauncher.launch(newTaskIntent)
-    }
-
-    private fun createNewTask(dateTime: DateTime) {
-        val newTaskIntent = Intent(this, TaskActivity::class.java)
-        newTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId)
-        newTaskIntent.putExtra(TaskyConstants.TASK_TIME_KEY, dateTime)
+        if (!isSelectedDefaultCategory()) {
+            val selectedCategory = categories.findLast { it.id == selectedCategoryId }
+            newTaskIntent.putExtra(TaskActivity.EXTRAS_SELECTED_CATEGORY_KEY, selectedCategory)
+        }
+        dateTime?.let { newTaskIntent.putExtra(TaskActivity.EXTRAS_SELECTED_DATETIME_KEY, it) }
         resultLauncher.launch(newTaskIntent)
     }
 
@@ -344,8 +341,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private fun openTaskActivity(task: SimpleTask) {
         val openTaskIntent = Intent(this, TaskActivity::class.java)
-        openTaskIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, task)
-        openTaskIntent.putExtra(TaskyConstants.SELECTED_CATEGORY_KEY, selectedCategoryId)
+        openTaskIntent.putExtra(TaskActivity.EXTRAS_TASK_KEY, task)
         resultLauncher.launch(openTaskIntent)
     }
 
@@ -366,38 +362,38 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     private fun updateCategoriesList() {
-        navView.menu.removeGroup(R.id.menu_group_top)
-        navView.menu.add(R.id.menu_group_top, TaskCategory.ALL_CATEGORY_ID, 1,
-                getString(R.string.all_num, tasks.size))
-        var categorySize = 0
-        categories.forEach {
-            navView.menu.add(R.id.menu_group_top, it.id, 2, "${it.title} (${categoriesCount[it.id]})")
-            categorySize += categoriesCount[it.id] ?: 0
-        }
+        navView.menu.apply {
+            removeGroup(R.id.menu_group_top)
 
-        //add others if there is at least one category
-        if (categories.isNotEmpty()) {
-            navView.menu.add(R.id.menu_group_top, TaskCategory.OTHERS_CATEGORY_ID,
-                    categories.size + 1, getString(R.string.others_num, tasks.size - categorySize))
+            add(R.id.menu_group_top, MENU_ITEM_CATEGORY_ALL_TASKS_ID, 1, getString(R.string.all_num, tasks.size))
+
+            var totalNumOfTasksWithCategory = 0
+            categories.forEach {
+                val numOfTasksInCategory = categoriesCount[it.id]?: 0
+                // todo they all have same order? then put 1, 2, 3 instead size + 1
+                add(R.id.menu_group_top, it.id, 2, "${it.title} ($numOfTasksInCategory)")
+                totalNumOfTasksWithCategory += numOfTasksInCategory
+            }
+
+            if (categories.isNotEmpty()) {
+                add(R.id.menu_group_top, MENU_ITEM_CATEGORY_OTHER_TASKS_ID,
+                    categories.size + 1, getString(R.string.others_num, tasks.size - totalNumOfTasksWithCategory))
+            }
+
         }
     }
 
     private fun sortAndFilterTasks(query: String?): List<SimpleTask> {
-        val filteredTasks: MutableList<SimpleTask>
-
-        //filter by category
-        if (selectedCategoryId == TaskCategory.ALL_CATEGORY_ID) {
-            filteredTasks = LinkedList(tasks)
-        } else {
-            filteredTasks = LinkedList()
-            for (task in tasks) {
-                //get others or selected category
-                if (task.category == null && selectedCategoryId == TaskCategory.OTHERS_CATEGORY_ID
-                        || task.category != null && task.category!!.id == selectedCategoryId) {
-                    filteredTasks.add(task)
+        val filteredTasks =
+            if (selectedCategoryId == MENU_ITEM_CATEGORY_ALL_TASKS_ID) {
+                tasks
+            } else {
+                tasks.filter {
+                    it.category == null && selectedCategoryId == MENU_ITEM_CATEGORY_OTHER_TASKS_ID
+                            || it.category != null && it.category!!.id == selectedCategoryId
                 }
+                    .toList()
             }
-        }
         val queryTasks: MutableList<SimpleTask>
         if (query != null) {
             queryTasks = LinkedList()
@@ -410,7 +406,6 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             queryTasks = LinkedList(filteredTasks)
         }
 
-        //sort
         queryTasks.sortWith { o1, o2 ->
             when (getSharedPreferences(TaskyConstants.PREF_GENERAL, Context.MODE_PRIVATE).getInt(
                 TaskyConstants.PREF_SORT,
@@ -425,12 +420,8 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         return queryTasks
     }
 
-    private val resultLauncher =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            loadDataAndUpdateUI()
-            invalidateOptionsMenu()
-        }
-    }
+    private fun isSelectedDefaultCategory() = selectedCategoryId == MENU_ITEM_CATEGORY_ALL_TASKS_ID ||
+            selectedCategoryId == MENU_ITEM_CATEGORY_OTHER_TASKS_ID
 
     private fun loadDataAndUpdateUI() {
         CoroutineScope(Dispatchers.Main).launch {
@@ -450,10 +441,17 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val item = navView.menu.findItem(selectedCategoryId)
         //check if item has been deleted
         if (item == null) {
-            selectedCategoryId = TaskCategory.ALL_CATEGORY_ID
+            selectedCategoryId = MENU_ITEM_CATEGORY_ALL_TASKS_ID
         }
         setActionBar(navView.menu.findItem(selectedCategoryId).title)
         updateListView()
+    }
+
+    private val resultLauncher =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            loadDataAndUpdateUI()
+            invalidateOptionsMenu()
+        }
     }
 
     private inner class TasksDataObserver : DataSetObserver() {
@@ -461,6 +459,11 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             super.onChanged()
             updateListView()
         }
+    }
+
+    companion object {
+        private const val MENU_ITEM_CATEGORY_ALL_TASKS_ID = -1
+        private const val MENU_ITEM_CATEGORY_OTHER_TASKS_ID = -2
     }
 
 }

@@ -28,12 +28,10 @@ object TaskyConstants {
     const val ALARM_EXTRA_TIME = "ALARM_EXTRA_TIME"
 
     const val TASK_BUNDLE_KEY = "com.sandra.tasky.task"
-    const val TASK_TIME_KEY = "com.sandra.tasky.TASK_TIME_KEY"
     const val MAX_TITLE_LENGTH = 70
     const val MAX_TEXT_LENGTH = 100
 
-    const val SELECTED_CATEGORY_KEY = "SELECTED_CATEGORY_KEY"
     const val PREF_GENERAL = "PREF_GENERAL"
-    var PREF_SORT = "PREF_SORT"
+    const val PREF_SORT = "PREF_SORT"
 
 }
