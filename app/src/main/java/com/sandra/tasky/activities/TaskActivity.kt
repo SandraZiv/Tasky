@@ -105,36 +105,26 @@ class TaskActivity : AppCompatActivity() {
             val day = dateTime!!.dayOfMonth
             val month = dateTime!!.monthOfYear - 1
             val year = dateTime!!.year
-            val previousSelected = tvTaskDate.text.toString()
 
-            val dateListener = OnDateSetListener { _, selectedYear, selectedMonth, selectedDayOfMonth ->
-                val isTimePresent = tvTaskTime.text.toString() != getString(R.string.select_time)
-                val hour = if (isTimePresent) dateTime!!.hourOfDay else DateTime().hourOfDay
-                val min = if (isTimePresent) dateTime!!.minuteOfHour else DateTime().minuteOfHour
-                dateTime = dateTime!!
+            DatePickerDialog(
+                this, { _, selectedYear, selectedMonth, selectedDayOfMonth ->
+                    val isTimePresent = isTimeSelected()
+                    val hour = if (isTimePresent) dateTime!!.hourOfDay else DateTime().hourOfDay
+                    val min =
+                        if (isTimePresent) dateTime!!.minuteOfHour else DateTime().minuteOfHour
+                    dateTime = dateTime!!
                         .withYear(selectedYear)
                         .withMonthOfYear(selectedMonth + 1)  // because in joda it starts from 0
                         .withDayOfMonth(selectedDayOfMonth)
                         .withHourOfDay(hour)
                         .withMinuteOfHour(min)
-                tvTaskDate.text = DateTimeFormat.fullDate().print(dateTime)
-                isDateChanged = true
-                isTimeEditable = true
-                btnClearTime.isEnabled = true
-                tvTaskTime.setTextColor(Color.BLACK)
-            }
-
-            DatePickerDialog(this@TaskActivity, dateListener, year, month, day).apply {
-                setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, _ ->
-                    dialog.cancel()
-                    tvTaskDate.text = previousSelected
-                    if (previousSelected == getString(R.string.select_date)) {
-                        isTimeEditable = false
-                        btnClearTime.isEnabled = false
-                        tvTaskTime.setTextColor(Color.GRAY)
-                    }
-                }
-            }.show()
+                    tvTaskDate.text = DateTimeFormat.fullDate().print(dateTime)
+                    isDateChanged = true
+                    isTimeEditable = true
+                    btnClearTime.isEnabled = true
+                    tvTaskTime.setTextColor(Color.BLACK)
+                }, year, month, day
+            ).show()
         }
 
         btnClearDate.setOnClickListener {
@@ -156,20 +146,14 @@ class TaskActivity : AppCompatActivity() {
             if (!isTimeEditable) return@OnClickListener
             val hour: Int = dateTime!!.hourOfDay
             val min: Int = dateTime!!.minuteOfHour
-            val previousTime = tvTaskTime.text.toString()
-            val timeListener = OnTimeSetListener { _, hourOfDay, minute ->
-                dateTime = dateTime!!.withHourOfDay(hourOfDay).withMinuteOfHour(minute).withSecondOfMinute(0)
-                tvTaskTime.text = DateTimeFormat.shortTime().print(dateTime)
-                isDateChanged = true
-            }
 
-            TimePickerDialog(this@TaskActivity, timeListener, hour, min, true)
-                    .apply {
-                        setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, _ ->
-                            dialog.cancel()
-                            tvTaskTime.text = previousTime
-                        }
-                    }.show()
+            TimePickerDialog(
+                this, { _, hourOfDay, minute ->
+                    dateTime = dateTime!!.withHourOfDay(hourOfDay).withMinuteOfHour(minute).withSecondOfMinute(0)
+                    tvTaskTime.text = DateTimeFormat.shortTime().print(dateTime)
+                    isDateChanged = true
+                }, hour, min, true
+            ).show()
         })
 
         btnClearTime.setOnClickListener {
@@ -186,12 +170,12 @@ class TaskActivity : AppCompatActivity() {
         task.title = etTitle.text.toString().trim { it <= ' ' }
         task.isCompleted = cbCompleted.isChecked
         task.note = etNote.text.toString().trim { it <= ' ' }
-        if (tvTaskDate.text.toString() == getString(R.string.select_date)) {
+        if (!isDateSelected()) {
             task.dueDate = null
             task.isTimePresent = false
         } else {
             task.dueDate = dateTime
-            task.isTimePresent = tvTaskTime.text.toString() != getString(R.string.select_time)
+            task.isTimePresent = isTimeSelected()
         }
         outState.putSerializable(TaskyConstants.TASK_BUNDLE_KEY, task)
         outState.putBoolean(IS_TASK_NEW, isTaskNew)
@@ -286,9 +270,9 @@ class TaskActivity : AppCompatActivity() {
             task.note = etNote.text.toString().trim { it <= ' ' }
             if (isDateChanged) {
                 // set date
-                if (tvTaskDate.text != getString(R.string.select_date)) {
+                if (isDateSelected()) {
                     // date is set
-                    if (tvTaskTime.text.toString() == getString(R.string.select_time)) {
+                    if (!isTimeSelected()) {
                         // no time
                         dateTime = resetTime(dateTime)
                         task.isTimePresent = false
@@ -308,7 +292,7 @@ class TaskActivity : AppCompatActivity() {
 
             // tweak date for repeating
             // add completed ? completed tasks should not be tweaked
-            if (tvTaskDate.text != getString(R.string.select_date) && !task.isCompleted) {
+            if (isDateSelected() && !task.isCompleted) {
                 while (!task.isInFuture && task.isRepeating) {
                     task.dueDate = TimeUtils.moveToNextRepeat(task)
                 }
@@ -339,7 +323,7 @@ class TaskActivity : AppCompatActivity() {
     }
 
     private fun openRepeatAlert() {
-        if (tvTaskDate.text.toString() == getString(R.string.select_date)) {
+        if (!isDateSelected()) {
             ToastWrapper.showShort(this, R.string.date_must_be_selected)
             return
         }
@@ -354,6 +338,10 @@ class TaskActivity : AppCompatActivity() {
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
         builder.show()
     }
+
+    private fun isDateSelected() = tvTaskDate.text != getString(R.string.select_date)
+
+    private fun isTimeSelected() = tvTaskTime.text != getString(R.string.select_time)
 
     private fun openCategoryAlert() = AlertDialog.Builder(this@TaskActivity).apply {
         setTitle(R.string.select_category)
