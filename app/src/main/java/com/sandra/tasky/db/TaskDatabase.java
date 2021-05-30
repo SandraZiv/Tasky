@@ -207,26 +207,6 @@ public class TaskDatabase {
         return categories;
     }
 
-    public Map<Integer, Integer> getCategoriesTaskCount() {
-        List<TaskCategory> categories = getAllCategories();
-        List<SimpleTask> tasks = getAllTasks();
-        Map<Integer, Integer> categoriesCount = new LinkedHashMap<>(categories.size());
-
-        for (TaskCategory category : categories) {
-            categoriesCount.put(category.getId(), 0);
-        }
-
-        for (SimpleTask task : tasks) {
-            if (task.getCategory() == null) {
-                continue;
-            }
-            Integer categoryId = task.getCategory().getId();
-            categoriesCount.put(categoryId, categoriesCount.get(categoryId) + 1);
-        }
-
-        return categoriesCount;
-    }
-
     //used only in widget
     public List<SimpleTask> getTasksInWidget(boolean showExpired, String timeSpan) {
         List<SimpleTask> list = new LinkedList<>();

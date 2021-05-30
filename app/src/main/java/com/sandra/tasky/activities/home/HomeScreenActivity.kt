@@ -59,7 +59,6 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private var current: List<SimpleTask> = emptyList()
 
     private var categories: List<TaskCategory> = emptyList()
-    private var categoriesCount: Map<Int, Int> = emptyMap()  // todo kolko ima koje vrste taskova
     private var selectedCategoryId = MENU_ITEM_CATEGORY_ALL_TASKS_ID
 
     private var observer: TasksDataObserver? = null
@@ -365,19 +364,18 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         navView.menu.apply {
             removeGroup(R.id.menu_group_top)
 
-            add(R.id.menu_group_top, MENU_ITEM_CATEGORY_ALL_TASKS_ID, 1, getString(R.string.all_num, tasks.size))
+            add(R.id.menu_group_top, MENU_ITEM_CATEGORY_ALL_TASKS_ID, Menu.NONE, getString(R.string.all_num, tasks.size))
 
             var totalNumOfTasksWithCategory = 0
             categories.forEach {
-                val numOfTasksInCategory = categoriesCount[it.id]?: 0
-                // todo they all have same order? then put 1, 2, 3 instead size + 1
-                add(R.id.menu_group_top, it.id, 2, "${it.title} ($numOfTasksInCategory)")
+                val numOfTasksInCategory = tasks.filter { task -> task.category == it }.count()
+                add(R.id.menu_group_top, it.id, Menu.NONE, "${it.title} ($numOfTasksInCategory)")
                 totalNumOfTasksWithCategory += numOfTasksInCategory
             }
 
             if (categories.isNotEmpty()) {
-                add(R.id.menu_group_top, MENU_ITEM_CATEGORY_OTHER_TASKS_ID,
-                    categories.size + 1, getString(R.string.others_num, tasks.size - totalNumOfTasksWithCategory))
+                add(R.id.menu_group_top, MENU_ITEM_CATEGORY_OTHER_TASKS_ID, Menu.NONE,
+                    getString(R.string.others_num, tasks.size - totalNumOfTasksWithCategory))
             }
 
         }
