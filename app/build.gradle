@@ -9,6 +9,7 @@ android {
         applicationId "com.sandra.tasky"
         minSdkVersion 16
         targetSdkVersion 30
+        resConfigs "en", "hr"
         versionCode 100
         versionName "2.0.0"
     }
