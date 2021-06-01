@@ -12,9 +12,9 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.sandra.tasky.AppPrefs
 import com.sandra.tasky.BuildConfig
 import com.sandra.tasky.R
-import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.utils.AlarmUtils
 import com.sandra.tasky.utils.NotificationUtils
 import com.sandra.tasky.utils.ToastWrapper
@@ -47,12 +47,8 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
                 cancelNotifications(sharedPreferences, key)
             }
             key == getString(R.string.pref_restart_scheduler_key) -> {
-                p.summary = getString(R.string.scheduler_restarted)
                 ToastWrapper.showShort(requireContext(), R.string.scheduler_restarted)
                 AlarmUtils.setMidnightUpdater(requireContext())
-                val editor = sharedPreferences.edit() // TODO should this be in shared prefs
-                editor.putString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running))
-                editor.apply()
             }
         }
     }
@@ -94,12 +90,9 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
 
     private fun setWidgetUpdater() {
         val preference = findPreference<Preference>(getString(R.string.pref_restart_scheduler_key))!!
-        val sharedPreferences = requireContext().getSharedPreferences(TaskyConstants.WIDGET_PREF, Context.MODE_PRIVATE)
-        if (!sharedPreferences.getBoolean(TaskyConstants.PREFS_IS_WIDGET_ENABLED, TaskyConstants.WIDGET_DEFAULT)) {
+        if (!AppPrefs.isWidgetEnabled(requireContext())) {
             preference.summary = getString(R.string.widget_not_set)
             preference.isEnabled = false
-        } else {
-            preference.summary = sharedPreferences.getString(TaskyConstants.PREFS_LAST_UPDATE, getString(R.string.scheduler_running))
         }
     }
 

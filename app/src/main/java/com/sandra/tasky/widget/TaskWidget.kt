@@ -7,8 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
+import com.sandra.tasky.AppPrefs
 import com.sandra.tasky.R
-import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.activities.SplashScreenActivity
 import com.sandra.tasky.activities.TaskActivity
 import com.sandra.tasky.utils.AlarmUtils
@@ -47,21 +47,11 @@ class TaskWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        // Enter relevant functionality for when the first widget is created
-        updatePreference(context, TaskyConstants.WIDGET_ENABLED)
+        AppPrefs.setWidgetEnabled(context, true)
     }
 
     override fun onDisabled(context: Context) {
-        // Enter relevant functionality for when the last widget is disabled
-        updatePreference(context, TaskyConstants.WIDGET_DISABLED)
+        AppPrefs.setWidgetEnabled(context, false)
     }
 
-    private fun updatePreference(context: Context, enabled: Boolean) {
-        val preferences = context.getSharedPreferences(TaskyConstants.WIDGET_PREF, Context.MODE_PRIVATE)
-        val msg = context.getString(if (enabled) R.string.scheduler_running else R.string.widget_not_set)
-        preferences.edit()
-                .putBoolean(TaskyConstants.PREFS_IS_WIDGET_ENABLED, enabled)
-                .putString(TaskyConstants.PREFS_LAST_UPDATE, msg)
-                .apply()
-    }
 }

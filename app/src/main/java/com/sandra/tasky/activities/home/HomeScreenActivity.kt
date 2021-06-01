@@ -22,9 +22,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
+import com.sandra.tasky.AppPrefs
 import com.sandra.tasky.R
 import com.sandra.tasky.SortType
-import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.activities.categories.CategoriesActivity
 import com.sandra.tasky.activities.TaskActivity
 import com.sandra.tasky.adapter.CalendarEventAdapter
@@ -174,15 +174,10 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private fun sortBy() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(R.string.sort_by)
-        val preferences = getSharedPreferences(TaskyConstants.PREF_GENERAL, Context.MODE_PRIVATE)
-        val selectedSortOption = preferences.getInt(TaskyConstants.PREF_SORT, SortType.getDefault().value)
+        val selectedSortOption = AppPrefs.getSortingCriteria(this)
         val sortOptions = arrayOf(getString(R.string.due_date), getString(R.string.title), getString(R.string.completed))
-        builder.setSingleChoiceItems(sortOptions, selectedSortOption) { dialog, which ->
-            preferences.edit()
-                    .putInt(TaskyConstants.PREF_SORT, which)
-                    .apply()
-            updateListView()
-            dialog.dismiss()
+        builder.setSingleChoiceItems(sortOptions, selectedSortOption) { _, which ->
+            AppPrefs.updateSortingCriteria(this, which)
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
         builder.show()
@@ -403,10 +398,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         }
 
         queryTasks.sortWith { o1, o2 ->
-            when (getSharedPreferences(TaskyConstants.PREF_GENERAL, Context.MODE_PRIVATE).getInt(
-                TaskyConstants.PREF_SORT,
-                SortType.getDefault().value
-            )) {
+            when (AppPrefs.getSortingCriteria(this)) {
                 SortType.SORT_DUE_DATE.value -> 0
                 SortType.SORT_TITLE.value -> o1!!.title.lowercase().compareTo(o2!!.title.lowercase())
                 SortType.SORT_COMPLETED.value -> if (o1!!.isCompleted) 1 else -1

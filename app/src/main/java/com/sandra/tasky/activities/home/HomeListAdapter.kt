@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.sandra.tasky.R
-import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.utils.capitalFirstLetter
@@ -35,7 +34,7 @@ class HomeListAdapter(private val context: Context, private val taskList: List<S
 
         val task = taskList[position]
 
-        itemView.tvTitle.text = cutText(task.title, TaskyConstants.MAX_TITLE_LENGTH)
+        itemView.tvTitle.text = cutText(task.title, MAX_TITLE_LENGTH)
         val checkBox = itemView.cbCompleted
         checkBox.isChecked = task.isCompleted
         checkBox.setOnClickListener {
@@ -47,7 +46,7 @@ class HomeListAdapter(private val context: Context, private val taskList: List<S
             }
         }
         if (task.note.isNotEmpty()) {
-            itemView.tvNote.text = cutText(task.note, TaskyConstants.MAX_TEXT_LENGTH)
+            itemView.tvNote.text = cutText(task.note, MAX_TEXT_LENGTH)
         } else {
             itemView.tvNote.hide()
         }
@@ -65,6 +64,11 @@ class HomeListAdapter(private val context: Context, private val taskList: List<S
 
     private fun cutText(text: String?, limit: Int): String {
         return (if (text!!.length > limit) text.substring(0, limit) + "..." else text)
+    }
+
+    companion object {
+        private const val MAX_TITLE_LENGTH = 70
+        private const val MAX_TEXT_LENGTH = 100
     }
 
 }
