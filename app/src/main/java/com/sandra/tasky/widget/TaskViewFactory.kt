@@ -1,6 +1,5 @@
 package com.sandra.tasky.widget
 
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -11,17 +10,16 @@ import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.settings.AppSettings
+import com.sandra.tasky.utils.withEmptyTime
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
 import org.joda.time.Minutes
 
-class TaskViewFactory(private val context: Context, intent: Intent) : RemoteViewsFactory {
+class TaskViewFactory(private val context: Context) : RemoteViewsFactory {
 
-    private var list: List<SimpleTask?> = getWidgetTasks()
-    val db = TaskDatabase(context)
-    // todo do i need this
-    private val appWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+    private val db = TaskDatabase(context)
+    private var list = getWidgetTasks()
 
     override fun onCreate() {}
     override fun onDataSetChanged() {
@@ -29,13 +27,10 @@ class TaskViewFactory(private val context: Context, intent: Intent) : RemoteView
     }
 
     override fun onDestroy() {}
-    override fun getCount(): Int {
-        return list.size
-    }
 
     override fun getViewAt(position: Int): RemoteViews {
         val row = RemoteViews(context.packageName, R.layout.widget_item)
-        val task = list[position]!!
+        val task = list[position]
         row.setTextViewText(R.id.tvWidgetTitle, task.title)
         if (task.dueDate != null) {
             setDueDateVisible(row)
@@ -44,7 +39,7 @@ class TaskViewFactory(private val context: Context, intent: Intent) : RemoteView
             setDueDateGone(row)
         }
 
-        //open task detail in TaskActivity
+        // open task detail in TaskActivity
         val fillIntent = Intent()
         fillIntent.putExtra(TaskyConstants.TASK_BUNDLE_KEY, task)
         row.setOnClickFillInIntent(R.id.widget_layout_parent, fillIntent)
@@ -61,54 +56,54 @@ class TaskViewFactory(private val context: Context, intent: Intent) : RemoteView
         row.setViewVisibility(R.id.widgetSpace, View.VISIBLE)
     }
 
-    private fun getDateText(task: SimpleTask): String {  // todo refactor
-        val date: String?
-        var dataDate = task.dueDate!!
-        dataDate = dataDate.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
-        var currentDate = DateTime()
-        currentDate = currentDate.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
+    private fun getDateText(task: SimpleTask): String {
+        val dataDate = task.dueDate!!.withEmptyTime()
+        val currentDate = DateTime().withEmptyTime()
         val diffDays = Days.daysBetween(currentDate, dataDate).days.toLong()
-        date = if (diffDays == 0L) {
-            if (!task.isTimePresent) {
-                context.getString(R.string.today)
+        val date = context.run {
+            if (diffDays == 0L) {
+                if (!task.isTimePresent) {
+                    getString(R.string.today)
+                } else {
+                    val isExpired = (Hours.hoursBetween(DateTime(), task.dueDate).hours < 0
+                            || Minutes.minutesBetween(DateTime(), task.dueDate).minutes < 0)
+                    val expiredOrTodayText =
+                        getString(if (isExpired) R.string.expired else R.string.today)
+                    getString(R.string.at, expiredOrTodayText, task.parseTime())
+                }
+            } else if (diffDays < 0) {
+                getString(R.string.expired)
+            } else if (diffDays == 1L) {
+                if (task.isTimePresent) {
+                    getString(R.string.at, getString(R.string.tomorrow), task.parseTime())
+                } else {
+                    getString(R.string.tomorrow)
+                }
+            } else if (diffDays <= 10) {
+                getString(R.string.in_x_days, diffDays)
             } else {
-                val isExpired = (Hours.hoursBetween(DateTime(), task.dueDate).hours < 0
-                        || Minutes.minutesBetween(DateTime(), task.dueDate).minutes < 0)
-                ((if (isExpired) context.getString(R.string.expired) else context.getString(R.string.today))
-                        + " " + context.getString(R.string.at) + " " + task.parseTime())
+                task.parseDate()
             }
-        } else if (diffDays < 0) {
-            context.getString(R.string.expired)
-        } else if (diffDays == 1L) {
-            context.getString(R.string.tomorrow) + if (task.isTimePresent) " " + context.getString(R.string.at) + " " + task.parseTime() else ""
-        } else if (diffDays <= 10) {
-            context.getString(R.string.`in`) + " " + diffDays + " " + context.getString(R.string.days)
-        } else {
-            task.parseDate()
         }
-        return context.getString(R.string.due_date) + ": " + date
+
+        return "${context.getString(R.string.due_date)}: $date"
     }
 
-    private fun getWidgetTasks(): List<SimpleTask?> {
+    private fun getWidgetTasks(): List<SimpleTask> {
         return db.getTasksInWidget(
             AppSettings.shouldWidgetShowExpiredTasks(context),
             AppSettings.getWidgetTimeSpan(context)
         )
     }
 
-    override fun getLoadingView(): RemoteViews? {
-        return null
-    }
+    override fun getCount() = list.size
 
-    override fun getViewTypeCount(): Int {
-        return 1
-    }
+    override fun getLoadingView(): RemoteViews? = null
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
+    override fun getViewTypeCount() = 1
 
-    override fun hasStableIds(): Boolean {
-        return true
-    }
+    override fun getItemId(position: Int) = position.toLong()
+
+    override fun hasStableIds() = true
+
 }

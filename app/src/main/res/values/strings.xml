@@ -20,10 +20,11 @@
     <string name="no_due_date">No due date</string>
     <string name="today">today</string>
     <string name="expired">expired</string>
-    <string name="at">at</string>
+    <string name="at">%s at %s</string>
     <string name="tomorrow">tomorrow</string>
     <string name="in">in</string>
     <string name="days">days</string>
+    <string name="in_x_days">in %d days</string>
     <string name="to_do">To do</string>
     <string name="new_task">New task</string>
     <string name="delete_all">Delete all tasks</string>

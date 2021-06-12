@@ -5,6 +5,6 @@ import android.widget.RemoteViewsService
 
 class TaskWidgetService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return TaskViewFactory(this.applicationContext, intent)
+        return TaskViewFactory(this.applicationContext)
     }
 }
