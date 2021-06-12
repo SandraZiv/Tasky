@@ -4,7 +4,6 @@ import android.content.Context
 import com.sandra.tasky.R
 import java.io.Serializable
 
-// todo how to use ID fro DB?
 data class TaskCategory(var id: Int = DEFAULT_CATEGORY_ID, var title: String) : Serializable {
 
     companion object {
