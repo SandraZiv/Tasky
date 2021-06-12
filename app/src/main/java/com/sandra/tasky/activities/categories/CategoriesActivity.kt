@@ -80,12 +80,13 @@ class CategoriesActivity : AppCompatActivity() {
                     ToastWrapper.showShort( this@CategoriesActivity, R.string.reserved_title)
                 } else {
                     CoroutineScope(Dispatchers.Main).launch {
-                        DatabaseWrapper.addCategory(this@CategoriesActivity, TaskCategory(title = inputTitle))
-                        val allCategories = DatabaseWrapper.getAllCategories(this@CategoriesActivity)
-                        updateCategoriesList(allCategories)
-
-                        // todo handle unique constraint
-//                        ToastWrapper.showShort(this@CategoriesActivity, R.string.category_exists)
+                        val wasSuccessful = DatabaseWrapper.addCategory(this@CategoriesActivity, TaskCategory(title = inputTitle))
+                        if (wasSuccessful) {
+                            val allCategories = DatabaseWrapper.getAllCategories(this@CategoriesActivity)
+                            updateCategoriesList(allCategories)
+                        } else {
+                            ToastWrapper.showShort(this@CategoriesActivity, R.string.category_exists)
+                        }
                     }
                 }
             }
