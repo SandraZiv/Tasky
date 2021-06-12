@@ -3,17 +3,17 @@ package com.sandra.tasky.activities.categories
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
+import android.view.ViewGroup.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.sandra.tasky.R
 import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.entity.TaskCategory
 import com.sandra.tasky.utils.ToastWrapper
 import kotlinx.android.synthetic.main.activity_categories.*
+import kotlinx.android.synthetic.main.dialog_edit_text.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,11 +68,7 @@ class CategoriesActivity : AppCompatActivity() {
     private fun openNewCategoryDialog() {
         AlertDialog.Builder(this).apply {
             setTitle(R.string.enter_title)
-
-            val etTitle = EditText(this@CategoriesActivity)
-            etTitle.inputType = InputType.TYPE_CLASS_TEXT
-            setView(etTitle)
-
+            setView(R.layout.dialog_edit_text)
             setPositiveButton(R.string.ok) { _, _ ->
                 val inputTitle = etTitle.text.toString().trim { it <= ' ' }
                 if (inputTitle.isEmpty()) {
