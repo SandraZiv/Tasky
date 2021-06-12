@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Build.VERSION
-import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
 import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
@@ -15,6 +14,7 @@ import com.sandra.tasky.activities.TaskActivity
 import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.service.NotificationService
+import com.sandra.tasky.settings.AppSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,13 +68,9 @@ object NotificationUtils {
 
     //vibrate and sound
     private fun setNotificationDefaults(context: Context, builder: NotificationCompat.Builder) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val vibrate = preferences.getBoolean(context.getString(R.string.pref_vibrate_key),
-                context.resources.getBoolean(R.bool.pref_vibrate_default))
-        val sound = preferences.getBoolean(context.getString(R.string.pref_sound_key),
-                context.resources.getBoolean(R.bool.pref_sound_default))
-        val defaults: Int
-        defaults = if (vibrate && sound) {
+        val vibrate = AppSettings.shouldNotificationVibrate(context)
+        val sound = AppSettings.shouldNotificationHaveSound(context)
+        val defaults: Int = if (vibrate && sound) {
             Notification.DEFAULT_VIBRATE or Notification.DEFAULT_SOUND
         } else if (vibrate) {
             Notification.DEFAULT_VIBRATE

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.sandra.tasky.RepeatType;
+import com.sandra.tasky.settings.AppSettings;
 import com.sandra.tasky.utils.NotificationUtils;
 import com.sandra.tasky.R;
 import com.sandra.tasky.entity.SimpleTask;
@@ -211,7 +212,7 @@ public class TaskDatabase {
     public List<SimpleTask> getTasksInWidget(boolean showExpired, String timeSpan) {
         List<SimpleTask> list = new LinkedList<>();
         String where = " where (" + TASK_DATE_COLUMN + " is null or ";
-        if (timeSpan.equals(context.getString(R.string.pref_time_span_default))) {
+        if (timeSpan.equals(AppSettings.PREF_WIDGET_TIME_SPAN_DEFAULT)) {
             if (showExpired) {
                 where += TASK_DATE_COLUMN + " is not null)";
             } else {

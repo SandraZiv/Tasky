@@ -12,10 +12,8 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.sandra.tasky.AppPrefs
 import com.sandra.tasky.BuildConfig
 import com.sandra.tasky.R
-import com.sandra.tasky.utils.AlarmUtils
 import com.sandra.tasky.utils.NotificationUtils
 import com.sandra.tasky.utils.ToastWrapper
 
@@ -42,13 +40,9 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
             p is ListPreference -> {
                 setPreferenceSummary(p, sharedPreferences.getString(key, "")!!)
             }
-            key == getString(R.string.pref_show_notifications_key) -> {
+            key == AppSettings.PREF_SHOULD_SHOW_NOTIFICATION_KEY -> {
                 enableVibrateAndSound(sharedPreferences, key)
                 cancelNotifications(sharedPreferences, key)
-            }
-            key == getString(R.string.pref_restart_scheduler_key) -> {
-                ToastWrapper.showShort(requireContext(), R.string.scheduler_restarted)
-                AlarmUtils.setMidnightUpdater(requireContext())
             }
         }
     }
@@ -68,36 +62,27 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
 
     private fun setupScreen() {
         // todo use this or other shared preferences
-        setWidgetUpdater()
         setTimeSpan(preferenceScreen.sharedPreferences)
         setGooglePlayPreference()
         setAppVersion()
     }
 
     private fun enableVibrateAndSound(sharedPreferences: SharedPreferences, notificationPrefKey: String) {
-        val vibrate = findPreference(getString(R.string.pref_vibrate_key)) as CheckBoxPreference?
-        val sound = findPreference(getString(R.string.pref_sound_key)) as CheckBoxPreference?
+        val vibrate = findPreference(AppSettings.PREF_SHOULD_NOTIFICATION_VIBRATE) as CheckBoxPreference?
+        val sound = findPreference(AppSettings.PREF_SHOULD_NOTIFICATION_HAVE_SOUND) as CheckBoxPreference?
         val enabled = sharedPreferences.getBoolean(notificationPrefKey, resources.getBoolean(R.bool.pref_show_notifications_default))
         vibrate!!.isEnabled = enabled
         sound!!.isEnabled = enabled
     }
 
     private fun setTimeSpan(sharedPreferences: SharedPreferences) {
-        val p = findPreference<ListPreference>(getString(R.string.pref_time_span_key))!!
+        val p = findPreference<ListPreference>(AppSettings.PREF_WIDGET_TIME_SPAN)!!
         val prefValue = sharedPreferences.getString(p.key, "")!!
         setPreferenceSummary(p, prefValue)
     }
 
-    private fun setWidgetUpdater() {
-        val preference = findPreference<Preference>(getString(R.string.pref_restart_scheduler_key))!!
-        if (!AppPrefs.isWidgetEnabled(requireContext())) {
-            preference.summary = getString(R.string.widget_not_set)
-            preference.isEnabled = false
-        }
-    }
-
     private fun setGooglePlayPreference() {
-        val pGooglePlay = findPreference<Preference>(getString(R.string.pref_view_in_google_play_key))!!
+        val pGooglePlay = findPreference<Preference>(AppSettings.PREF_APP_ON_GOOGLE_PLAY)!!
         pGooglePlay.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val appPackageName = BuildConfig.APPLICATION_ID
             try {
@@ -110,7 +95,7 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
     }
 
     private fun setAppVersion() {
-        findPreference<Preference>(getString(R.string.pref_version_key))!!.summary = BuildConfig.VERSION_NAME
+        findPreference<Preference>(AppSettings.PREF_APP_VERSION)!!.summary = BuildConfig.VERSION_NAME
     }
 
     private fun cancelNotifications(sharedPreferences: SharedPreferences, key: String) {
@@ -144,17 +129,5 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
             }
         }
     }
-
-    companion object {
-        // TODO LIST HERE ALL THE KEYS AND ITS DEFAULT?
-    }
-
-    // todo a gdje se postavi listener, obrisati ovo? ili dodati negdje drugje?
-    // todo use to be in SettingsActivity
-//    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-//        AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(
-//                AppWidgetManager.getInstance(application).getAppWidgetIds(ComponentName(application, TaskWidget::class.java))
-//                , R.id.widgetList)
-//    }
 
 }

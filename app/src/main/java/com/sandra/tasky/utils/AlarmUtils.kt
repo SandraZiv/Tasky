@@ -6,12 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Build.VERSION
-import androidx.preference.PreferenceManager
-import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.service.UpdateWidgetService
+import com.sandra.tasky.settings.AppSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,9 +51,7 @@ object AlarmUtils {
             setAlarm(context, setAlarmIntent, newTimeMillis, TaskyConstants.WIDGET_PI_REQUEST_CODE(task))
 
             //update task and set notification (if it is enabled)
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
-                            context.getString(R.string.pref_show_notifications_key),
-                            context.resources.getBoolean(R.bool.pref_show_notifications_default))) {
+            if (AppSettings.shouldShowNotifications(context)) {
                 NotificationUtils.setNotificationReminder(context, task)
             }
 

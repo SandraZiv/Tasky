@@ -3,7 +3,6 @@ package com.sandra.tasky.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.preference.PreferenceManager
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
@@ -11,6 +10,7 @@ import com.sandra.tasky.R
 import com.sandra.tasky.TaskyConstants
 import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
+import com.sandra.tasky.settings.AppSettings
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
@@ -22,14 +22,6 @@ class TaskViewFactory(private val context: Context, intent: Intent) : RemoteView
     val db = TaskDatabase(context)
     // todo do i need this
     private val appWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-
-    private fun getWidgetTasks(): List<SimpleTask?> {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        return db.getTasksInWidget(
-                preferences.getBoolean(context.getString(R.string.pref_show_expired_key), context.resources.getBoolean(R.bool.pref_show_expired_default)),
-                preferences.getString(context.getString(R.string.pref_time_span_key), context.getString(R.string.pref_time_span_default))!!
-        )
-    }
 
     override fun onCreate() {}
     override fun onDataSetChanged() {
@@ -95,6 +87,13 @@ class TaskViewFactory(private val context: Context, intent: Intent) : RemoteView
             task.parseDate()
         }
         return context.getString(R.string.due_date) + ": " + date
+    }
+
+    private fun getWidgetTasks(): List<SimpleTask?> {
+        return db.getTasksInWidget(
+            AppSettings.shouldWidgetShowExpiredTasks(context),
+            AppSettings.getWidgetTimeSpan(context)
+        )
     }
 
     override fun getLoadingView(): RemoteViews? {

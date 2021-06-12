@@ -4,41 +4,38 @@
     <androidx.preference.PreferenceCategory android:title="@string/notifications">
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="@bool/pref_show_notifications_default"
-            android:key="@string/pref_show_notifications_key"
+            android:key="pref_show_notifications"
             android:title="@string/show_notifications" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="@bool/pref_vibrate_default"
-            android:key="@string/pref_vibrate_key"
+            android:key="pref_vibrate"
             android:title="@string/vibrate" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="@bool/pref_sound_default"
-            android:key="@string/pref_sound_key"
+            android:key="pref_sound"
             android:title="@string/sound" />
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory android:title="@string/widget">
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="@bool/pref_show_expired_default"
-            android:key="@string/pref_show_expired_key"
+            android:key="pref_show_expired"
             android:title="@string/show_expired" />
         <ListPreference
-            android:defaultValue="@string/pref_time_span_default"
+            android:defaultValue="-1"
             android:dialogTitle="@string/select_time_span"
             android:entries="@array/time_span_entries"
             android:entryValues="@array/time_span_values"
-            android:key="@string/pref_time_span_key"
+            android:key="pref_time_span"
             android:title="@string/show_when" />
-        <androidx.preference.Preference
-            android:key="@string/pref_restart_scheduler_key"
-            android:title="@string/restart_scheduler_title" />
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory android:title="@string/about">
         <androidx.preference.Preference
-            android:key="@string/pref_view_in_google_play_key"
+            android:key="pref_view_in_google_play"
             android:title="@string/pref_view_in_google_play_title" />
         <androidx.preference.Preference
-            android:key="@string/pref_version_key"
+            android:key="pref_version"
             android:summary="@string/pref_version_summary"
             android:title="@string/pref_version_title" />
     </androidx.preference.PreferenceCategory>
