@@ -58,12 +58,10 @@
     <string name="scheduler_running">Ažuriranje uključeno</string>
     <string name="last_update">Zadnje ažurirano:</string>
     <string name="task_deleted">Zadatak obrisan</string>
-    <string name="in_advance">unaprijed</string>
+    <string name="in_advance">%s unaprijed</string>
     <string name="about">O aplikaciji</string>
     <string name="pref_version_title">Verzija</string>
     <string name="pref_view_in_google_play_title">Pregled preko Trgovina Play</string>
-    <string name="reset">Resetiraj vrijednosti</string>
-    <string name="settings_reset">Postavke resetirane</string>
     <string name="add_category">Dodaj kategoriju</string>
     <string name="close_nav">Zatvaranje menija</string>
     <string name="manage_categories">Upravljanje kategorijama</string>
