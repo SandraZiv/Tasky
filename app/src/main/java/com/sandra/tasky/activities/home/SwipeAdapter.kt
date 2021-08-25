@@ -1,21 +1,26 @@
 package com.sandra.tasky.activities.home
 
-import android.content.Context
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import com.sandra.tasky.R
-import com.sandra.tasky.activities.home.TasksFragment.Companion.TOTAL_PAGES
-import com.sandra.tasky.activities.home.TasksFragment.Companion.PAGE_FIRST
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.sandra.tasky.activities.home.list.TasksFragment
 
-// todo refactor to something that is not deprecated
-class SwipeAdapter(fragmentManager: FragmentManager, val context: Context) : androidx.fragment.app.FragmentPagerAdapter(fragmentManager) {
+class SwipeAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
 
-    override fun getItem(position: Int): Fragment = TasksFragment.createFragment(position)
+    override fun createFragment(position: Int): Fragment {
+        return if (position == TASKS_FRAGMENT_POSITION) {
+            TasksFragment()
+        } else {
+            CalendarFragment()
+        }
+    }
 
-    override fun getPageTitle(position: Int): CharSequence =
-            if (position == PAGE_FIRST) context.getString(R.string.tasks)
-            else context.getString(R.string.calendar)
+    override fun getItemCount() = TOTAL_PAGES
 
-    override fun getCount(): Int = TOTAL_PAGES
+    companion object {
+        const val TOTAL_PAGES = 2
+        const val TASKS_FRAGMENT_POSITION = 0
+        const val CALENDAR_FRAGMENT_POSITION = 1
+    }
 
 }

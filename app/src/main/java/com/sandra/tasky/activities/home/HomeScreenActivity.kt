@@ -4,41 +4,25 @@ import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.database.DataSetObserver
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.AdapterView.OnItemLongClickListener
-import android.widget.ArrayAdapter
-import androidx.activity.result.contract.ActivityResultContracts
-import com.applandeo.materialcalendarview.EventDay
-import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException
-import com.applandeo.materialcalendarview.listeners.OnDayClickListener
+import com.google.android.material.tabs.TabLayoutMediator
 import com.sandra.tasky.AppPrefs
 import com.sandra.tasky.R
 import com.sandra.tasky.SortType
-import com.sandra.tasky.activities.categories.CategoriesActivity
 import com.sandra.tasky.activities.TaskActivity
-import com.sandra.tasky.adapter.CalendarEventAdapter
+import com.sandra.tasky.activities.home.list.TasksFragment
 import com.sandra.tasky.db.DatabaseWrapper
 import com.sandra.tasky.db.TaskDatabase
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.entity.TaskCategory
-import com.sandra.tasky.settings.SettingsActivity
 import com.sandra.tasky.utils.TaskyUtils
-import com.sandra.tasky.utils.TimeUtils
-import com.sandra.tasky.utils.ToastWrapper
-import com.sandra.tasky.utils.capitalFirstLetter
-import kotlinx.android.synthetic.main.content_home_screen.*
-import kotlinx.android.synthetic.main.activity_home_screen.*
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import kotlinx.android.synthetic.main.fragment_tasks.*
@@ -46,12 +30,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 import java.util.*
 
-class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnDayClickListener {
+class HomeScreenActivity : AppCompatActivity() {
 
     private var tasks: List<SimpleTask> = emptyList()
     private var visibleTasks: List<SimpleTask> = emptyList()
@@ -59,25 +41,8 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private var categories: List<TaskCategory> = emptyList()
     private var selectedCategoryId = MENU_ITEM_CATEGORY_ALL_TASKS_ID
 
-    private var observer: TasksDataObserver? = null
-
-    private var homeListAdapter: HomeListAdapter? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_screen)
-        setSupportActionBar(toolbar)
-
-        JodaTimeAndroid.init(this)
-
-        val drawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
-        drawerLayout.addDrawerListener(drawerToggle)
-        drawerToggle.syncState()
-
-        navView.setNavigationItemSelectedListener(this)
-
-        fabAddTask.setOnClickListener { createNewTask() }
-
         handleIntent(intent)
     }
 
@@ -86,20 +51,9 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         handleIntent(intent)
     }
 
-    override fun onResume() {
-        super.onResume()
-        setUpFragment()
-    }
-
     override fun onPause() {
         TaskyUtils.updateWidget(this)
         super.onPause()
-    }
-
-    override fun onDestroy() {
-        TaskyUtils.updateWidget(this)
-        super.onDestroy()
-        homeListAdapter!!.unregisterDataSetObserver(observer)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -134,12 +88,12 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private fun hideItems(menu: Menu) {
         menu.setGroupVisible(R.id.menu_group_hidden, false)
-        fabAddTask.visibility = View.GONE
+        fabAddTask.hide()
     }
 
     private fun showItems(menu: Menu) {
         menu.setGroupVisible(R.id.menu_group_hidden, true)
-        fabAddTask.visibility = View.VISIBLE
+        fabAddTask.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -154,7 +108,6 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                 true
             }
             else -> {
-                ToastWrapper.showShort( this, R.string.error)
                 super.onOptionsItemSelected(item)
             }
         }
@@ -168,7 +121,7 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     private fun search(query: String) {
-        updateListView(query)
+//        updateListView(query)
     }
 
     private fun sortBy() {
@@ -222,135 +175,10 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         resultLauncher.launch(newTaskIntent)
     }
 
-    private fun updateListView(query: String? = null) {
-        val list: List<SimpleTask> = sortAndFilterTasks(query)
-        visibleTasks = ArrayList(list)
-        observer = TasksDataObserver()
-        homeListAdapter = HomeListAdapter(this@HomeScreenActivity, list)
-        homeListAdapter!!.registerDataSetObserver(observer)
-        lvHome.adapter = homeListAdapter
-        lvHome.emptyView = emptyViewHome
-        lvHome.onItemClickListener = OnItemClickListener { _, _, position, _ -> openTaskActivity(list[position]) }
-        lvHome.onItemLongClickListener = OnItemLongClickListener { _, _, position, _ ->
-            val builder = AlertDialog.Builder(this@HomeScreenActivity)
-            builder.setTitle(list[position].title)
-            val optionList = ArrayAdapter<String>(this@HomeScreenActivity, android.R.layout.simple_list_item_1)
-            optionList.add(getString(R.string.delete))
-            builder.setAdapter(optionList) { dialog, _ ->
-                CoroutineScope(Dispatchers.Main).launch {
-                    DatabaseWrapper.deleteTask(this@HomeScreenActivity, list[position])
-                    ToastWrapper.showShort(this@HomeScreenActivity, R.string.task_deleted)
-                    loadData()
-                    updateUI()
-                }
-                dialog.cancel()
-            }
-            builder.show()
-            true
-        }
-        val sortByCompleted: List<SimpleTask> = ArrayList(list)
-        Collections.sort(sortByCompleted, Comparator { o1, o2 -> //first completed then other
-            if (o1.isCompleted && o2.isCompleted) {
-                return@Comparator 0
-            }
-            if (o1.isCompleted) 1 else -1
-        })
-
-        //completed tasks go first, so that if there were more tasks on same day
-        //uncompleted icon will be shown
-        val events: MutableList<EventDay?> = ArrayList()
-        for (task in sortByCompleted) {
-            if (task.dueDate != null) {
-                events.add(task.asEventDay())
-            }
-        }
-        calendarView.setEvents(events)
-        TaskyUtils.updateWidget(this)
-    }
-
-    private fun setUpFragment() {
-        val adapter = SwipeAdapter(supportFragmentManager, this)
-        viewPager.adapter = adapter
-        tabLayout.setupWithViewPager(viewPager)
-    }
-
-    fun initTasksList() {
-        try {
-            loadDataAndUpdateUI()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun initCalendarList(view: View) {
-        view.calendarView.setOnDayClickListener(this)
-        try {
-            view.calendarView.setDate(Calendar.getInstance())
-        } catch (e: OutOfDateRangeException) {
-            e.printStackTrace()
-        }
-    }
-
-    override fun onDayClick(eventDay: EventDay) {
-        val builder = AlertDialog.Builder(this@HomeScreenActivity)
-        val day = DateTime(eventDay.calendar.timeInMillis)
-        val dayFormatted = DateTimeFormat.fullDate().print(day)
-        builder.setTitle(dayFormatted.capitalFirstLetter())
-        val selectedDayTasks: MutableList<SimpleTask> = ArrayList()
-        for (task in visibleTasks) {
-            if (task.dueDate != null && TimeUtils.dateEqual(day, task.dueDate)) {
-                selectedDayTasks.add(task)
-            }
-        }
-        if (selectedDayTasks.isNotEmpty()) {
-            val calendarEventAdapter = CalendarEventAdapter(this@HomeScreenActivity, selectedDayTasks)
-            calendarEventAdapter.registerDataSetObserver(observer)
-            builder.setAdapter(calendarEventAdapter) { dialog, which ->
-                openTaskActivity(selectedDayTasks[which])
-                dialog.dismiss()
-            }
-            builder.setOnDismissListener {
-                try {
-                    calendarEventAdapter.unregisterDataSetObserver(observer)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        } else {
-            builder.setMessage(R.string.no_tasks_here)
-        }
-        builder.setPositiveButton(R.string.add_task) { _, _ -> createNewTask(day) }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
-        builder.show()
-    }
-
-    private fun setActionBar(title: CharSequence) {
-        val actionBar = supportActionBar
-        if (actionBar != null) {
-            actionBar.title = title
-        }
-    }
-
     private fun openTaskActivity(task: SimpleTask) {
         val openTaskIntent = Intent(this, TaskActivity::class.java)
         openTaskIntent.putExtra(TaskActivity.EXTRAS_TASK_KEY, task)
         resultLauncher.launch(openTaskIntent)
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_manage -> resultLauncher.launch(Intent(this, CategoriesActivity::class.java))
-            R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
-            else -> openCategory(item.itemId, item.title)
-        }
-        drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
-    private fun openCategory(categoryId: Int, categoryTitle: CharSequence) {
-        setActionBar(categoryTitle)
-        selectedCategoryId = categoryId
-        updateListView()
     }
 
     private fun updateCategoriesList() {
@@ -431,21 +259,14 @@ class HomeScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         if (item == null) {
             selectedCategoryId = MENU_ITEM_CATEGORY_ALL_TASKS_ID
         }
-        setActionBar(navView.menu.findItem(selectedCategoryId).title)
-        updateListView()
+//        setActionBar(navView.menu.findItem(selectedCategoryId).title)
+//        updateListView()
     }
 
     private val resultLauncher =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             loadDataAndUpdateUI()
             invalidateOptionsMenu()
-        }
-    }
-
-    private inner class TasksDataObserver : DataSetObserver() {
-        override fun onChanged() {
-            super.onChanged()
-            updateListView()
         }
     }
 

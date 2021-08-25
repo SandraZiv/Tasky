@@ -4,11 +4,21 @@ import android.content.Context
 import com.sandra.tasky.entity.SimpleTask
 import com.sandra.tasky.entity.TaskCategory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 
 object DatabaseWrapper {
 
     // Task methods
+    fun getTasks(context: Context) = flow<List<SimpleTask>> {
+        val db = TaskDatabase(context)
+        while(true) {
+            emit(db.allTasks)
+            delay(5000)
+        }
+    }
+
     suspend fun addTask(context: Context, task: SimpleTask) = withContext(Dispatchers.IO) {
         TaskDatabase(context).addTask(task)
     }

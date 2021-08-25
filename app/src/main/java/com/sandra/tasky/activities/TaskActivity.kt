@@ -322,6 +322,7 @@ class TaskActivity : AppCompatActivity() {
         }
 
         // TODO reset when date is reset or keep
+        // todo crash when selecting repeat type
         val builder = AlertDialog.Builder(this@TaskActivity)
         builder.setTitle(R.string.repeat)
         builder.setSingleChoiceItems(R.array.repeating_options, task.repeat.value) { dialog, which ->

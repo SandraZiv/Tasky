@@ -12,57 +12,60 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <!-- activities -->
         <activity
-            android:name=".activities.home.HomeScreenActivity"
-            android:launchMode="singleTop"
+            android:name=".activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/search" />
         </activity>
         <activity
+            android:name=".activities.home.HomeScreenActivity"
+            android:launchMode="singleTop">
+        </activity>
+        <activity
             android:name=".activities.TaskActivity"
-            android:parentActivityName=".activities.home.HomeScreenActivity"
+            android:parentActivityName=".activities.home.HomeActivity"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.home.HomeScreenActivity" />
+                android:value=".activities.home.HomeActivity" />
         </activity>
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/settings"
-            android:parentActivityName=".activities.home.HomeScreenActivity">
+            android:parentActivityName=".activities.home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.home.HomeScreenActivity" />
+                android:value=".activities.home.HomeActivity" />
         </activity>
         <activity
             android:name=".activities.categories.CategoriesActivity"
             android:label="@string/manage_categories"
-            android:parentActivityName=".activities.home.HomeScreenActivity">
+            android:parentActivityName=".activities.home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.home.HomeScreenActivity" />
+                android:value=".activities.home.HomeActivity" />
         </activity>
         <activity
             android:name=".activities.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- receivers -->
+        </activity> <!-- receivers -->
         <receiver android:name=".widget.TaskWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/task_widget_info" />
@@ -73,9 +76,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </receiver>
-
-        <!-- services -->
+        </receiver> <!-- services -->
         <service
             android:name=".widget.TaskWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
@@ -88,7 +89,6 @@
         <service
             android:name=".service.RebootService"
             android:exported="false" />
-
     </application>
 
 </manifest>
